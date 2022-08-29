@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.timetracker.app</groupId>
-	<artifactId>TimeTracker</artifactId>
+	<artifactId>WorkSchedule</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TimeTracker</name>
+	<name>WorkSchedule</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
