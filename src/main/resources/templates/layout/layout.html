@@ -10,9 +10,14 @@
 </head>
 <body>
 	<header th:fragment="header">
-		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+<!-- 		<nav class="navbar navbar-expand-lg bg-dark navbar-dark" > -->
+		<nav class="navbar navbar-expand-lg" style="background-color: #2c3e50;" >
 			<div class="container-fluid">
-				<a class="navbar-brand text-primary" href="#">Time Tracker</a>
+				<a class="navbar-brand text-white" href="#"> 
+					<strong class="fs-3 col-1">
+						<i class="bi bi-calendar4-event" ></i> Work Schedule						
+					</strong>
+				</a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarNav"
 					aria-controls="navbarNav" aria-expanded="false"
@@ -21,26 +26,28 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="navbar-nav">
-						<li class="nav-item"><a class="nav-link active"
+						<li class="nav-item"><a class="nav-link active text-white mt-2"
 							aria-current="page" href="#">Home</a></li>
-						<li class="nav-item"><a class="nav-link"
+						<li class="nav-item"><a class="nav-link text-white mt-2"
 							th:href="@{/app/listar}">Usuarios</a></li>
-						<li class="nav-item"><a class="nav-link"
+						<li class="nav-item"><a class="nav-link text-white mt-2"
 							th:href="@{/requerimientos/listar-requerimientos}">Requerimientos</a></li>
 					</ul>
 					<ul class="navbar-nav flex-row flex-wrap ms-md-auto">
-						<li sec:authorize="!isAuthenticated()" class="nav-item col-6 col-lg-auto"><a class="btn btn-outline-primary" th:href="@{/login}">Sign In</a></li>
+						<li sec:authorize="!isAuthenticated()" class="nav-item col-6 col-lg-auto">
+							<a class="btn btn-outline-light" th:href="@{/login}">Sign In</a>
+						</li>
 						
 						<li class="btn-group dropstart" sec:authorize="isAuthenticated()">
-						  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-						    <span sec:authentication="name"></span>
-						  </button>
-						  <ul class="dropdown-menu dropdown-menu-dark">
-						    <form th:action="@{/logout}" method="post" id="logoutForm">
-						    	<button class="dropdown-item" onclick="document.getElementById('logoutForm').submit();" type="submit">Sign Out</button>
-						    </form>
-						    <a class="dropdown-item" th:href="@{/app/ver/} + ${#authentication.getPrincipal().getUsername()}">Ver Perfil</a>
-						  </ul>
+							<button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+								<span sec:authentication="name"></span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-dark">
+								<form th:action="@{/logout}" method="post" id="logoutForm">
+							    	<button class="dropdown-item" onclick="document.getElementById('logoutForm').submit();" type="submit">Sign Out</button>
+							    </form>
+							    <a class="dropdown-item" th:href="@{/app/ver/} + ${#authentication.getPrincipal().getUsername()}">Ver Perfil</a>
+							</ul>
 						</li>
 						
 					</ul>
@@ -58,18 +65,21 @@
 	<div class="container"></div>
 
 	<footer th:fragment="footer" class="container text-white">
-		<hr />
-		<img th:src="@{/images/spring.png}" alt="Spring logo" />
-		<p sec:authorize="isAuthenticated()">
+		<hr/>
+<!-- 		<img th:src="@{/images/spring.png}" alt="Spring logo" /> -->
+		<div class="row">
+			<div class="fs-1 col-1 row">
+				<i class="bi bi-calendar4-event" ></i>
+			</div>
+			
+			<p class="col-12" sec:authorize="isAuthenticated()">
 			Usuario Logueado: <span sec:authentication="name"></span> || Roles: <span sec:authentication="principal.authorities"></span>
-		</p>
-		<p>
-			Powered by <a href="https://projects.spring.io/spring-boot/">Spring
-				Boot</a> y <a href="http://www.thymeleaf.org">Thymeleaf</a>.
-		</p>
+			</p>
+		</div>
+		
 		<p>
 			Este proyecto fue desarrollado en IDE Eclipse + Spring Plugins (STS
-			Spring Tool), Martin y Francisco Bertomeu.<br /> &copy; Company
+			Spring Tool).<br /> &copy; Company
 			2022, Inc. Todos los derechos reservados. Términos de uso y
 			privacidad.<br />
 		</p>
