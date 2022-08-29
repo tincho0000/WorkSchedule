@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:fragment="head">
+	<meta charset="UTF-8">
+	<title th:text="${titulo} + ' & By Bertomeu'"></title>
+	<!-- CSS only -->
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}">
+	<link rel="stylesheet" th:href="@{/bootstrap-icons/font/bootstrap-icons.css}">
+</head>
+<body>
+	<header th:fragment="header">
+		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand text-primary" href="#">Time Tracker</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav">
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">Home</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/app/listar}">Usuarios</a></li>
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/requerimientos/listar-requerimientos}">Requerimientos</a></li>
+					</ul>
+					<ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+						<li sec:authorize="!isAuthenticated()" class="nav-item col-6 col-lg-auto"><a class="btn btn-outline-primary" th:href="@{/login}">Sign In</a></li>
+						
+						<li class="btn-group dropstart" sec:authorize="isAuthenticated()">
+						  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+						    <span sec:authentication="name"></span>
+						  </button>
+						  <ul class="dropdown-menu dropdown-menu-dark">
+						    <form th:action="@{/logout}" method="post" id="logoutForm">
+						    	<button class="dropdown-item" onclick="document.getElementById('logoutForm').submit();" type="submit">Sign Out</button>
+						    </form>
+						    <a class="dropdown-item" th:href="@{/app/ver/} + ${#authentication.getPrincipal().getUsername()}">Ver Perfil</a>
+						  </ul>
+						</li>
+						
+					</ul>
+				</div>
+			</div>
+		</nav>
+		
+		<div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div>
+		<div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+		<div class="alert alert-warning" th:if="${warning != null}" th:text="${warning}"></div>
+		<div class="alert alert-info" th:if="${info != null}" th:text="${info}"></div>
+		
+	</header>
+
+	<div class="container"></div>
+
+	<footer th:fragment="footer" class="container text-white">
+		<hr />
+		<img th:src="@{/images/spring.png}" alt="Spring logo" />
+		<p sec:authorize="isAuthenticated()">
+			Usuario Logueado: <span sec:authentication="name"></span> || Roles: <span sec:authentication="principal.authorities"></span>
+		</p>
+		<p>
+			Powered by <a href="https://projects.spring.io/spring-boot/">Spring
+				Boot</a> y <a href="http://www.thymeleaf.org">Thymeleaf</a>.
+		</p>
+		<p>
+			Este proyecto fue desarrollado en IDE Eclipse + Spring Plugins (STS
+			Spring Tool), Martin y Francisco Bertomeu.<br /> &copy; Company
+			2022, Inc. Todos los derechos reservados. Términos de uso y
+			privacidad.<br />
+		</p>
+		<!-- JavaScript Bundle with Popper -->
+		<script	th:src="@{/js/bootstrap.bundle.min.js}"></script>
+		<!-- jQuery -->
+		<script	th:src="@{/js/jquery-3.6.0.min.js}"></script>
+		<!-- jQuery UI -->
+		<script	th:src="@{/js/jquery-ui.min.js}"></script>
+		
+	</footer>
+
+
+</body>
+</html>

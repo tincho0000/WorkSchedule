@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title text-end pb-2">
+					<a class="btn btn-light btn-outline-secondary"
+						th:href="@{'/requerimientos/listar-requerimientos'}"
+						th:text="'&laquo; Volver'"></a>
+				</h4>
+
+				<form class="row g-3" th:action="@{/requerimientos/form}"
+					th:object="${requerimiento}" method="post">
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
+						<div class="col-sm-2">
+							<input type="text" th:field="*{requerimiento}"
+								class="form-control" th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('requerimiento')}"
+								th:errors="*{requerimiento}"></div>
+						</div>
+						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
+						<div class="col-sm-6">
+							<input type="text" th:field="*{descripcion}" class="form-control"
+								th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('descripcion')}"
+								th:errors="*{descripcion}"></div>
+						</div>
+					</div>
+					<div class="form-group row py-1">
+						<label class="col-sm-2 col-form-label"
+							th:text="'Cantidad' + ' Horas'"></label>
+						<div class="col-sm-2">
+							<input id="horasRequerimiento" type="number"
+								th:field="*{cantidadHoras}" class="form-control" />
+						</div>
+						<label class="col-sm-2 col-form-label" th:text="Aplicación"></label>
+						<div class="col-sm-6">
+							<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
+								<option value="">Seleccionar...</option>
+								<option th:each="aplicacion: ${aplicaciones}"
+									th:text="${aplicacion.nombre}" th:value="${aplicacion.id}">
+								</option>
+							</select>
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('aplicacion')}"
+								th:errors="*{aplicacion}">
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
+						<div class="col-sm-10">
+							<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label for="buscar_fase" class="col-sm-2 col-form-label"
+							th:text="'Buscar Fase'"></label>
+						<div class="col-sm-10">
+							<input type="text" name="buscar_fase" id="buscar_fase"
+								class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
+
+						<div class="col-sm-6 border">
+							<table id="cargarFase"
+								class="table table-sm table-striped table-hover">
+								<thead>
+									<tr>
+										<!-- 										<th>ID</th> -->
+										<th>Fase</th>
+										<th>Horas</th>
+										<!-- 									<th>Otro</th> -->
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="col-sm-3">
+							<h5 class="text-center">
+								<span class="">Total Fases</span>
+							</h5>
+							<h5 class="text-center">
+								<span class="" id="total_fases">0</span>
+							</h5>
+
+						</div>
+
+						<div class="col-sm-3">
+							<input type="submit" th:value="${titulo}" class="btn btn-success" onclick="validar()" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
+
+</body>
+</html>

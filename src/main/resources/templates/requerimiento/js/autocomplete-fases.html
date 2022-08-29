@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<body>
+
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function() {
+			console.log("doc ready");
+			$("#buscar_fase").autocomplete({
+				source: function(request, response){
+					$.ajax({
+						url:"/requerimientos/cargar-fases/" + request.term,
+						dataType:"json",
+						data:{
+							term: request.term
+						},
+						success: function(data){
+							response($.map(data, function(item){
+								return {
+									value: item.id,
+									label: item.descripcion,
+									otro: item.otro,
+								};
+							}));
+						},
+					});
+					
+				},
+				select: function(event, ui){
+					//$("#buscar_fase").val(ui.item.label);
+					
+					if(itemsHelper.hasFase(ui.item.value)){
+						window.alert("No se puede agregar un fase existente");
+						return false;
+					}
+					
+					var linea = $("#plantillaFases").html();
+					linea = linea.replace(/{ID}/g, ui.item.value);
+					linea = linea.replace(/{FASE}/g, ui.item.label);
+// 					linea = linea.replace(/{OTRO}/g, ui.item.otro);
+					
+					$("#cargarFase tbody").append(linea);
+					return false;
+				}
+			});
+			
+			//Eliminamos la plantilla para que no de error al submitirla
+			$("form").submit(function(){
+				
+				var totalFases = document.getElementById("total_fases").innerText;
+				var totalRequerimiento = document.getElementById("horasRequerimiento").value;
+				console.log("totalFases" + totalFases);
+				console.log("totalRequerimiento" + totalRequerimiento);
+				if (totalFases != totalRequerimiento){
+					window.alert("El total de horas del requerimiento debe ser igual a la suma de la/s horas de la/s fase/s");
+					return false;	
+				}
+				
+				$("#plantillaFases").remove();
+				
+			});
+			
+		});
+		
+		var itemsHelper = {
+				
+				hasFase:function(id){
+					var resultado = false;
+					$('input[name="fase_id[]"]').each(function(){
+						if(parseInt(id) == parseInt($(this).val()) ){
+							resultado = true;
+						}
+					});
+					return resultado;
+				},
+				
+				eliminarLineaFase: function(id){
+					$("#row_" + id).remove();
+					this.calcularTotalFases();
+				},
+				
+				calcularTotalFases: function(cantidad){
+					var total=0;
+					
+					$('input[name="cantidad[]"]').each(function(){
+// 						console.log("VALOR: " + $(this).val());
+						total += parseInt($(this).val());
+					});
+					
+// 					console.log("TOTAL: " + total);
+					$('#total_fases').html(total);
+				},
+				
+		}
+		
+	</script>
+</body>
+</html>

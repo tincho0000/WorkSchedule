@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<body>
+	<table th:fragment="agregarFase" class="d-none">
+		<tbody id="plantillaFases">
+			<tr id="row_{ID}">
+				<td class="d-none"><input type="hidden" value="{ID}"
+					name="fase_id[]" /></td>
+				<td>{FASE}</td>
+				<td>
+					<div class="col-sm-6 ">
+						<input type="number" value="0" name="cantidad[]"
+							id="cantidad_{ID}" class="form-control text-end" onchange="itemsHelper.calcularTotalFases();" />
+					</div>
+				</td>
+<!-- 				<td>{OTRO}</td> -->
+				<td><a class="btn btn-danger" href="#" onclick="itemsHelper.eliminarLineaFase({ID});" onchange="itemsHelper.calcularTotalFases(this.value);">X</a></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

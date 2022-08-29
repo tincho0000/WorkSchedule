@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title text-end pb-2">
+					<a class="btn btn-light btn-outline-secondary"
+						th:href="@{'/requerimientos/listar-requerimientos'}"
+						th:text="'&laquo; Volver'"></a>
+				</h4>
+
+				<form class="row g-3" th:action="@{/requerimientos/form}"
+					th:object="${requerimiento}" method="post">
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
+						<div class="col-sm-2">
+							<input type="text" th:field="*{requerimiento}"
+								class="form-control" th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('requerimiento')}"
+								th:errors="*{requerimiento}"></div>
+						</div>
+						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
+						<div class="col-sm-6">
+							<input type="text" th:field="*{descripcion}" class="form-control"
+								th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('descripcion')}"
+								th:errors="*{descripcion}"></div>
+						</div>
+					</div>
+					<div class="form-group row py-1">
+						<label class="col-sm-2 col-form-label"
+							th:text="'Cantidad' + ' Horas'"></label>
+						<div class="col-sm-2">
+							<input id="horasRequerimiento" type="number"
+								th:field="*{cantidadHoras}" class="form-control" />
+						</div>
+						<label class="col-sm-2 col-form-label" th:text="Aplicación"></label>
+						<div class="col-sm-6">
+							<select class="form-select" th:field="*{aplicacion}">
+								<option th:each="aplicacion: ${aplicaciones}"
+									th:text="${aplicacion.nombre}" th:value="${aplicacion.id}">
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
+						<div class="col-sm-10">
+							<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label for="buscar_fase" class="col-sm-2 col-form-label"
+							th:text="'Buscar Fase'"></label>
+						<div class="col-sm-10">
+							<input type="text" name="buscar_fase" id="buscar_fase"
+								class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+
+						<!-- 					Plantilla para agregar fases -->
+						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
+
+						<div class="col-sm-6 border">
+							<table id="cargarFase"
+								class="table table-sm table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Fase</th>
+										<th>Horas</th>
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+
+									<div th:each="requerimientoFase: ${requerimiento.requerimientoFases}" >
+									<tr th:id="'row_' + ${requerimientoFase.fase.id}">
+<!-- 										th:each="requerimientoFase: ${requerimiento.requerimientoFases}"> -->
+										<td class="d-none"><input type="hidden" th:value="${requerimientoFase.fase.id}"
+											name="fase_id[]" /></td>
+										<td th:text="${requerimientoFase.fase.descripcion}"></td>
+										<td>
+											<div class="col-sm-6 ">
+												<input type="number"
+													th:value="${requerimientoFase.cantidadHoras}"
+													name="cantidad[]" class="form-control text-end"
+													onchange="itemsHelper.calcularTotalFases();" />
+											</div>
+										</td>
+										<td><a class="btn btn-danger" href="#"
+											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${requerimientoFase.requerimiento.id}', '${requerimientoFase.fase.id}')|"
+											onchange="itemsHelper.calcularTotalFases(this.value);">X</a></td>
+									</tr>
+									</div>
+
+
+								</tbody>
+							</table>
+						</div>
+
+						<div class="col-sm-3">
+							<h5 class="text-center">
+								<span class="">Total Fases</span>
+							</h5>
+							<h5 class="text-center">
+								<span class="" id="total_fases">0</span>
+							</h5>
+
+						</div>
+
+						<div class="col-sm-3">
+							<input type="submit" th:value="${titulo}" class="btn btn-success" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script
+		th:replace="requerimiento/js/autocomplete-fases-editar :: javascript"></script>
+
+</body>
+</html>
