@@ -68,12 +68,12 @@
 		<hr/>
 <!-- 		<img th:src="@{/images/spring.png}" alt="Spring logo" /> -->
 		<div class="row">
-			<div class="fs-1 col-1 row">
-				<i class="bi bi-calendar4-event" ></i>
+			<div class="fs-3 text-center">
+				<i class="bi bi-calendar4-event" ></i> Work Schedule
 			</div>
 			
 			<p class="col-12" sec:authorize="isAuthenticated()">
-			Usuario Logueado: <span sec:authentication="name"></span> || Roles: <span sec:authentication="principal.authorities"></span>
+			Usuario: <span sec:authentication="name"></span> || Roles: <span sec:authentication="principal.authorities"></span>
 			</p>
 		</div>
 		

@@ -99,7 +99,7 @@ public class UsuarioController {
 //	}
 	
 	//Se puede agregar una lista de roles
-		@Secured({"ROLE_GESTION", "ROLE_ADMIN"})
+		@Secured({"ROLE_USER", "ROLE_GESTION", "ROLE_ADMIN"})
 		@GetMapping(value = "/ver/{username}")
 		public String verPorUsuario(@PathVariable(value = "username") String username, Model model, RedirectAttributes flash) {
 
@@ -117,7 +117,7 @@ public class UsuarioController {
 
 		}
 
-	@Secured("ROLE_GESTION")
+//	@Secured("ROLE_GESTION")
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 

@@ -16,7 +16,7 @@
 				<img th:if="${usuario.foto != null}" class="img-thumbnail rounded float-start" style="max-width: 25%" 
 					th:src="@{'/app/uploads/' + ${usuario.foto}}" th:alt="${usuario.foto}">
 				<img th:unless="${usuario.foto != null}" class="img-thumbnail rounded float-start" style="max-width: 20%" 
-				th:src="@{'/app/uploads/no-image.png'}" th:alt="'No hay imagen'">
+				th:src="@{'/images/no-image.png'}" th:alt="'No hay imagen'">
 				
 				<div class="col-md-8 mx-5 px-5 d-flex justify-content-center row">	
 					<ul class="list-group py-2">
