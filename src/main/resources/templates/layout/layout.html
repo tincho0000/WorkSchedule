@@ -60,6 +60,8 @@
 		<div class="alert alert-warning" th:if="${warning != null}" th:text="${warning}" id="alerta"></div>
 		<div class="alert alert-info" th:if="${info != null}" th:text="${info}" id="alerta"></div>
 		
+		<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('descripcion') }" th:text="${errores.descripcion}" id="alerta"></div>
+		
 	</header>
 
 	<div class="container"></div>
@@ -95,7 +97,7 @@
 	  
 	            // Closing the alert
 	            $('#alerta').alert('close');
-	        }, 2000);
+	        }, 3000);
 		</script>
 		
 	</footer>
