@@ -1,5 +1,6 @@
 package com.workschedule.app.models.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -28,6 +30,9 @@ public class RequerimientoFase {
 
 	@Column(name = "cantidad_horas")
 	private int cantidadHoras;
+	
+	@OneToMany(mappedBy = "requerimientoFases")
+	private List<Planificacion> planificaciones;
 
 	public RequerimientoFaseId getRequerimientoFaseId() {
 		return requerimientoFaseId;
@@ -60,6 +65,14 @@ public class RequerimientoFase {
 	public void setCantidadHoras(int cantidadHoras) {
 		this.cantidadHoras = cantidadHoras;
 	}
+	
+	public List<Planificacion> getPlanificaciones() {
+		return planificaciones;
+	}
+
+	public void setPlanificaciones(List<Planificacion> planificaciones) {
+		this.planificaciones = planificaciones;
+	}
 
 	public RequerimientoFase() {
 	}
@@ -72,7 +85,7 @@ public class RequerimientoFase {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cantidadHoras, fase, requerimiento, requerimientoFaseId);
+		return Objects.hash(cantidadHoras, fase, requerimiento, requerimientoFaseId, planificaciones);
 	}
 
 	@Override
@@ -86,7 +99,8 @@ public class RequerimientoFase {
 		RequerimientoFase other = (RequerimientoFase) obj;
 		return cantidadHoras == other.cantidadHoras && Objects.equals(fase, other.fase)
 				&& Objects.equals(requerimiento, other.requerimiento)
-				&& Objects.equals(requerimientoFaseId, other.requerimientoFaseId);
+				&& Objects.equals(requerimientoFaseId, other.requerimientoFaseId)
+				&& Objects.equals(planificaciones, other.planificaciones);
 	}
 
 	@Override

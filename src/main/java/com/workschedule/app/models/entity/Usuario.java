@@ -3,6 +3,7 @@ package com.workschedule.app.models.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -55,9 +57,8 @@ public class Usuario implements Serializable {
 	@PrimaryKeyJoinColumn	
 	private DatoPersonal datoPersonal;
 
-//	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@JoinColumn(name="id_usuario")
-//	private Set<Planificado> planificados;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+	private List<Planificacion> planificaciones;
 
 //	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //	private Set<Incurrido> incurridos;
