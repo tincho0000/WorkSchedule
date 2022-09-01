@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -412,18 +413,38 @@ public class UsuarioController {
 			usuario.setFoto(uniqueFilename);
 		}
 		
-
-		//Si es alta de usuario, encripto la password y lo marco como activo
-		if (usuario.getId() == null ) {
-			
+		if (usuario.getId() == null ) 
 			altaUsuario = true;
+		
+		
+		if (altaUsuario) {
 			
+			//Verifico si el usuario ya fue dado de alta
+			Usuario usuarioUnico = usuarioService.findByUsuario(usuario.getUsuario());
+			
+			if (usuarioUnico != null) {
+				
+				Map<String,String> errores = new HashMap<>();
+				errores.put("descripcion", "El usuario ya existe!!!");
+				System.err.println("Entre");
+				model.addAttribute("titulo", "Formulario de usuario");
+				model.addAttribute("usuario", usuario);
+				model.addAttribute("errores", errores);
+//				flash.addFlashAttribute("error", "El usuario '" + usuario.getUsuario() + "' ya existe!!!");
+//				return "redirect:/app/form";
+				return "usuario/form";
+			}
+			
+		
+			//Si es alta de usuario, encripto la password y lo marco como activo
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuario.setActivo(true);
 			usuario.getDatoPersonal().setUsuario(usuario);
 			
 		} 
 		
+		
+		//Si es alta y tiene roles los agrego
 		if (altaUsuario && roles != null) {
 			for (int i = 0; i < roles.length; i++) {
 				System.err.println("Rol:" + roles[i]);
