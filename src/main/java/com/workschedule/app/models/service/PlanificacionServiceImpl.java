@@ -1,5 +1,6 @@
 package com.workschedule.app.models.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class PlanificacionServiceImpl implements IPlanificacionService{
 	@Override
 	public void delete(Long id) {
 		planificacionDao.deleteById(id);
+	}
+
+	@Override
+	public List<Planificacion> findByUsuarioIdAndFechaBetween(Long usuario, LocalDate desde, LocalDate hasta) {
+		return planificacionDao.findByUsuarioIdAndFechaBetween(usuario, desde, hasta);
 	}
 
 }

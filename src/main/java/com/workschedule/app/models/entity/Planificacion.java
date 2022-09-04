@@ -1,10 +1,10 @@
 package com.workschedule.app.models.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,7 +39,7 @@ public class Planificacion implements Serializable {
 	@JoinColumn(name="usuario_id")
 	private Usuario usuario;
 	
-	private Date fecha;
+	private LocalDate fecha;
 	@Column(name="hora_planificada")
 	private int horasPlanificadas;
 	@Column(name="hora_incurrida")
@@ -70,11 +70,11 @@ public class Planificacion implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Date getFecha() {
+	public LocalDate getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
 
@@ -108,7 +108,7 @@ public class Planificacion implements Serializable {
 	}
 	
 
-	public Planificacion(RequerimientoFase requerimientoFases, Usuario usuario, Date fecha, int horasPlanificadas,
+	public Planificacion(RequerimientoFase requerimientoFases, Usuario usuario, LocalDate fecha, int horasPlanificadas,
 							int horasIncurridas, String observacion) {
 		this.requerimientoFases = requerimientoFases;
 		this.usuario = usuario;
