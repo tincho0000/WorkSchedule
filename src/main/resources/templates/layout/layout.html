@@ -61,6 +61,7 @@
 		<div class="alert alert-info" th:if="${info != null}" th:text="${info}" id="alerta"></div>
 		
 		<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('descripcion') }" th:text="${errores.descripcion}" id="alerta"></div>
+		<div class="alert alert-info"   th:if="${informar != null && informar.containsKey('descripcion') }" th:text="${informar.descripcion}" id="alerta"></div>
 		
 	</header>
 
