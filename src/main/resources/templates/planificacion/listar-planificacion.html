@@ -47,7 +47,7 @@
 								data-bs-toggle="collapse" data-bs-target="#lunes-collapseOne"
 								aria-expanded="false" aria-controls="lunes-collapseOne">
 								
-								<div class="col-8">Lunes</div> <div class="col-3">Cantidad horas: <strong id="horasLunes"></strong> </div>
+								<div class="col-8">Lunes</div> <div class="col-3">Cantidad horas: <strong id="horasLunes"></strong><strong> hs.</strong></div>
 								
 							</button>
 						</h2>
@@ -56,7 +56,7 @@
 							data-bs-parent="#lunes">
 							<div class="accordion-body">
 								
-								<table class="table table-striped">
+								<table class="table table-striped" id="tablaLunes">
 						        	<thead>
 										<tr>
 											<th>Aplicación</th>
@@ -72,7 +72,7 @@
 										<td th:text="${lu.requerimientoFases.requerimiento.aplicacion.nombre}"></td>
 										<td th:text="${lu.requerimientoFases.requerimiento.requerimiento}"></td>
 										<td th:text="${lu.requerimientoFases.fase.descripcion}"></td>
-										<td th:text="${lu.horasPlanificadas}"></td>
+										<td th:text="${lu.horasPlanificadas}" name="lunesPlanif"></td>
 										<td th:text="${lu.horasIncurridas}"></td>
 										<td th:text="${lu.fecha}"></td>
 									</tr>
@@ -89,7 +89,7 @@
 								data-bs-toggle="collapse" data-bs-target="#martes-collapseOne"
 								aria-expanded="false" aria-controls="martes-collapseOne">
 								
-								<div class="col-8">Martes</div> <div class="col-3">Cantidad horas: 8</div>
+								<div class="col-8">Martes</div> <div class="col-3">Cantidad horas: <strong id="horasMartes"></strong> <strong> hs.</strong></div>
 								
 							</button>
 						</h2>
@@ -98,7 +98,7 @@
 							data-bs-parent="#martes">
 							<div class="accordion-body">
 								
-								<table class="table table-striped">
+								<table class="table table-striped" id="tablaMartes">
 						        	<thead>
 										<tr>
 											<th>Aplicación</th>
@@ -131,7 +131,7 @@
 								data-bs-toggle="collapse" data-bs-target="#miercoles-collapseOne"
 								aria-expanded="false" aria-controls="miercoles-collapseOne">
 								
-								<div class="col-8">Miercoles</div> <div class="col-3">Cantidad horas: 8</div>
+								<div class="col-8">Miercoles</div> <div class="col-3">Cantidad horas: <strong id="horasMiercoles"></strong><strong> hs.</strong></div>
 								
 							</button>
 						</h2>
@@ -140,7 +140,7 @@
 							data-bs-parent="#miercoles">
 							<div class="accordion-body">
 								
-								<table class="table table-striped">
+								<table class="table table-striped" id="tablaMiercoles">
 						        	<thead>
 										<tr>
 											<th>Aplicación</th>
@@ -173,7 +173,7 @@
 								data-bs-toggle="collapse" data-bs-target="#jueves-collapseOne"
 								aria-expanded="false" aria-controls="jueves-collapseOne">
 								
-								<div class="col-8">Jueves</div> <div class="col-3">Cantidad horas: 8</div>
+								<div class="col-8">Jueves</div> <div class="col-3">Cantidad horas: <strong id="horasJueves"></strong><strong> hs.</strong></div>
 								
 							</button>
 						</h2>
@@ -182,7 +182,7 @@
 							data-bs-parent="#jueves">
 							<div class="accordion-body">
 								
-								<table class="table table-striped">
+								<table class="table table-striped" id="tablaJueves">
 						        	<thead>
 										<tr>
 											<th>Aplicación</th>
@@ -215,7 +215,7 @@
 								data-bs-toggle="collapse" data-bs-target="#viernes-collapseOne"
 								aria-expanded="false" aria-controls="viernes-collapseOne">
 								
-								<div class="col-8">Viernes</div> <div class="col-3">Cantidad horas: 8</div>
+								<div class="col-8">Viernes</div> <div class="col-3">Cantidad horas: <strong id="horasViernes"></strong><strong> hs.</strong></div>
 								
 							</button>
 						</h2>
@@ -224,7 +224,7 @@
 							data-bs-parent="#viernes">
 							<div class="accordion-body">
 								
-								<table class="table table-striped">
+								<table class="table table-striped" id="tablaViernes">
 						        	<thead>
 										<tr>
 											<th>Aplicación</th>
@@ -262,18 +262,7 @@
 	</div>
 
 	<footer th:replace="layout/layout :: footer"></footer>
-	<script type="text/javascript">
-// 		function validar(){
-// 			var aplicacion = document.getElementById('aplicaciones');
-// 			if(aplicacion.value == 0 || aplicacion.value == ''){
-// 				alert('Debe seleccionar una aplicacion para buscar');
-// 				aplicacion.focus();
-// 			}
-// 		}
-		function borrarFiltro(){
-			window.location = '/planificacion/listar';
-		}
- 	</script> 
+	<script th:replace="planificacion/js/script :: javascript"></script>
 
 </body>
 </html>

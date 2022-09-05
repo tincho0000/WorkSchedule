@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<body>
+
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function() {
+			console.log("doc ready");
+			
+			// Calculo horas planificadas para el lunes
+			var total = 0;
+			for(var i = 1; tablaLunes.rows[i]; i++) {
+				total += parseInt(tablaLunes.rows[i].cells[3].innerHTML);
+				console.log(parseInt((tablaLunes.rows[i].cells[3].innerHTML)));
+			}
+			console.log(total);
+			$('#horasLunes').html(total);
+			
+			// Calculo horas planificadas para el martes
+			var total = 0;
+			for(var i = 1; tablaMartes.rows[i]; i++) {
+				total += parseInt(tablaMartes.rows[i].cells[3].innerHTML);
+				console.log(parseInt((tablaMartes.rows[i].cells[3].innerHTML)));
+			}
+			console.log(total);
+			$('#horasMartes').html(total);
+			
+			// Calculo horas planificadas para el miercoles
+			var total = 0;
+			for(var i = 1; tablaMiercoles.rows[i]; i++) {
+				total += parseInt(tablaMiercoles.rows[i].cells[3].innerHTML);
+				console.log(parseInt((tablaMiercoles.rows[i].cells[3].innerHTML)));
+			}
+			console.log(total);
+			$('#horasMiercoles').html(total);
+			
+			// Calculo horas planificadas para el jueves
+			var total = 0;
+			for(var i = 1; tablaJueves.rows[i]; i++) {
+				total += parseInt(tablaJueves.rows[i].cells[3].innerHTML);
+				console.log(parseInt((tablaJueves.rows[i].cells[3].innerHTML)));
+			}
+			console.log(total);
+			$('#horasJueves').html(total);
+			
+			// Calculo horas planificadas para el viernes
+			var total = 0;
+			for(var i = 1; tablaViernes.rows[i]; i++) {
+				total += parseInt(tablaViernes.rows[i].cells[3].innerHTML);
+				console.log(parseInt((tablaViernes.rows[i].cells[3].innerHTML)));
+			}
+			console.log(total);
+			$('#horasViernes').html(total);
+
+			
+			
+		});
+	</script>
+</body>
+</html>
