@@ -4,14 +4,12 @@
 
 	<script type="text/javascript" th:fragment="javascript">
 		$(document).ready(function() {
-			console.log("doc ready");
 			
 			// Calculo horas planificadas para el lunes
 			var total = 0;
 			for(var i = 1; tablaLunes.rows[i]; i++) {
 				total += parseInt(tablaLunes.rows[i].cells[3].innerHTML);
 			}
-			console.log(total);
 			$('#horasLunes').html(total);
 			
 			// Calculo horas planificadas para el martes
@@ -19,7 +17,6 @@
 			for(var i = 1; tablaMartes.rows[i]; i++) {
 				total += parseInt(tablaMartes.rows[i].cells[3].innerHTML);
 			}
-			console.log(total);
 			$('#horasMartes').html(total);
 			
 			// Calculo horas planificadas para el miercoles
@@ -27,7 +24,6 @@
 			for(var i = 1; tablaMiercoles.rows[i]; i++) {
 				total += parseInt(tablaMiercoles.rows[i].cells[3].innerHTML);
 			}
-			console.log(total);
 			$('#horasMiercoles').html(total);
 			
 			// Calculo horas planificadas para el jueves
@@ -35,7 +31,6 @@
 			for(var i = 1; tablaJueves.rows[i]; i++) {
 				total += parseInt(tablaJueves.rows[i].cells[3].innerHTML);
 			}
-			console.log(total);
 			$('#horasJueves').html(total);
 			
 			// Calculo horas planificadas para el viernes
@@ -43,12 +38,90 @@
 			for(var i = 1; tablaViernes.rows[i]; i++) {
 				total += parseInt(tablaViernes.rows[i].cells[3].innerHTML);
 			}
-			console.log(total);
 			$('#horasViernes').html(total);
 
+			// Abro y cierro el collapse
+			$('.closeall').click(function () {
+		        $('.collapse').collapse('hide');
+			});
+			$('.openall').click(function () {
+			      $('.collapse').collapse('show');
+			});
 			
 			
+			/***********************************/
+			/******* Formateo de fechas ********/
+			/***********************************/
+			
+		    var fecha = $('#fechaFilter').val();
+		    var week = obtenerFechasDeLaSemana(fecha);
+		    var weekFormat = [];
+		    
+		    week.forEach((w) => {
+		        weekFormat.push(formatearFecha(w));
+		    });
+		    
+		    console.log("lunes" + weekFormat[0]);
+		    console.log("martes" + weekFormat[1]);
+		    console.log("miercoles" + weekFormat[2]);
+		    console.log("jue" + weekFormat[3]);
+		    console.log("vie" + weekFormat[4]);
+		    
+		    var fecha = $('#lunes').val(weekFormat[0]);
+		    var fecha = $('#martes').val(weekFormat[1]);
+		    var fecha = $('#miercoles').val(weekFormat[2]);
+		    var fecha = $('#jueves').val(weekFormat[3]);
+		    var fecha = $('#viernes').val(weekFormat[4]);
+		    
 		});
+		
+		/*
+		********************
+		*	Funciones
+		********************
+		*/
+		
+		function formatearFecha(fecha){
+			var d = new Date(fecha),
+	        month = '' + (d.getMonth() + 1),
+	        day = '' + (d.getDate()),
+	        year = d.getFullYear();
+
+		    if (month.length < 2) 
+		        month = '0' + month;
+		    if (day.length < 2) 
+		        day = '0' + day;
+		    return [year , month, day].join('-');
+		}
+		
+		function obtenerFechasDeLaSemana(fecha){
+
+			var current = new Date(fecha);
+			const week = [];
+		  //Controla cual sera el primer dia
+// 		    if(current.getDay() == 0){
+// 		        current.setDate(((current.getDate() - 7)+1));
+// 		    }else{
+		        current.setDate(((current.getDate() - current.getDay()) + 1));
+// 		    }
+
+		    week.push(new Date(current));//Agrega el primer dia al array
+		    
+		    current.setDate(current.getDate()+1);//Defino el martes
+		    week.push(new Date(current));//Agrega al array
+		    
+		    current.setDate(current.getDate()+1);//Defino el miercoles
+		    week.push(new Date(current));//Agrega al array
+		    
+		    current.setDate(current.getDate()+1);//Defino el jueves
+		    week.push(new Date(current));//Agrega al array
+		    
+		    current.setDate(current.getDate()+1);//Defino el viernes
+		    week.push(new Date(current));//Agrega al array
+		    
+		    return week;
+		}
+		
 	</script>
 </body>
 </html>
