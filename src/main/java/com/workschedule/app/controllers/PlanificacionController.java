@@ -1,20 +1,15 @@
 package com.workschedule.app.controllers;
 
 import java.beans.PropertyEditorSupport;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.workschedule.app.models.entity.Planificacion;
 import com.workschedule.app.models.entity.Usuario;
+import com.workschedule.app.models.entity.UsuarioSimple;
 import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoFaseService;
 import com.workschedule.app.models.service.IUsuarioService;
@@ -42,6 +40,8 @@ public class PlanificacionController {
 	IRequerimientoFaseService requerimientoFaseService;
 	@Autowired
 	IUsuarioService usuarioService;
+	@Autowired
+	IUsuarioService usuarioSimpleService;
 
 	// Agrego al initBinder
 //	@InitBinder
@@ -187,7 +187,6 @@ public class PlanificacionController {
 		}
 		
 		
-
 		model.addAttribute("titulo", "Planificación");
 		model.addAttribute("fechaFilter", fechaFilter);
 		model.addAttribute("usuarioFilter", usuarioFilter);
@@ -198,5 +197,34 @@ public class PlanificacionController {
 		model.addAttribute("viernes", viernes);
 
 		return "planificacion/listar-planificacion";
+	}
+	
+	
+	@GetMapping(value = "/cargar-usuarios/{termino}", produces = { "application/json" })
+	public @ResponseBody List<UsuarioSimple> cargarFases(@PathVariable String termino) {
+		if (termino.equals("*")) {
+			return usuarioSimpleService.findUsuarioAll();
+		}
+		return usuarioSimpleService.findByUsuarioFiltro(termino);
+	}
+	
+	
+	
+	@GetMapping("/planificar")
+	public String planificar(Model model, @RequestParam(name = "fecha", defaultValue = "") String fecha) {
+		
+		if (fecha.isEmpty()) {
+			System.err.println("Fecha vacia");
+		}
+		
+		List<Usuario> u = usuarioService.findAll();
+		for (Usuario usuario : u) {
+			usuario.getId();
+		}
+		
+		model.addAttribute("fecha", fecha);
+		model.addAttribute("titulo", "Alta de Planificación");
+		return "planificacion/alta-planificacion";
+		
 	}
 }

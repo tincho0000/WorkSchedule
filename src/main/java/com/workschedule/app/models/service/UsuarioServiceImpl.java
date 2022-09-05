@@ -9,13 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workschedule.app.models.dao.IUsuarioDao;
+import com.workschedule.app.models.dao.IUsuarioSimpleDao;
 import com.workschedule.app.models.entity.Usuario;
+import com.workschedule.app.models.entity.UsuarioSimple;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Autowired
 	private IUsuarioDao usuarioDao;
+	@Autowired
+	private IUsuarioSimpleDao usuarioSimpleDao;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -55,6 +59,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
 //		usuarioDao.delete(id);
 		usuarioDao.deleteById(id);
 
+	}
+
+	@Override
+	public List<UsuarioSimple> findByUsuarioFiltro(String termino) {
+		return usuarioSimpleDao.findByUsuario(termino);
+	}
+
+	@Override
+	public List<UsuarioSimple> findUsuarioAll() {
+		return usuarioSimpleDao.findUsuarioAll();
 	}
 
 }

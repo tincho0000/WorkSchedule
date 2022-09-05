@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.workschedule.app.models.entity.Usuario;
+import com.workschedule.app.models.entity.UsuarioSimple;
 
 public interface IUsuarioService {
 
@@ -20,4 +21,7 @@ public interface IUsuarioService {
 	public void delete(Long id);
 
 	public Usuario findByUsuario(String username);
+	
+	public List<UsuarioSimple> findByUsuarioFiltro(String termino);
+	public List<UsuarioSimple> findUsuarioAll();
 }

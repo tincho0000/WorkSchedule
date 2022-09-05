@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<body>
+
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function() {
+			$("#usuarioFilter").autocomplete({
+				source: function(request, response){
+					$.ajax({
+						url:"/planificacion/cargar-usuarios/" + request.term,
+						dataType:"json",
+						data:{
+							term: request.term
+						},
+						success: function(data){
+							response($.map(data, function(item){
+								return {
+									value: item.usuario,
+								};
+							}));
+						},
+					});
+					
+				},
+				select: function(event, ui){
+					$("#usuarioFilter").val(ui.item.value);
+					return false;
+				}
+			});
+			
+		});
+		
+	</script>
+</body>
+</html>
