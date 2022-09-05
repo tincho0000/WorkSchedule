@@ -6,7 +6,7 @@
 	<header th:replace="layout/layout :: header"></header>
 	<div class="card bg-light my-4">
 		<!-- 		<div class="card-header" th:text="${titulo}"></div> -->
-		<div class="card-body">
+		<div class="card-body" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 			<div class="container py-1">
 				<form class="row row-cols-lg-auto g-5 align-items-center">
 					<div class="col-12">
@@ -31,33 +31,33 @@
 					</div>
 
 					<div class="col-12 ">
-							<button type="submit" class="btn btn-outline-primary" onclick="validar();">Buscar ... </button>
+							<button type="submit" class="btn btn-outline-light" onclick="validar();">Buscar ... </button>
 					</div>
 					<div class="col-12 ">
-							<button type="button" class="btn btn-outline-danger" onclick="borrarFiltro();">Eliminar ... </button>
+							<button type="button" class="btn btn-outline-light" onclick="borrarFiltro();">Eliminar ... </button>
 					</div>
 				</form>
 			</div>
 		</div>
 
-		<div class="card bg-light">
-			<div class="card-header" th:text="${titulo}"></div>
+		<div class="card" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+			<div class="card-header text-white" th:text="${titulo}"></div>
 			<div class="card-body">
 
 				<h4 class="card-title">
-					<a th:href="@{/requerimientos/form}" class="btn btn-primary btn-xs">Crear
+					<a th:href="@{/requerimientos/form}" class="btn btn-light btn-xs">Crear
 						Requerimiento</a>
 				</h4>
 				<table class="table table-striped table-sm" >
 					<thead>
 						<tr>
 <!-- 							<th>ID</th> -->
-							<th>APLICACIÓN</th>
-							<th>REQUERIMIENTO</th>
-							<th>DESCRIPCIÓN</th>
-							<th>CANTIDAD HORAS</th>
-							<th>ESTADO</th>
-							<th class="text-center">ACCIÓN</th>
+							<th class="text-white">APLICACIÓN</th>
+							<th class="text-white">REQUERIMIENTO</th>
+							<th class="text-white">DESCRIPCIÓN</th>
+							<th class="text-white">CANTIDAD HORAS</th>
+							<th class="text-white">ESTADO</th>
+							<th class="text-center text-white">ACCIÓN</th>
 <!-- 							<th class="text-center">Ver/Editar</th> -->
 <!-- 							<th class="text-center">Eliminar</th> -->
 						</tr>
@@ -68,16 +68,16 @@
 <!-- 							<td><a th:text="${requerimiento.id}"></a></td> -->
 <!-- 								th:href="@{/app/ver/} + ${usuario.id}" th:text="${usuario.id}"></a></td> -->
 
-							<td th:text="${requerimiento.aplicacion.nombre}"></td>
-							<td th:text="${requerimiento.requerimiento}"></td>
-							<td th:text="${requerimiento.descripcion}"></td>
-							<td th:text="${requerimiento.cantidadHoras}"></td>
-							<td th:text="${requerimiento.estado}"></td>
+							<td class="text-white" th:text="${requerimiento.aplicacion.nombre}"></td>
+							<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
+							<td class="text-white" th:text="${requerimiento.descripcion}"></td>
+							<td class="text-white" th:text="${requerimiento.cantidadHoras}"></td>
+							<td class="text-white" th:text="${requerimiento.estado}"></td>
 							<td class="text-center">
-								<a class="btn btn-outline-primary btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}">
+								<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" style="border-radius: 50%;">
 									<i class="bi bi-pencil-square"></i>
 								</a>
-								<a class="btn btn-outline-danger btn-sm" 
+								<a class="btn btn-outline-light btn-sm" style="border-radius: 50%;" 
 									th:href="@{/requerimientos/eliminar/} + ${requerimiento.id}"
 									onclick="return confirm('Estas seguro que quieres eliminar?')">
 									<i class="bi bi-trash3"></i>
