@@ -74,10 +74,11 @@
 							<td class="text-white" th:text="${requerimiento.cantidadHoras}"></td>
 							<td class="text-white" th:text="${requerimiento.estado}"></td>
 							<td class="text-center">
-								<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" style="border-radius: 50%;">
+								<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" 
+									style="border-radius: 50%;" data-toggle="tooltip" title="Editar">
 									<i class="bi bi-pencil-square"></i>
 								</a>
-								<a class="btn btn-outline-light btn-sm" style="border-radius: 50%;" 
+								<a class="btn btn-outline-light btn-sm" style="border-radius: 50%;" data-toggle="tooltip" title="Eliminar"
 									th:href="@{/requerimientos/eliminar/} + ${requerimiento.id}"
 									onclick="return confirm('Estas seguro que quieres eliminar?')">
 									<i class="bi bi-trash3"></i>
