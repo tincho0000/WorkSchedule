@@ -253,10 +253,12 @@ public class RequerimientoController {
 		
 		Requerimiento requerimiento = requerimientoService.findOne(id);
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		List<Fase> fases = faseService.findAll();
 		
 		model.addAttribute("titulo", "Editar Requerimiento");
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("fases", fases);
 		return "/requerimiento/editar";
 	}
 	
