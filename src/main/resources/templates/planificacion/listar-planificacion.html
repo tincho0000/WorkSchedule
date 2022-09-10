@@ -109,12 +109,12 @@
 								<table class="table table-striped" id="tablaLunes">
 						        	<thead>
 										<tr>
-											<th class="text-white">Aplicación</th>
-											<th class="text-white">Requerimiento</th>
-											<th class="text-white">Fase</th>
-											<th class="text-white">Horas Planificadas</th>
-											<th class="text-white">Horas Incurridas</th>
-											<th class="text-white">Fecha</th>
+											<th class="text-white">APLICACIÓN</th>
+											<th class="text-white">REQUERIMIENTO</th>
+											<th class="text-white">FASE</th>
+											<th class="text-white">HORAS PLANIFICADAS</th>
+											<th class="text-white">HORAS INCURRIDAS</th>
+											<th class="text-white">FECHA</th>
 										</tr>
 									</thead>	
 									<tbody>
@@ -130,7 +130,8 @@
 						        </table>
 						        <form th:action="@{/planificacion/planificar}" method="get">
 						        	<input id="lunes" name="fecha" hidden="true">
-						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light">Agregar</button></div>
+						        	<input id="usuario" name="usuario" hidden="true">
+						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light" onclick="enviarUsuario();">Agregar</button></div>
 						        </form>
 						        
 							</div>
@@ -156,12 +157,12 @@
 								<table class="table table-striped" id="tablaMartes">
 						        	<thead>
 										<tr>
-											<th class="text-white">Aplicación</th>
-											<th class="text-white">Requerimiento</th>
-											<th class="text-white">Fase</th>
-											<th class="text-white">Horas Planificadas</th>
-											<th class="text-white">Horas Incurridas</th>
-											<th class="text-white">Fecha</th>
+											<th class="text-white">APLICACIÓN</th>
+											<th class="text-white">REQUERIMIENTO</th>
+											<th class="text-white">FASE</th>
+											<th class="text-white">HORAS PLANIFICADAS</th>
+											<th class="text-white">HORAS INCURRIDAS</th>
+											<th class="text-white">FECHA</th>
 										</tr>
 									</thead>	
 									<tbody>
@@ -177,7 +178,8 @@
 						        </table>
 						         <form th:action="@{/planificacion/planificar}" method="get">
 						        	<input id="martes" name="fecha" hidden="true">
-						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light">Agregar</button></div>
+						        	<input id="usuario" name="usuario" hidden="true">
+						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light" onclick="enviarUsuario();">Agregar</button></div>
 						        </form>
 							</div>
 						</div>
@@ -202,12 +204,12 @@
 								<table class="table table-striped" id="tablaMiercoles">
 						        	<thead>
 										<tr>
-											<th class="text-white">Aplicación</th>
-											<th class="text-white">Requerimiento</th>
-											<th class="text-white">Fase</th>
-											<th class="text-white">Horas Planificadas</th>
-											<th class="text-white">Horas Incurridas</th>
-											<th class="text-white">Fecha</th>
+											<th class="text-white">APLICACIÓN</th>
+											<th class="text-white">REQUERIMIENTO</th>
+											<th class="text-white">FASE</th>
+											<th class="text-white">HORAS PLANIFICADAS</th>
+											<th class="text-white">HORAS INCURRIDAS</th>
+											<th class="text-white">FECHA</th>
 										</tr>
 									</thead>	
 									<tbody>
@@ -223,7 +225,8 @@
 						        </table>
 						         <form th:action="@{/planificacion/planificar}" method="get">
 						        	<input id="miercoles" name="fecha" hidden="true">
-						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light">Agregar</button></div>
+						        	<input id="usuario" name="usuario" hidden="true">
+						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light" onclick="enviarUsuario();">Agregar</button></div>
 						        </form>
 							</div>
 						</div>
@@ -248,12 +251,12 @@
 								<table class="table table-striped" id="tablaJueves">
 						        	<thead>
 										<tr>
-											<th class="text-white">Aplicación</th>
-											<th class="text-white">Requerimiento</th>
-											<th class="text-white">Fase</th>
-											<th class="text-white">Horas Planificadas</th>
-											<th class="text-white">Horas Incurridas</th>
-											<th class="text-white">Fecha</th>
+											<th class="text-white">APLICACIÓN</th>
+											<th class="text-white">REQUERIMIENTO</th>
+											<th class="text-white">FASE</th>
+											<th class="text-white">HORAS PLANIFICADAS</th>
+											<th class="text-white">HORAS INCURRIDAS</th>
+											<th class="text-white">FECHA</th>
 										</tr>
 									</thead>	
 									<tbody>
@@ -269,7 +272,8 @@
 						        </table>
 						         <form th:action="@{/planificacion/planificar}" method="get">
 						        	<input id="jueves" name="fecha" hidden="true">
-						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light">Agregar</button></div>
+						        	<input id="usuario" name="usuario" hidden="true">
+						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light" onclick="enviarUsuario();">Agregar</button></div>
 						        </form>
 							</div>
 						</div>
@@ -294,12 +298,12 @@
 								<table class="table table-striped" id="tablaViernes">
 						        	<thead>
 										<tr>
-											<th class="text-white">Aplicación</th>
-											<th class="text-white">Requerimiento</th>
-											<th class="text-white">Fase</th>
-											<th class="text-white">Horas Planificadas</th>
-											<th class="text-white">Horas Incurridas</th>
-											<th class="text-white">Fecha</th>
+											<th class="text-white">APLICACIÓN</th>
+											<th class="text-white">REQUERIMIENTO</th>
+											<th class="text-white">FASE</th>
+											<th class="text-white">HORAS PLANIFICADAS</th>
+											<th class="text-white">HORAS INCURRIDAS</th>
+											<th class="text-white">FECHA</th>
 										</tr>
 									</thead>	
 									<tbody>
@@ -315,7 +319,8 @@
 						        </table>
 						         <form th:action="@{/planificacion/planificar}" method="get">
 						        	<input id="viernes" name="fecha" hidden="true">
-						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light">Agregar</button></div>
+						        	<input id="usuario" name="usuario" hidden="true">
+						        	<div class="col-12 text-end"> <button type="submit" class="btn btn-outline-light" onclick="enviarUsuario();">Agregar</button></div>
 						        </form>
 							</div>
 						</div>
