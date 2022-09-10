@@ -40,4 +40,20 @@ public class PlanificacionServiceImpl implements IPlanificacionService{
 		return planificacionDao.findByUsuarioIdAndFechaBetween(usuario, desde, hasta);
 	}
 
+//	@Override
+//	public DetallePlanificacion obtenerPlanificacion(String usuario, LocalDate fecha, String aplicacion,
+//			String requerimiento) {
+//		
+//		DetallePlanificacion detallePlanificacion = new DetallePlanificacion();
+//		List<RequerimientoFase> requerimientoFase = new ArrayList<>();
+//		Map<RequerimientoFase, Integer> map = new HashMap<RequerimientoFase, Integer>();
+//		Integer horasInsumidas = null;
+//		
+//		for (RequerimientoFase reqFase : requerimientoFase) {
+//			map.put(reqFase, horasInsumidas);
+//		}
+//		
+//		return detallePlanificacion;
+//	}
+
 }

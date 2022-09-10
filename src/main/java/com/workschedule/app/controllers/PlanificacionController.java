@@ -23,11 +23,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.workschedule.app.models.entity.Aplicacion;
 import com.workschedule.app.models.entity.Planificacion;
+import com.workschedule.app.models.entity.Requerimiento;
+import com.workschedule.app.models.entity.RequerimientoSimple;
 import com.workschedule.app.models.entity.Usuario;
 import com.workschedule.app.models.entity.UsuarioSimple;
+import com.workschedule.app.models.service.IAplicacionService;
 import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoFaseService;
+import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IUsuarioService;
 
 @RequestMapping("/planificacion")
@@ -39,9 +44,16 @@ public class PlanificacionController {
 	@Autowired
 	IRequerimientoFaseService requerimientoFaseService;
 	@Autowired
+	IRequerimientoService requerimientoService;
+	@Autowired
 	IUsuarioService usuarioService;
 	@Autowired
 	IUsuarioService usuarioSimpleService;
+	@Autowired
+	IAplicacionService aplicacionService;
+//	@Autowired
+//	IGenericDao genericDao;
+	
 
 	// Agrego al initBinder
 //	@InitBinder
@@ -104,18 +116,18 @@ public class PlanificacionController {
 
 		// Alta
 		/*
-		 * Planificacion planificacion = new Planificacion(); RequerimientoFaseId rFId =
-		 * new RequerimientoFaseId(); rFId.setFaseId((long) 1);
-		 * rFId.setRequerimientoId((long) 1); RequerimientoFase rF =
-		 * requerimientoFaseService.findOne(rFId); Usuario u =
-		 * usuarioService.findByUsuario("martin"); planificacion.setFecha(new Date());
-		 * planificacion.setHorasIncurridas(5); planificacion.setHorasPlanificadas(5);
-		 * planificacion.setObservacion("dshfnkahn");
-		 * planificacion.setRequerimientoFases(rF); planificacion.setUsuario(u);
-		 * planificacionService.save(planificacion);
+		  Planificacion planificacion = new Planificacion(); RequerimientoFaseId rFId =
+		  new RequerimientoFaseId(); rFId.setFaseId((long) 1);
+		  rFId.setRequerimientoId((long) 1); 
+		  RequerimientoFase rF = requerimientoFaseService.findOne(rFId); 
+		  Usuario u = usuarioService.findByUsuario("martin"); planificacion.setFecha(LocalDate.now());
+		  planificacion.setHorasIncurridas(5); planificacion.setHorasPlanificadas(5);
+		  planificacion.setObservacion("dshfnkahn");
+		  planificacion.setRequerimientoFases(rF); planificacion.setUsuario(u);
+		  planificacionService.save(planificacion);
 		 */
 
-		boolean sinFiltros = false;
+//		boolean sinFiltros = false;
 		List<Planificacion> planificaciones = new ArrayList<>();
 		
 		List<Planificacion> lunes = new ArrayList<>();
@@ -127,7 +139,7 @@ public class PlanificacionController {
 		if (usuarioFilter.isEmpty() /* && fechaFilter.isEmpty() */) {
 			System.out.println("VACIO");
 			System.out.println("fechaFilter: " + fechaFilter);
-			sinFiltros = true;
+//			sinFiltros = true;
 			
 			//Obtengo el nombre de usuario
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -208,22 +220,74 @@ public class PlanificacionController {
 		return usuarioSimpleService.findByUsuarioFiltro(termino);
 	}
 	
+	@GetMapping(value = "/cargar-requerimientos/{termino}", produces = { "application/json" })
+	public @ResponseBody List<RequerimientoSimple> cargarRequerimientos(@PathVariable String termino) {
+		
+		if (termino.equals("*")) {
+			return requerimientoService.findByRequerimientos();
+		}
+//		return requerimientoService.findByUsuarioFiltro(termino);
+		return requerimientoService.findByRequerimientoContaining(termino);
+	}
+	
 	
 	
 	@GetMapping("/planificar")
-	public String planificar(Model model, @RequestParam(name = "fecha", defaultValue = "") String fecha) {
+	public String planificar(Model model, 	@RequestParam(name = "fecha") LocalDate fecha, 
+											@RequestParam(name = "usuario") String usuario,
+											@RequestParam(name = "appFilter", required = false) String appFilter,
+											@RequestParam(name = "reqFilter", required = false) String reqFilter) {
 		
-		if (fecha.isEmpty()) {
-			System.err.println("Fecha vacia");
+		System.err.println("fechaFilter: " + fecha);
+		System.err.println("reqFilter: " + reqFilter);
+		System.err.println("fecha: " + fecha);
+		System.err.println("usuario: " + usuario);
+		
+		boolean obtenerPlanificacion = true;
+		
+		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		Requerimiento requerimiento = new Requerimiento();
+//		DetallePlanificacion detallePlanificacion = new DetallePlanificacion();
+		
+		//Valido parametro sea distinto de null o vacio
+		if (reqFilter != null && !("").equals(reqFilter)) {
+			requerimiento = requerimientoService.findByRequerimiento(reqFilter);
 		}
 		
-		List<Usuario> u = usuarioService.findAll();
-		for (Usuario usuario : u) {
-			usuario.getId();
+		//Si no trajo nada la consulta inicializo requerimiento para que no explote la vista
+		if (requerimiento == null) {
+			requerimiento = new Requerimiento();
+			obtenerPlanificacion = false;
 		}
 		
-		model.addAttribute("fecha", fecha);
+		//Verifico si cuento con todos los parametos con valores para armar el objeto de "DetallePlanificacion" 
+		if (fecha != null && usuario != null && !("").equals(usuario) && appFilter != null && 
+				!("").equals(appFilter) && reqFilter != null && !("").equals(reqFilter)) {
+			obtenerPlanificacion = true;
+		}else {
+			obtenerPlanificacion = false;
+		}
+		
+		
+//		if (obtenerPlanificacion) {
+//			detallePlanificacion = planificacionService.obtenerPlanificacion(usuario, fecha, appFilter, reqFilter);
+//		}
+		
+//		List<DetallePlanificacionFase> lista = genericDao.findAllWithTuples();
+//		
+//		for (DetallePlanificacionFase detallePlanificacionFase : lista) {
+//			System.err.println(detallePlanificacionFase.getFase());
+//		}
+		
+		
 		model.addAttribute("titulo", "Alta de Planificación");
+		model.addAttribute("fecha", fecha);
+		model.addAttribute("usuario", usuario);
+		model.addAttribute("appFilter", appFilter);
+		model.addAttribute("reqFilter", reqFilter);
+		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("requerimiento", requerimiento);
+//		model.addAttribute("detallePlanificacion", detallePlanificacion);
 		return "planificacion/alta-planificacion";
 		
 	}

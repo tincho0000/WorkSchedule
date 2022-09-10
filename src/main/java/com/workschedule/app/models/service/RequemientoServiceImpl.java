@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workschedule.app.models.dao.IRequerimientoDao;
+import com.workschedule.app.models.dao.IRequerimientoSimpleDao;
 import com.workschedule.app.models.entity.Requerimiento;
+import com.workschedule.app.models.entity.RequerimientoSimple;
 
 @Service
 public class RequemientoServiceImpl implements IRequerimientoService {
 
 	@Autowired
 	private IRequerimientoDao requerimientoDao;
+	@Autowired
+	private IRequerimientoSimpleDao requerimientoSimpleDao;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -78,5 +82,21 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 		
 		return requerimientos;
 	}
+	
+	@Override
+	public Requerimiento findByRequerimiento(String requerimiento) {
+		return requerimientoDao.findByRequerimiento(requerimiento);
+	}
+
+	@Override
+	public List<RequerimientoSimple> findByRequerimientoContaining(String requerimiento) {
+		return requerimientoSimpleDao.findByRequerimientoContainingIgnoreCase(requerimiento);
+	}
+
+	@Override
+	public List<RequerimientoSimple> findByRequerimientos() {
+		return (List<RequerimientoSimple>) requerimientoSimpleDao.findAll();
+	}
+
 
 }

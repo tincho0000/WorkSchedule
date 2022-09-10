@@ -1,5 +1,7 @@
 package com.workschedule.app.models.dao;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +17,6 @@ public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimie
 
 	@Query("select r from Requerimiento r where r.requerimiento like %?1%")
 	public Page<Requerimiento> findByRequerimientoLikeIgnoreCase(Pageable pageable, String requerimiento);
+	
+	public Requerimiento findByRequerimiento(String requerimiento);
 }

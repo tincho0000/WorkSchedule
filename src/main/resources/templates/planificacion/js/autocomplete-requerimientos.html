@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<body>
+
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function() {
+			$("#reqFilter").autocomplete({
+				source: function(request, response){
+					$.ajax({
+						url:"/planificacion/cargar-requerimientos/" + request.term,
+						dataType:"json",
+						data:{
+							term: request.term
+						},
+						success: function(data){
+							response($.map(data, function(item){
+								return {
+									value: item.requerimiento,
+								};
+							}));
+						},
+					});
+					
+				},
+				select: function(event, ui){
+					$("#reqFilter").val(ui.item.value);
+					return false;
+				}
+			});
+			
+		});
+		
+	</script>
+</body>
+</html>
