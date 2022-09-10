@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workschedule.app.models.dao.IRequerimientoFaseDao;
 import com.workschedule.app.models.entity.Aplicacion;
 import com.workschedule.app.models.entity.Fase;
@@ -135,11 +137,24 @@ public class RequerimientoController {
 	public String crear(Model model) {
 
 		List<Fase> fases = faseService.findAll();
+		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		String fasesJson = "";
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			fasesJson = objectMapper.writeValueAsString(fasesSimple);
+//			fasesJson = fasesJson.replace("\"", "");
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.err.println(fasesJson);
 
 		model.addAttribute("titulo", "Alta Requerimiento");
 		model.addAttribute("fases", fases);
+		model.addAttribute("fasesJson", fasesJson);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		return "requerimiento/form";
