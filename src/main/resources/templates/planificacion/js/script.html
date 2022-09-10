@@ -61,11 +61,11 @@
 		        weekFormat.push(formatearFecha(w));
 		    });
 		    
-		    console.log("lunes" + weekFormat[0]);
-		    console.log("martes" + weekFormat[1]);
-		    console.log("miercoles" + weekFormat[2]);
-		    console.log("jue" + weekFormat[3]);
-		    console.log("vie" + weekFormat[4]);
+// 		    console.log("lunes" + weekFormat[0]);
+// 		    console.log("martes" + weekFormat[1]);
+// 		    console.log("miercoles" + weekFormat[2]);
+// 		    console.log("jue" + weekFormat[3]);
+// 		    console.log("vie" + weekFormat[4]);
 		    
 		    var fecha = $('#lunes').val(weekFormat[0]);
 		    var fecha = $('#martes').val(weekFormat[1]);
@@ -120,6 +120,15 @@
 		    week.push(new Date(current));//Agrega al array
 		    
 		    return week;
+		}
+		
+		function enviarUsuario(){
+			var filtro = $('#usuarioFilter').val();
+			var usuarios = [];
+			usuarios = $("[name='usuario']");
+			usuarios.each( function () {
+		        $(this).val(filtro);
+		    });
 		}
 		
 	</script>
