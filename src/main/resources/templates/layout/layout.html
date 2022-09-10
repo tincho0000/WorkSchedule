@@ -78,17 +78,11 @@
 				<i class="bi bi-calendar4-event" ></i> Work Schedule
 			</div>
 			
-			<p class="col-12" sec:authorize="isAuthenticated()">
+			<p class="col-12 text-center" sec:authorize="isAuthenticated()">
 			Usuario: <span sec:authentication="name"></span> || Roles: <span sec:authentication="principal.authorities"></span>
 			</p>
 		</div>
 		
-		<p>
-			Este proyecto fue desarrollado en IDE Eclipse + Spring Plugins (STS
-			Spring Tool).<br /> &copy; Company
-			2022, Inc. Todos los derechos reservados. Términos de uso y
-			privacidad.<br />
-		</p>
 		<!-- JavaScript Bundle with Popper -->
 		<script	th:src="@{/js/bootstrap.bundle.min.js}"></script>
 		<!-- jQuery -->
