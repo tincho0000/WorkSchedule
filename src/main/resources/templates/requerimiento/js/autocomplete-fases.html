@@ -82,8 +82,13 @@
 					var total=0;
 					
 					$('input[name="cantidad[]"]').each(function(){
-// 						console.log("VALOR: " + $(this).val());
-						total += parseInt($(this).val());
+						console.log("VALOR: " + $(this).val());
+						if ($(this).val() != ""){
+							total += parseInt($(this).val());
+						} else {
+							// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
+							$(this).val(0);
+						}
 					});
 					
 // 					console.log("TOTAL: " + total);
