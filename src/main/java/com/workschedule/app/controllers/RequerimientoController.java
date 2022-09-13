@@ -1,5 +1,6 @@
 package com.workschedule.app.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -137,24 +138,24 @@ public class RequerimientoController {
 	public String crear(Model model) {
 
 		List<Fase> fases = faseService.findAll();
-		List<FaseSimple> fasesSimple = faseService.findFaseAll();
+//		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
-		String fasesJson = "";
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			fasesJson = objectMapper.writeValueAsString(fasesSimple);
-//			fasesJson = fasesJson.replace("\"", "");
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		
+		List<String> listaFases = new ArrayList<>();
+		List<Long> listaFasesId = new ArrayList<>();
+		for (Fase fase : fases) {
+			listaFases.add(fase.getDescripcion());
+			listaFasesId.add(fase.getId());
 		}
 		
-		System.err.println(fasesJson);
+		System.out.println(listaFases);
 
 		model.addAttribute("titulo", "Alta Requerimiento");
 		model.addAttribute("fases", fases);
-		model.addAttribute("fasesJson", fasesJson);
+		model.addAttribute("listaFases", listaFases);
+		model.addAttribute("listaFasesId", listaFasesId);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		return "requerimiento/form";

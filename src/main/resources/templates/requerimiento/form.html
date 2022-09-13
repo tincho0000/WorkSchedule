@@ -131,32 +131,24 @@
 			</div>
 		</div>
 	</div>
+	<input id="pepe" th:value="${fasesJson}">
 
 	<footer th:replace="layout/layout :: footer"></footer>
 	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
-<!-- 	<script type="text/javascript" th:inline="javascript"> -->
-	<script type="text/javascript">
+	<script type="text/javascript" th:inline="javascript">
 	$(document).ready(function() {
 		
-		console.log("hola");
-		var fase;
-		fase = "[[${fases}]]";
-		console.log("fase: " +fase);
-		var fase2;
-		fase2 = "[[${fasesJson}]]";
-		const json=JSON.stringify(fase2);
-		console.log("faseJson: " +fase2);
-		console.log("faseJson: " +fase2.descripcion);
-		console.log("json: " +json);
+		var fases = [[${listaFases}]];
+		var fasesId = [[${listaFasesId}]];
+// 		console.log("fases: " +fases);
 		
-		for (i = 0; i < [[${fases.size}]]; i++) {
-			console.log("i")
+		for (i = 0; i < fases.length; i++) {
+			
+			var linea = $("#plantillaFases").html();
+			linea = linea.replace(/{ID}/g, fasesId[i]);
+			linea = linea.replace(/{FASE}/g, fases[i]);
+			$("#cargarFase tbody").append(linea);
 		}
-		
-		var listaRolesUsuario = "[[${fases[0].descripcion}]]";
-		console.log(listaRolesUsuario)
-		
-		
 	});
 	
 	</script>
