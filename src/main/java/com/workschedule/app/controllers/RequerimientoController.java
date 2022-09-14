@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,18 +26,17 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workschedule.app.models.dao.IRequerimientoFaseDao;
 import com.workschedule.app.models.entity.Aplicacion;
 import com.workschedule.app.models.entity.Fase;
 import com.workschedule.app.models.entity.FaseSimple;
 import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoFase;
+import com.workschedule.app.models.entity.Usuario;
 import com.workschedule.app.models.service.IAplicacionService;
 import com.workschedule.app.models.service.IFaseService;
 import com.workschedule.app.models.service.IRequerimientoFaseService;
 import com.workschedule.app.models.service.IRequerimientoService;
+import com.workschedule.app.models.service.IUsuarioService;
 import com.workschedule.app.util.paginator.PageRender;
 
 @Secured("ROLE_GESTION")
@@ -54,8 +55,10 @@ public class RequerimientoController {
 	IAplicacionService aplicacionService;
 	@Autowired
 	IRequerimientoFaseService requerimientoFaseService;
+//	@Autowired
+//	IRequerimientoFaseDao requerimientoFaseDao;
 	@Autowired
-	IRequerimientoFaseDao requerimientoFaseDao;
+	IUsuarioService usuarioService;
 
 	public RequerimientoController() {
 	}
@@ -179,6 +182,7 @@ public class RequerimientoController {
 			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase, RedirectAttributes flash, SessionStatus status) {
 		
 		boolean existe;
+		boolean modificacion = false;
 		List<RequerimientoFase> requerimientoFase = null;
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		List<Fase> fasesBD = faseService.findAll();
@@ -197,11 +201,12 @@ public class RequerimientoController {
 			return "requerimiento/form";
 		}
 		
-		System.out.println("Requerimiento" + requerimiento.toString());
+//		System.out.println("Requerimiento" + requerimiento.toString());
 		
 		// Distinto de null es porque estamos haciendo una modificacion
 		if (requerimiento.getId() != null) {
 			System.out.println("Estoy ante una modificacion");
+			modificacion = true;
 			requerimientoFase = requerimientoFaseService.findByRequerimientoId(requerimiento.getId());
 		}
 		
@@ -210,7 +215,7 @@ public class RequerimientoController {
 			log.info("ID: " + fases[i] + " Cantidad de Horas: " + horasFase[i]);
 			
 			//Si estamos editando
-			if (requerimiento.getId() != null) {
+			if (modificacion) {
 				existe = false;
 				for (int j = 0; j < requerimientoFase.size(); j++) {
 					//Si existe
@@ -234,7 +239,7 @@ public class RequerimientoController {
 		//Buscamos posibles fases eliminadas desde la vista
 		//Si estamos editando
 		
-		if (requerimiento.getId() != null) {
+		if (modificacion) {
 			for (int i = 0; i < requerimientoFase.size(); i++) {
 				existe=false;
 				for (int j = 0; j < fases.length; j++) {
@@ -249,13 +254,21 @@ public class RequerimientoController {
 			}
 				
 		}
+		System.err.println("***************************************************");
+		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
+		if (!modificacion) {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Usuario usuario = usuarioService.findByUsuario(auth.getName());
+			System.err.println(usuario);
+			requerimiento.setUsuario(usuario);
+		}
 		
 		System.out.println("Requerimiento" + requerimiento.toString());
 		requerimientoService.save(requerimiento);
 		
 		status.setComplete();
 		
-		if (requerimiento.getId() != null) {
+		if (modificacion) {
 			flash.addFlashAttribute("success","Requerimiento modificado con exito");
 		}else {
 			flash.addFlashAttribute("success","Requerimiento creado con exito");

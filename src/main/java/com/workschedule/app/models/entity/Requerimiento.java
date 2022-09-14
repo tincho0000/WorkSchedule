@@ -50,6 +50,10 @@ public class Requerimiento implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "aplicacion_id")
 	private Aplicacion aplicacion;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
 
 	/******************* Metodos *******************/
 	
@@ -130,9 +134,17 @@ public class Requerimiento implements Serializable {
 		this.estado = estado;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(cantidadHoras, requerimientoFases, id, descripcion, observacion, requerimiento, aplicacion, fecha, estado);
+		return Objects.hash(cantidadHoras, requerimientoFases, id, descripcion, observacion, requerimiento, aplicacion, fecha, estado, usuario);
 	}
 
 	@Override
@@ -147,7 +159,8 @@ public class Requerimiento implements Serializable {
 		return cantidadHoras == other.cantidadHoras && Objects.equals(requerimientoFases, other.requerimientoFases)
 				&& Objects.equals(id, other.id) && Objects.equals(descripcion, other.descripcion)
 				&& Objects.equals(observacion, other.observacion) && Objects.equals(requerimiento, other.requerimiento)
-				&& Objects.equals(aplicacion, other.aplicacion) && Objects.equals(fecha, other.fecha) && Objects.equals(estado, other.estado);
+				&& Objects.equals(aplicacion, other.aplicacion) && Objects.equals(fecha, other.fecha) && Objects.equals(estado, other.estado)
+				&& Objects.equals(usuario, other.usuario);
 	}
 
 	public Requerimiento() {
@@ -191,6 +204,7 @@ public class Requerimiento implements Serializable {
 		return "Requerimiento [id=" + id + ", requerimiento=" + requerimiento + ", descripcion=" + descripcion
 				+ ", cantidadHoras=" + cantidadHoras + ", observacion=" + observacion + ", estado=" + estado
 				+ ", fecha=" + fecha + /*", \nrequerimientoFases= " + requerimientoFases.toString() +*/ ", \naplicacion=" + aplicacion.toString()
+				+ ", usuario=" + usuario.getUsuario() 
 				+ "]";
 	}
 	
