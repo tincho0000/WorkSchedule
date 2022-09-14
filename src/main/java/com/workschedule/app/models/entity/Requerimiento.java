@@ -51,7 +51,7 @@ public class Requerimiento implements Serializable {
 	@JoinColumn(name = "aplicacion_id")
 	private Aplicacion aplicacion;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
 

@@ -14,11 +14,11 @@ public interface IRequerimientoService {
 	
 	public Page<Requerimiento> findAll(Pageable pageable);
 	
-	public Page<Requerimiento> findByRequerimientoAndAplicacion(Pageable pageable, String requerimiento, Long aplicacion);
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estado);
 	
-	public Page<Requerimiento> findByRequerimientoLikeIgnoreCase(Pageable pageable, String requerimiento);
+	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String estado);
 	
-	public Page<Requerimiento> findByFiltros(int page, String requerimiento, Long aplicacion);
+	public Page<Requerimiento> findByFiltros(int page, String requerimiento, String aplicacion, String estadoFiltro);
 
 	public Requerimiento findOne(Long id);
 

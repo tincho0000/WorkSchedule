@@ -67,7 +67,8 @@ public class RequerimientoController {
 	public String listarRequerimientos(	Model model,
 										@RequestParam(name = "page", defaultValue = "0") int page,
 										@RequestParam(name = "reqFilter", defaultValue = "") String requerimientoFiltro,
-										@RequestParam(name = "appFilter", defaultValue = "") Long aplicacionFiltro
+										@RequestParam(name = "appFilter", defaultValue = "") String aplicacionFiltro,
+										@RequestParam(name = "estadoFilter", defaultValue = "") String estadoFiltro
 			) {
 		
 		/********************Eliminar******************************
@@ -105,21 +106,27 @@ public class RequerimientoController {
 		
 		String url = "";
 		if ( aplicacionFiltro == null) {
-			url = "/requerimientos/listar-requerimientos?reqFilter="+requerimientoFiltro;
+			url = "/requerimientos/listar-requerimientos?reqFilter"+requerimientoFiltro+"&estadoFilter="+estadoFiltro;
 		} else {
-			url = "/requerimientos/listar-requerimientos?reqFilter="+requerimientoFiltro+"&appFilter="+aplicacionFiltro;
+			url = "/requerimientos/listar-requerimientos?reqFilter="+requerimientoFiltro+"&appFilter="+aplicacionFiltro+"&estadoFilter="+estadoFiltro;
 		}
+		System.err.println("requerimientoFiltro: " + requerimientoFiltro);
+		System.err.println("aplicacionFiltro: " + aplicacionFiltro);
+		System.err.println("estadoFiltro: " + estadoFiltro);
 		
-		Page<Requerimiento> requerimientos = requerimientoService.findByFiltros(page, requerimientoFiltro, aplicacionFiltro);
+		Page<Requerimiento> requerimientos = requerimientoService.findByFiltros(page, requerimientoFiltro, aplicacionFiltro, estadoFiltro);
 		PageRender<Requerimiento> pageRender = new PageRender<>(url, requerimientos);
 		
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		List<FaseSimple> fases = faseService.findFaseAll();
 		
 		model.addAttribute("titulo", "Lista de Requerimientos");
 		model.addAttribute("requerimientos", requerimientos);
 		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("fases", fases);
 		model.addAttribute("reqFilter", requerimientoFiltro);
 		model.addAttribute("appFilter", aplicacionFiltro);
+		model.addAttribute("estadoFilter", estadoFiltro);
 		model.addAttribute("page", pageRender);
 		return "requerimiento/listar-requerimientos";
 	}
@@ -254,7 +261,6 @@ public class RequerimientoController {
 			}
 				
 		}
-		System.err.println("***************************************************");
 		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
 		if (!modificacion) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();

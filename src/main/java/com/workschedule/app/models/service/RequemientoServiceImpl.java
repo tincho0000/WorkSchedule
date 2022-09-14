@@ -54,30 +54,30 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<Requerimiento> findByRequerimientoAndAplicacion(Pageable pageable, String requerimiento, Long aplicacion) {
-		return requerimientoDao.findByRequerimientoAndAplicacion(pageable, requerimiento, aplicacion);
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estado) {
+		return requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageable, requerimiento, aplicacion, estado);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<Requerimiento> findByRequerimientoLikeIgnoreCase(Pageable pageable, String requerimiento) {
-		return requerimientoDao.findByRequerimientoLikeIgnoreCase(pageable, requerimiento);
+	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String estado) {
+		return requerimientoDao.findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(pageable, requerimiento, estado);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<Requerimiento> findByFiltros(int page, String requerimiento, Long aplicacion) {
+	public Page<Requerimiento> findByFiltros(int page, String requerimiento, String aplicacion, String estado) {
 		
 		Pageable pageRequest = PageRequest.of(page, 10);
 		Page<Requerimiento> requerimientos = null;
 		
 		//Depende de los filtros es la busqueda que hacemos
-		if ( ("").equals(requerimiento) && aplicacion == null ) {
+		if ( ("").equals(requerimiento) && ("").equals(aplicacion) && ("").equals(estado)) {
 			requerimientos = requerimientoDao.findAll(pageRequest);
-		} else if (!requerimiento.equals("") && aplicacion == null) {
-			requerimientos = requerimientoDao.findByRequerimientoLikeIgnoreCase(pageRequest, requerimiento);
+		} else if ((!requerimiento.equals("") || !estado.equals("")) && ("").equals(aplicacion)) {
+			requerimientos = requerimientoDao.findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(pageRequest, requerimiento, estado);
 		} else {
-			requerimientos = requerimientoDao.findByRequerimientoAndAplicacion(pageRequest, requerimiento, aplicacion);
+			requerimientos = requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageRequest, requerimiento, Long.parseLong(aplicacion), estado);
 		}
 		
 		return requerimientos;

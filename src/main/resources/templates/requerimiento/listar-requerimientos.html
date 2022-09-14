@@ -9,32 +9,43 @@
 		<!-- 		<div class="card-header" th:text="${titulo}"></div> -->
 		<div class="card-body" style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 			<div class="container py-1">
-				<form class="row row-cols-lg-auto g-5 align-items-center">
-					<div class="col-12">
+				<form class="row g-5 align-items-center">
+					<div class="col-auto pe-1">
 						<!-- 						<label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label> -->
 						<div class="input-group">
 							<div class="input-group-text">Requerimiento:</div>
 							<input type="text" class="form-control"
-								id="reqFilter" placeholder="Ej: MOR-100" field="reqFilter" name="reqFilter" th:value="${reqFilter}">
+								id="reqFilter" placeholder="Ej: MOR-100" name="reqFilter" th:value="${reqFilter}">
 						</div>
 					</div>
 
-					<div class="col-12">
+					<div class="col-auto pe-1">
 						<div class="input-group">
 							<div class="input-group-text">Aplicación:</div>
-							<select class="form-select" field="appFilter" id="appFilter" name="appFilter">
-								<option value="" disabled="disabled" selected="selected">Seleccionar...</option>
+							<select class="form-select" id="appFilter" name="appFilter">
+								<option value="" selected="selected">Seleccionar...</option>
 								<option th:each="aplicacion: ${aplicaciones}"
 									th:text="${aplicacion.nombre}" th:value="${aplicacion.id}" th:selected="${aplicacion.id} == ${appFilter}">
 								</option>
 							</select>
 						</div>
 					</div>
+					<div class="col-auto pe-1">
+						<div class="input-group">
+							<div class="input-group-text">Estado:</div>
+							<select class="form-select" id="estadoFilter" name="estadoFilter">
+								<option value="" selected="selected">Seleccionar...</option>
+								<option th:each="fase: ${fases}"
+									th:text="${fase.descripcion}" th:value="${fase.descripcion}" th:selected="${fase.descripcion} == ${estadoFilter}">
+								</option>
+							</select>
+						</div>
+					</div>
 
-					<div class="col-12 ">
+					<div class="col-auto pe-1">
 							<button type="submit" class="btn btn-outline-light" onclick="validar();">Buscar ... </button>
 					</div>
-					<div class="col-12 ">
+					<div class="col-auto pe-1">
 							<button type="button" class="btn btn-outline-light" onclick="borrarFiltro();">Eliminar ... </button>
 					</div>
 				</form>
