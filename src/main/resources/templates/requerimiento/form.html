@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
-<body>
+<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
 	<header th:replace="layout/layout :: header"></header>
 
-	<div class="container py-4">
-		<div class="card bg-light">
+	<div class="container py-4 text-white">
+		<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
 				<h4 class="card-title text-end pb-2">
-					<a class="btn btn-light btn-outline-secondary"
+					<a class="btn btn-outline-light"
 						th:href="@{'/requerimientos/listar-requerimientos'}"
 						th:text="'&laquo; Volver'"></a>
 				</h4>
@@ -96,15 +96,13 @@
 					<div class="form-group row py-5">
 						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
 
-						<div class="col-sm-6 border">
+						<div class="col-sm-6 border-0">
 							<table id="cargarFase"
 								class="table table-sm table-striped table-hover">
-								<thead>
+								<thead class="text-white">
 									<tr>
-										<!-- 										<th>ID</th> -->
 										<th>Fase</th>
 										<th>Horas</th>
-										<!-- 									<th>Otro</th> -->
 										<th>Eliminar</th>
 									</tr>
 								</thead>
