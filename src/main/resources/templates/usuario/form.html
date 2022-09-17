@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
-<body class="bg-dark">
+<style>
+.form-check-input:checked {
+    background-color: #1b870da8;
+    border-color: #2fd31b;
+}
+</style>
+<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
 	<header th:replace="layout/layout :: header"></header>
 
-	<div class="container py-4 col-sm-6">
+	<div class="container py-4 col-sm-6 text-white">
 
 		<div class="card bg-light ">
-			<div class="card-header" th:text="${titulo}"></div>
-			<div class="card-body">
+			<div class="card-header" th:text="${titulo}" style="background: linear-gradient(to right, #2980b9, #2c3e50);"></div>
+			<div class="card-body" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 
 				<div th:object="${usuario}" th:remove="tag">
 					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
@@ -17,9 +23,7 @@
 					</ul>
 				</div>
 				<h4 class="card-title text-end">
-					<a class="btn btn-light btn-outline-secondary"
-						th:href="@{'/app/listar'}"
-						th:text="'&laquo; Volver'"></a>
+					<a class="btn btn-outline-light" th:href="@{'/app/listar'}" th:text="'&laquo; Volver'"></a>
 				</h4>
 				<form class="g-3" th:action="@{/app/form}" th:object="${usuario}" method="post" enctype="multipart/form-data">
 					<div class="row g-3">
@@ -94,7 +98,7 @@
 						<div class="form-group">
 							<div class="col-sm-12">
 								<input type="submit" th:value="${titulo}"
-									class="btn btn-light btn-outline-secondary mt-5" />
+									class="btn btn-outline-light mt-5" />
 							</div>
 						</div>
 	
