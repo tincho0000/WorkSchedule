@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+
+	<header th:replace="layout/layout :: header"></header>
+<!-- 	<div class="alert alert-danger" th:if="${errorPersonalizado != null}" th:text="${errorPersonalizado}"></div> -->
+
+	<div class="container py-4 d-flex justify-content-center">
+		<div class="card bg-light col-6">
+			<div class="card-header text-white" th:text="${titulo}" style="background: linear-gradient(to right, #2980b9, #2c3e50);"></div>
+			<div class="card-body text-center" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+				<h4 class="card-title text-end pb-2">
+					<a class="btn btn-outline-light"
+						th:href="@{'/app/ver/' + ${password.usuario}}"
+						th:text="'&laquo; Volver'"></a>
+				</h4>
+			
+				<form class="row g-3" th:action="@{/restablecer-contraseña}" th:object="${password}" method="post">
+				
+					<div class="col-md-12">
+						<label class="form-label text-white">Password</label>
+						<input type="text" th:field="*{password}" class="form-control" th:errorclass="'form-control is-invalid'" id="pass"/> 
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+						<small class="form-text text-danger" th:if="${errorPersonalizado != null}" th:text="${errorPersonalizado}"></small>
+					</div>
+					<div class="col-md-12">
+						<label class="form-label text-white">Confirmar Password</label>
+						<input type="text" th:field="*{confirmPassword}" class="form-control" th:errorclass="'form-control is-invalid'" id="confirm"/> 
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
+						<small class="form-text text-danger" th:if="${errorPersonalizado != null}" th:text="${errorPersonalizado}"></small>
+					</div>
+					<div class="col-md-12 pt-4 d-flex justify-content-center">
+						<input type="submit" th:value="${titulo}" class="btn btn-success"/>
+					</div>
+				
+				</form>
+			
+			</div>
+		</div>
+
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		
+		var error = [[${errorPersonalizado}]];
+		if (error != null){
+	 		document.getElementById("pass").classList.add('is-invalid');
+	 		document.getElementById("confirm").classList.add('is-invalid');
+		}
+
+	});
+	
+	</script>
+
+</body>
+</html>

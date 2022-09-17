@@ -43,21 +43,16 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.workschedule.app.models.entity.DatoPersonal;
-import com.workschedule.app.models.entity.Fase;
 import com.workschedule.app.models.entity.Rol;
 import com.workschedule.app.models.entity.Usuario;
-import com.workschedule.app.models.service.IAplicacionService;
-import com.workschedule.app.models.service.IFaseService;
-import com.workschedule.app.models.service.IRequerimientoFaseService;
-import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IRolService;
 import com.workschedule.app.models.service.IUploadFileService;
 import com.workschedule.app.models.service.IUsuarioService;
+import com.workschedule.app.models.view.Password;
 import com.workschedule.app.util.paginator.PageRender;
 
 @Controller
-@SessionAttributes("usuario")
+@SessionAttributes({"usuario", "password"})
 @RequestMapping({"/app", "/"})
 public class UsuarioController {
 
@@ -67,14 +62,6 @@ public class UsuarioController {
 	private IUsuarioService usuarioService;
 	@Autowired
 	private IUploadFileService uploadService;
-	@Autowired
-	private IRequerimientoService requerimientoService;
-	@Autowired
-	private IFaseService faseService;
-	@Autowired
-	private IRequerimientoFaseService requerimientoFaseService;
-	@Autowired
-	private IAplicacionService aplicacionService;
 	@Autowired
 	private IRolService rolService;
 	@Autowired
@@ -566,6 +553,52 @@ public class UsuarioController {
 
 		return "redirect:/app/listar";
 	}
+	
+	@Secured("ROLE_ADMIN")
+	@GetMapping(value="/restablecer-contraseña/{username}")
+	public String restablecerContraseña (@PathVariable(value="username") String username, Model model){
+		
+		Password password = new Password();
+		password.setUsuario(username);
+		model.addAttribute("titulo", "Restablecer Password");
+		model.addAttribute("password", password);
+		
+		return "usuario/restablecer-contraseña";
+	}
+	
+	@Secured("ROLE_ADMIN")
+	@PostMapping(value="/restablecer-contraseña")
+	public String guardarContraseña (@Valid @ModelAttribute Password password, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status){
+		
+		if (result.hasErrors()) {
+			
+			if (password.getPassword() != password.getConfirmPassword()) {
+				model.addAttribute("errorPersonalizado", "Ambas password deben coincidir!!!");
+			}
+			model.addAttribute("titulo", "Restablecer Password");
+			
+			return "usuario/restablecer-contraseña";
+		}
+		
+		Usuario usuario = usuarioService.findByUsuario(password.getUsuario());
+		
+		//Encripto la password
+		usuario.setPassword(passwordEncoder.encode(password.getPassword()));
+		
+		usuarioService.save(usuario);
+		status.setComplete();
+		flash.addFlashAttribute("info", "Password restablecida con exito!");
+		return "redirect:/app/ver/"+ password.getUsuario();
+	}
+	
+	/*
+	 * 
+	 * 
+	 * Utilidades
+	 * 
+	 * 
+	 * 
+	 */
 	
 	private boolean hasRole(String role) {
 		SecurityContext context = SecurityContextHolder.getContext();

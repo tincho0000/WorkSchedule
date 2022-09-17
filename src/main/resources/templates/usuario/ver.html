@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
-<body class="bg-dark">
+<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
 	<header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4">
-		<a class="btn btn-light btn-outline-secondary mb-4"
+		<div class="card bg-light">
+			<div class="card-header text-white" th:text="${titulo}" style="background: linear-gradient(to right, #2980b9, #2c3e50);"></div>
+			<div class="card-body" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+				<a class="btn btn-outline-light mb-4 float-end"
 						th:href="@{'/app/listar'}"
 						th:text="'&laquo; Volver'"></a>
-		<div class="card bg-light">
-			<div class="card-header" th:text="${titulo}"></div>
-			<div class="card-body">
-				
 				<img th:if="${usuario.foto != null}" class="img-thumbnail rounded float-start" style="max-width: 25%" 
 					th:src="@{'/app/uploads/' + ${usuario.foto}}" th:alt="${usuario.foto}">
 				<img th:unless="${usuario.foto != null}" class="img-thumbnail rounded float-start" style="max-width: 20%" 
@@ -21,26 +20,27 @@
 				<div class="col-md-8 mx-5 px-5 d-flex justify-content-center row">	
 					<ul class="list-group py-2">
 						<li class="list-group-item list-group-item-primary" th:text="'Datos del Usuario'"></li>
-						<li class="list-group-item" th:text="${'ID: ' + usuario.id}"></li>
-					  	<li class="list-group-item" th:text="${'Usuario: ' + usuario.usuario}"></li>
-					  	<li class="list-group-item" th:text="${'Password: ' + usuario.password}"></li>
-					  	<li class="list-group-item" th:text="${'Fecha Alta: ' + usuario.fecha}"></li>
-					  	<li class="list-group-item" th:text="${'Teléfono: ' + usuario.datoPersonal.telefono}"></li>
-					  	<li class="list-group-item" th:text="${'Fecha Ingreso: ' + usuario.datoPersonal.fechaIngreso}"></li>
-					  	<li class="list-group-item" th:text="${'Fecha Último Ascenso: ' + usuario.datoPersonal.ultimoAscenso}"></li>
+<!-- 						<li class="list-group-item bg-secondary text-white" th:text="${'ID: ' + usuario.id}"></li> -->
+					  	<li class="list-group-item bg-secondary text-white" th:text="${'Usuario: ' + usuario.usuario}"></li>
+<!-- 					  	<li class="list-group-item bg-secondary text-white" th:text="${'Password: ' + usuario.password}"></li> -->
+					  	<li class="list-group-item bg-secondary text-white" th:text="${'Fecha Alta: ' + usuario.fecha}"></li>
+					  	<li class="list-group-item bg-secondary text-white" th:text="${'Teléfono: ' + usuario.datoPersonal.telefono}"></li>
+					  	<li class="list-group-item bg-secondary text-white" th:text="${'Fecha Ingreso: ' + usuario.datoPersonal.fechaIngreso}"></li>
+					  	<li class="list-group-item bg-secondary text-white" th:text="${'Fecha Último Ascenso: ' + usuario.datoPersonal.ultimoAscenso}"></li>
 					</ul>
 					<ul class="list-group col py-2">
 						<li class="list-group-item list-group-item-danger" th:text="'Datos Teco'"></li>
-						<li class="list-group-item" th:text="${'Usuario: ' + usuario.datoPersonal.usuarioTeco}"></li>
-						<li class="list-group-item" th:text="${'Oblea: ' + usuario.datoPersonal.oblea}"></li>
+						<li class="list-group-item bg-secondary text-white" th:text="${'Usuario: ' + usuario.datoPersonal.usuarioTeco}"></li>
+						<li class="list-group-item bg-secondary text-white" th:text="${'Oblea: ' + usuario.datoPersonal.oblea}"></li>
 					</ul>
 					<ul class="list-group col-12 py-2">
 						<li class="list-group-item list-group-item-warning" th:text="'Roles'"></li>
-						<li  th:each="rol: ${usuario.roles}" class="list-group-item" th:text="${'Rol: ' + rol.descripcion}"></li>
+						<li  th:each="rol: ${usuario.roles}" class="list-group-item bg-secondary text-white" th:text="${'Rol: ' + rol.descripcion}"></li>
 					</ul>
 				</div>
-
-			
+				<a class="btn btn-outline-light mb-4 float-start"
+						th:href="@{'/app/restablecer-contraseña/' + ${usuario.usuario}}"
+						th:text="'Restablecer Password'"></a>
 			</div>
 		</div>
 
