@@ -3,11 +3,13 @@ package com.workschedule.app.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -193,27 +195,53 @@ public class RequerimientoController {
 		List<RequerimientoFase> requerimientoFase = null;
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		List<Fase> fasesBD = faseService.findAll();
+		List<String> listaFases = new ArrayList<>();
+		List<Long> listaFasesId = new ArrayList<>();
+		
+		for (Fase fase : fasesBD) {
+			listaFases.add(fase.getDescripcion());
+			listaFasesId.add(fase.getId());
+		}
+		
+		
+		// Distinto de null es porque estamos haciendo una modificacion
+		if (requerimiento.getId() != null) {
+			modificacion = true;
+		}
+		
 		
 		if(result.hasErrors()) {
-			model.addAttribute("titulo", "Alta Requerimiento");
+			if (modificacion) {
+				model.addAttribute("titulo", "Editar Requerimiento");
+			} else {
+				model.addAttribute("titulo", "Alta Requerimiento");
+			}
 			model.addAttribute("aplicaciones", aplicaciones);
+			model.addAttribute("fases", fasesBD);
+			model.addAttribute("listaFases", listaFases);
+			model.addAttribute("listaFasesId", listaFasesId);
 			return "requerimiento/form";
 		}
 		
 		//Valido que el requerimiento tenga al menos una fase
 		if (fases == null || fases.length == 0) {
-			model.addAttribute("titulo", "Alta Requerimiento");
+			if (modificacion) {
+				model.addAttribute("titulo", "Editar Requerimiento");
+			} else {
+				model.addAttribute("titulo", "Alta Requerimiento");
+			}
 			model.addAttribute("error", "Error: El requerimiento debe tener al menos una fase!");
 			model.addAttribute("aplicaciones", aplicaciones);
+			model.addAttribute("fases", fasesBD);
+			model.addAttribute("listaFases", listaFases);
+			model.addAttribute("listaFasesId", listaFasesId);
 			return "requerimiento/form";
 		}
 		
 //		System.out.println("Requerimiento" + requerimiento.toString());
 		
-		// Distinto de null es porque estamos haciendo una modificacion
-		if (requerimiento.getId() != null) {
+		if (modificacion) {
 			System.out.println("Estoy ante una modificacion");
-			modificacion = true;
 			requerimientoFase = requerimientoFaseService.findByRequerimientoId(requerimiento.getId());
 		}
 		
@@ -261,6 +289,7 @@ public class RequerimientoController {
 			}
 				
 		}
+		
 		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
 		if (!modificacion) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -270,7 +299,23 @@ public class RequerimientoController {
 		}
 		
 		System.out.println("Requerimiento" + requerimiento.toString());
-		requerimientoService.save(requerimiento);
+		
+		try {
+			requerimientoService.save(requerimiento);
+		} catch (DataIntegrityViolationException e) {
+			System.err.println("ERROR: " + e.toString());
+			if (modificacion) {
+				model.addAttribute("titulo", "Editar Requerimiento");
+			} else {
+				model.addAttribute("titulo", "Alta Requerimiento");
+			}
+			model.addAttribute("error", "Error: La combinación del Requerimiento mas la Descripción mas la aplicación ya existe!!!");
+			model.addAttribute("aplicaciones", aplicaciones);
+			model.addAttribute("fases", fasesBD);
+			model.addAttribute("listaFases", listaFases);
+			model.addAttribute("listaFasesId", listaFasesId);
+			return "requerimiento/form";
+		}
 		
 		status.setComplete();
 		

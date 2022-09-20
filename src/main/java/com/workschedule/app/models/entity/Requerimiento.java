@@ -20,11 +20,14 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Requerimiento")
+@Table(name = "Requerimiento", uniqueConstraints={ 
+		@UniqueConstraint(columnNames={"aplicacion_id", "requerimiento", "descripcion"})
+})
 public class Requerimiento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
