@@ -30,7 +30,7 @@ public class Rol implements Serializable {
 //	@JoinColumn(name = "usuario_id")
 	private Set<Usuario> usuarios;
 
-	private String descripcion;
+	private String rol;
 
 	/******************* Metodos *******************/
 
@@ -44,12 +44,12 @@ public class Rol implements Serializable {
 		this.id = id;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getRol() {
+		return rol;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setRol(String rol) {
+		this.rol = rol;
 	}
 
 	public Set<Usuario> getUsuarios() {
@@ -62,7 +62,7 @@ public class Rol implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Rol [id=" + id + ", usuario=" + usuarios.toString() + ", descripcion=" + descripcion + "]";
+		return "Rol [id=" + id + ", usuario=" + usuarios.toString() + ", rol=" + rol + "]";
 	}
 
 	public Rol() {
@@ -71,7 +71,7 @@ public class Rol implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(descripcion, id, usuarios);
+		return Objects.hash(rol, id, usuarios);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class Rol implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Rol other = (Rol) obj;
-		return Objects.equals(descripcion, other.descripcion) && Objects.equals(id, other.id)
+		return Objects.equals(rol, other.rol) && Objects.equals(id, other.id)
 				&& Objects.equals(usuarios, other.usuarios);
 	}
 

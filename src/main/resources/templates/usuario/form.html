@@ -84,7 +84,7 @@
 							<div class="container d-flex justify-content-center" >
 								<div class="form-check form-switch mx-4" th:each="rol: ${roles}">
 								  <input class="form-check-input" type="checkbox" role="switch" th:id="${rol.id}" name="rol" th:value="${rol.id}">
-								  <label class="form-check-label" th:for="${rol.id}" th:text="${rol.descripcion}"></label>
+								  <label class="form-check-label" th:for="${rol.id}" th:text="${rol.rol}"></label>
 								</div>
 							</div>
 						</div>

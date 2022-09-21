@@ -326,14 +326,14 @@ public class UsuarioController {
 		List<Long> listaIdRoles = new ArrayList<>();
 		List<String> listaRolesUsuario = new ArrayList<>();
 		for (int i = 0; i < roles.size(); i++) {
-			listaRoles.add(roles.get(i).getDescripcion());
+			listaRoles.add(roles.get(i).getRol());
 			listaIdRoles.add(roles.get(i).getId());
-			System.out.println(roles.get(i).getId()+": " + roles.get(i).getDescripcion() );
+			System.out.println(roles.get(i).getId()+": " + roles.get(i).getRol() );
 		}
 		
 		for (Rol rolesUsuario : usuario.getRoles()) {
-			listaRolesUsuario.add(rolesUsuario.getDescripcion());
-			System.out.println("Roles usuario: " + rolesUsuario.getDescripcion() );
+			listaRolesUsuario.add(rolesUsuario.getRol());
+			System.out.println("Roles usuario: " + rolesUsuario.getRol() );
 		}
 		
 
@@ -413,8 +413,7 @@ public class UsuarioController {
 				
 				Map<String,String> errores = new HashMap<>();
 				errores.put("descripcion", "El usuario ya existe!!!");
-				System.err.println("Entre");
-				model.addAttribute("titulo", "Formulario de usuario");
+				model.addAttribute("titulo", "Alta de usuario");
 				model.addAttribute("usuario", usuario);
 				model.addAttribute("errores", errores);
 //				flash.addFlashAttribute("error", "El usuario '" + usuario.getUsuario() + "' ya existe!!!");
@@ -434,7 +433,7 @@ public class UsuarioController {
 		//Si es alta y tiene roles los agrego
 		if (altaUsuario && roles != null) {
 			for (int i = 0; i < roles.length; i++) {
-				System.err.println("Rol:" + roles[i]);
+//				System.err.println("Rol:" + roles[i]);
 				rol =  rolService.findOne(roles[i]);
 				usuario.addrRol(rol);
 			}
@@ -524,7 +523,7 @@ public class UsuarioController {
 				
 		}
 		
-		String mensaje = (usuario.getId() != null) ? "Usuario editado con exito" : "Usuario creado con exito";
+		String mensaje = (altaUsuario) ? "Usuario creado con exito" : "Usuario editado con exito";
 		status.setComplete();
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:listar";
