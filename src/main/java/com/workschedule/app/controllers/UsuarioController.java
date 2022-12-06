@@ -422,7 +422,7 @@ public class UsuarioController {
 			}
 			
 		
-			//Si es alta de usuario, encripto la password y lo marco como activo
+			//encripto la password y lo marco como activo
 			usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 			usuario.setActivo(true);
 			usuario.getDatoPersonal().setUsuario(usuario);
