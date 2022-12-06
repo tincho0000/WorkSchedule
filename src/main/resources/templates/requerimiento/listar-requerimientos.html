@@ -25,7 +25,7 @@
 							<select class="form-select" id="appFilter" name="appFilter">
 								<option value="" selected="selected">Seleccionar...</option>
 								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.nombre}" th:value="${aplicacion.id}" th:selected="${aplicacion.id} == ${appFilter}">
+									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}" th:selected="${aplicacion.id} == ${appFilter}">
 								</option>
 							</select>
 						</div>
@@ -36,7 +36,7 @@
 							<select class="form-select" id="estadoFilter" name="estadoFilter">
 								<option value="" selected="selected">Seleccionar...</option>
 								<option th:each="fase: ${fases}"
-									th:text="${fase.descripcion}" th:value="${fase.descripcion}" th:selected="${fase.descripcion} == ${estadoFilter}">
+									th:text="${fase.fase}" th:value="${fase.fase}" th:selected="${fase.fase} == ${estadoFilter}">
 								</option>
 							</select>
 						</div>
@@ -82,10 +82,10 @@
 	<!-- 							<td><a th:text="${requerimiento.id}"></a></td> -->
 	<!-- 								th:href="@{/app/ver/} + ${usuario.id}" th:text="${usuario.id}"></a></td> -->
 	
-								<td class="text-white" th:text="${requerimiento.aplicacion.nombre}"></td>
+								<td class="text-white" th:text="${requerimiento.aplicacion.aplicacion}"></td>
 								<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
 								<td class="text-white" th:text="${requerimiento.descripcion}"></td>
-								<td class="text-white" th:text="${requerimiento.cantidadHoras}"></td>
+								<td class="text-white" th:text="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}"></td>
 								<td class="text-white" th:text="${requerimiento.estado}"></td>
 								<td class="text-center">
 									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" 

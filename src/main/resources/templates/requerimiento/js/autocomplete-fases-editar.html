@@ -19,8 +19,8 @@
 							response($.map(data, function(item){
 								return {
 									value: item.id,
-									label: item.descripcion,
-									otro: item.otro,
+									label: item.fase,
+									otro: item.licencia,
 								};
 							}));
 						},
@@ -38,7 +38,7 @@
 					var linea = $("#plantillaFases").html();
 					linea = linea.replace(/{ID}/g, ui.item.value);
 					linea = linea.replace(/{FASE}/g, ui.item.label);
-// 					linea = linea.replace(/{OTRO}/g, ui.item.otro);
+// 					linea = linea.replace(/{OTRO}/g, ui.item.licencia);
 					
 					$("#cargarFase tbody").append(linea);
 					return false;

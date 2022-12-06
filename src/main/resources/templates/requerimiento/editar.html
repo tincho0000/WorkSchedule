@@ -47,7 +47,7 @@
 						<div class="col-sm-6">
 							<select class="form-select" th:field="*{aplicacion}">
 								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.nombre}" th:value="${aplicacion.id}">
+									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}">
 								</option>
 							</select>
 						</div>
@@ -72,7 +72,7 @@
 							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 								<option value="">Seleccionar...</option>
 								<option th:each="estado: ${fases}"
-									th:text="${estado.descripcion}" th:value="${estado.descripcion}">
+									th:text="${estado.fase}" th:value="${estado.fase}">
 								</option>
 							</select>
 							<div class="invalid-feedback"
@@ -105,7 +105,7 @@
 <!-- 										th:each="requerimientoFase: ${requerimiento.requerimientoFases}"> -->
 										<td class="d-none"><input type="hidden" th:value="${requerimientoFase.fase.id}"
 											name="fase_id[]" /></td>
-										<td class="text-white" th:text="${requerimientoFase.fase.descripcion}"></td>
+										<td class="text-white" th:text="${requerimientoFase.fase.fase}"></td>
 										<td>
 											<div class="col-sm-6 ">
 												<input type="number"
