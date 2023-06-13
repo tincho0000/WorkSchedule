@@ -44,6 +44,11 @@ public class Usuario implements Serializable {
 	@NotEmpty
 	private String password;
 
+
+
+	@Column(length = 100)
+	private String nombreCompleto;
+
 //	@NotEmpty
 	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -150,6 +155,14 @@ public class Usuario implements Serializable {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+	public String getNombreCompleto() {
+		return nombreCompleto;
+	}
+
+	public void setNombreCompleto(String nombreCompleto) {
+		this.nombreCompleto = nombreCompleto;
 	}
 
 //	public List<Planificado> getPlanificados() {

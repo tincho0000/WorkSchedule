@@ -27,6 +27,7 @@ public class LoginSuccesHandler extends SimpleUrlAuthenticationSuccessHandler{
 		
 		if (authentication != null) {
 			logger.info("El usuario '" + authentication.getName() + "' ha iniciado sesión con exito");
+			logger.info(authentication);
 		}
 		
 		super.onAuthenticationSuccess(request, response, authentication);

@@ -35,6 +35,9 @@ import com.workschedule.app.models.service.IRequerimientoFaseService;
 import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IUsuarioService;
 
+import com.workschedule.app.enums.MesEnum;
+import com.workschedule.app.utility.GenericUtility;
+
 @RequestMapping("/planificacion")
 @Controller
 public class PlanificacionController {
@@ -210,8 +213,42 @@ public class PlanificacionController {
 
 		return "planificacion/listar-planificacion";
 	}
-	
-	
+
+
+	@GetMapping("/lista")
+	public String listaPlanificacion(Model model, @RequestParam(name = "usuarioFilter", defaultValue = "") String usuarioFilter,
+									 @RequestParam(name = "fechaFilter", defaultValue = "today") LocalDate fechaFilter) {
+
+		// TODO: Calcular los años existentes
+		List<Integer> anios = new ArrayList<>();
+		anios.add(2022);
+		anios.add(2023);
+		anios.add(2024);
+
+		// Carga de lista de usuarios con su respectivo sistema
+		Map<String, List<String>> usuariosPorGrupo = GenericUtility.getUsuariosSistema();
+
+		// Carga de requerimientos
+		List<String> requerimientos = new ArrayList<>();
+		requerimientos.add("B2BFYC-4220");
+		requerimientos.add("B2BFYC-3543");
+		requerimientos.add("B2BFYC-1230");
+
+		// Seteo los datos necesarios para la vista
+		// Estos son correspondientes a los filtros que se pueden aplicar
+		model.addAttribute("anios", anios);
+		model.addAttribute("anioActual", 2023);
+		model.addAttribute("meses", MesEnum.values());
+		model.addAttribute("mesActual", 6);
+		model.addAttribute("usuariosPorGrupo", usuariosPorGrupo);
+		model.addAttribute("usuarioActual", "Diego Morinigo");
+
+		//Estos corresponden a los requerimientos segun los filtros aplicados
+		model.addAttribute("requerimientos",requerimientos);
+		return "planificacion/lista-planificacion";
+	}
+
+
 	@GetMapping(value = "/cargar-usuarios/{termino}", produces = { "application/json" })
 	public @ResponseBody List<UsuarioSimple> cargarFases(@PathVariable String termino) {
 		if (termino.equals("*")) {
