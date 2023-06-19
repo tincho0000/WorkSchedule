@@ -157,7 +157,7 @@ public class RequerimientoController {
 		
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
-		for (Fase fase : fases) {
+		for (Fase 	fase : fases) {
 			listaFases.add(fase.getDescripcion());
 			listaFasesId.add(fase.getId());
 		}

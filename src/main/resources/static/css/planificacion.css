@@ -1,0 +1,29 @@
+#planificacion-container{
+    width: 80vw;
+    max-width: 1200px;
+    height: calc(100vh - 200px);
+    margin-top: 20px;
+    padding: 0;
+}
+
+#planificacion-container h2 {
+    font-size: 1.5rem;
+}
+
+#header-planificacion {
+    background-color: #166FAB;
+    border-radius: 0.375rem 0.375rem 0 0;
+    padding: 0.2em 0;
+}
+
+.btn-blue-work {
+    background-color:  #166FAB;
+}
+
+.btn-blue-work:hover {
+    background-color: white;
+    color: #166FAB !important;
+}
+
+
+

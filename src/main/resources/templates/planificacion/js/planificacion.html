@@ -1,0 +1,11 @@
+
+<script type="text/javascript" th:fragment="javascript">
+    function selectAllCheckboxes(checkbox) {
+        var checkboxes = checkbox.closest('.grupo-checkboxes').querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(element) {
+            if (element !== checkbox) {
+                element.checked = checkbox.checked;
+            }
+        });
+    }
+</script>

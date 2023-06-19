@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<link rel="stylesheet"  th:href="@{/css/planificacion.css}">
+<link rel="stylesheet"  th:href="@{/css/grilla.css}">
+
+
+<body class="" style="background-color: #4F5357">
+
+  <header th:replace="layout/layout :: header"></header>
+
+  <div id="planificacion-container" class="container bg-secondary rounded" >
+    <section  style="height: 120px;">
+      <div id="header-planificacion" class="text-white text-center">
+        <h2>Planificacion</h2>
+      </div>
+
+      <form class="row pt-3 container">
+
+        <!-- Seleccion de Mes-->
+        <div class="col-auto">
+          <select class="form-select" aria-label="Default select example">
+            <option th:each="mes: ${meses}" th:value="${mes.getNumero()}" th:text="${mes.getNombre()}"
+                    th:selected="${mes.getNumero()} == ${mesActual}" />
+          </select>
+        </div>
+
+        <!-- Seleccion de Anio -->
+        <div class="col-auto">
+          <select class="form-select" aria-label="Default select example">
+            <option th:each="anio: ${anios}" th:value="${anio}" th:text="${anio}"
+                    th:selected="${anio} == ${anioActual}"/>
+          </select>
+        </div>
+
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary btn-blue-work" data-bs-toggle="modal" data-bs-target="#listaUsuarios">
+            Seleccionar usuarios
+          </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="listaUsuarios" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccionar usuarios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body contenedor" style="max-height: 30vh; overflow-y: auto; min-height: 300px;">
+                <div class="container">
+                  <div class="accordion accordion-borderless">
+                    <div class="accordion-item grupo-checkboxes" th:each="entry: ${usuariosPorGrupo}">
+                      <h6 class="accordion-header" >
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                th:data-bs-target="'#collapse-' + ${entry.key}" aria-expanded="false"
+                                th:text="'Equipo ' + ${entry.key}">
+                        </button>
+                      </h6>
+                      <div class="accordion-collapse collapse" th:id="'collapse-' + ${entry.key}">
+                        <div class="accordion-body">
+                          <div>
+                            <input type="checkbox" name="usuariosSeleccionados" class="h-auto" text="Seleccionar todos"
+                                   onclick="selectAllCheckboxes(this)" />
+                            Seleccionar todos
+                          </div>
+
+                          <div th:each="usuario : ${entry.value}" class="d-flex align-items-center gap-2">
+                            <input type="checkbox" name="usuariosSeleccionados" class="h-auto"
+                                   th:value="${entry.key}+'-'+${usuario}" th:text="${usuario}"
+                                   th:checked="${usuario} == ${usuarioActual}" th:disabled="${usuario} == ${usuarioActual}"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" style="border:  none;">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-blue-work">Aceptar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <button type="submit" class="btn btn-blue-work text-white"  onclick="validar();">
+            Actualizar
+            <i class="bi bi-arrow-clockwise pl-1"></i>
+          </button>
+        </div>
+
+        <div class="col align-self-end text-end ">
+          <a class="btn btn-sm btn-outline-light openall" href="#"><i class="bi bi-plus-circle"></i></a>
+          <a class="btn btn-sm btn-outline-light closeall" href="#"><i class="bi bi-dash-circle"></i></a>
+        </div>
+
+      </form>
+    </section>
+    <section class="container pt-3 pb-3 contenedor" style="overflow-y: auto;height: calc(100% - 150px);">
+
+      <th:block th:replace="componentes/grilla::grilla-usuario"></th:block>
+
+      <h2 class="pt-3 pb-1 text-white">Requerimientos</h2>
+      <th:block th:replace="componentes/grilla::grilla-requerimiento"></th:block>
+
+    </section>
+
+  </div>
+
+  <footer th:replace="layout/layout :: footer"></footer>
+  <script th:replace="planificacion/js/planificacion :: javascript"></script>
+  <script th:replace="planificacion/js/script :: javascript"></script>
+  <script th:replace="planificacion/js/autocomplete-usuarios :: javascript"></script>
+</body>
+</html>

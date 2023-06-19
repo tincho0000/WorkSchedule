@@ -1,0 +1,41 @@
+.fase {
+    padding-left: 0.5em;
+}
+
+.usuario {
+    padding-left: 1em;
+}
+.registro div,input{
+    height: 2.3em;
+}
+
+.contenedor::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.contenedor::-webkit-scrollbar:vertical {
+    width:10px;
+}
+
+.contenedor::-webkit-scrollbar-button:increment,.contenedor::-webkit-scrollbar-button {
+    display: none;
+}
+
+.contenedor::-webkit-scrollbar:horizontal {
+    height: 10px;
+}
+
+.contenedor::-webkit-scrollbar-thumb {
+    background-color: #797979;
+    border-radius: 20px;
+    border: 2px solid #f1f2f3;
+}
+
+.contenedor::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+.accordion-button {
+    padding-top: 0.5rem!important;
+    padding-bottom: 0.5rem!important;
+}
