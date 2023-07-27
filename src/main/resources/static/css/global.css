@@ -1,0 +1,9 @@
+.btn:focus {
+    outline: none; /* Elimina el contorno al enfocar */
+    box-shadow: none; /* Elimina la sombra al enfocar */
+}
+
+.form-control:focus {
+    outline: none; /* Elimina el contorno al enfocar */
+    box-shadow: none; /* Elimina la sombra al enfocar */
+}

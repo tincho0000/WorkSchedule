@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+  <head th:replace="layout/layout :: head"></head>
+  <link rel="stylesheet"  th:href="@{/css/planificacion.css}">
+  <link rel="stylesheet"  th:href="@{/css/grilla.css}">
+
+  <body class="" style="background-color: #4F5357">
+
+    <header th:replace="layout/layout :: header"></header>
+
+    <div id="planificacion-container" class="container bg-secondary rounded" >
+      <section  style="height: 120px;">
+        <div id="header-planificacion" class="text-white text-center">
+          <h2>Resumen de requerimientos</h2>
+        </div>
+
+        <form class="row pt-3 container">
+
+          <!-- Seleccion de Mes-->
+          <div class="col-auto">
+            <select class="form-select" aria-label="Default select example">
+              <option th:each="mes: ${meses}" th:value="${mes.getNumero()}" th:text="${mes.getNombre()}"
+                      th:selected="${mes.getNumero()} == ${mesActual}" />
+            </select>
+          </div>
+
+          <!-- Seleccion de Anio -->
+          <div class="col-auto">
+            <select class="form-select" aria-label="Default select example">
+              <option th:each="anio: ${anios}" th:value="${anio}" th:text="${anio}"
+                      th:selected="${anio} == ${anioActual}"/>
+            </select>
+          </div>
+
+
+          <div class="col-auto">
+            <button type="submit" class="btn btn-blue-work text-white"  onclick="validar();">
+              Actualizar
+              <i class="bi bi-arrow-clockwise pl-1"></i>
+            </button>
+          </div>
+
+
+        </form>
+      </section>
+
+      <section class="container pt-3 pb-3 contenedor" style="overflow-y: auto;height: calc(100% - 150px);">
+          <th:block th:replace="componentes/grilla::grilla-resumen"></th:block>
+      </section>
+
+    </div>
+
+
+    <footer th:replace="layout/layout :: footer"></footer>
+    <script th:replace="planificacion/js/planificacion :: javascript"></script>
+    <script th:replace="planificacion/js/script :: javascript"></script>
+    <script th:replace="planificacion/js/autocomplete-usuarios :: javascript"></script>
+  </body>
+</html>

@@ -33,7 +33,7 @@
           </select>
         </div>
 
-        <div class="col-auto">
+        <div sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_GESTION')" class="col-auto">
           <button type="button" class="btn btn-primary btn-blue-work" data-bs-toggle="modal" data-bs-target="#listaUsuarios">
             Seleccionar usuarios
           </button>

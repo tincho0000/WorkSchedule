@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.workschedule.app.enums.SistemaEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -214,7 +215,6 @@ public class PlanificacionController {
 		return "planificacion/listar-planificacion";
 	}
 
-
 	@GetMapping("/lista")
 	public String listaPlanificacion(Model model, @RequestParam(name = "usuarioFilter", defaultValue = "") String usuarioFilter,
 									 @RequestParam(name = "fechaFilter", defaultValue = "today") LocalDate fechaFilter) {
@@ -234,6 +234,11 @@ public class PlanificacionController {
 		requerimientos.add("B2BFYC-3543");
 		requerimientos.add("B2BFYC-1230");
 
+		// Cargo horas de usuarios
+
+
+
+
 		// Seteo los datos necesarios para la vista
 		// Estos son correspondientes a los filtros que se pueden aplicar
 		model.addAttribute("anios", anios);
@@ -246,6 +251,28 @@ public class PlanificacionController {
 		//Estos corresponden a los requerimientos segun los filtros aplicados
 		model.addAttribute("requerimientos",requerimientos);
 		return "planificacion/lista-planificacion";
+	}
+
+	@GetMapping("/resumen-requerimientos")
+	public String resumenRequerimientos(Model model ) {
+
+		// TODO: Calcular los años existentes
+		List<Integer> anios = new ArrayList<>();
+		anios.add(2022);
+		anios.add(2023);
+		anios.add(2024);
+
+
+
+		model.addAttribute("anios", anios);
+		model.addAttribute("anioActual", 2023);
+		model.addAttribute("meses", MesEnum.values());
+		model.addAttribute("mesActual", 6);
+		model.addAttribute("aplicaciones", SistemaEnum.values());
+
+		System.out.println(SistemaEnum.values());
+
+		return "planificacion/resumen-requerimientos";
 	}
 
 
