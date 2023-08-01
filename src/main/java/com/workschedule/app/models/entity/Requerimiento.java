@@ -1,11 +1,9 @@
 package com.workschedule.app.models.entity;
 
+import com.workschedule.app.enums.RequirementTypeEnum;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -43,6 +41,7 @@ public class Requerimiento implements Serializable {
 	private int cantidadHoras;
 	private String observacion;
 	private String estado;
+	private String tipoRequerimiento;
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
 
@@ -210,8 +209,14 @@ public class Requerimiento implements Serializable {
 				+ ", usuario=" + usuario.getUsuario() 
 				+ "]";
 	}
-	
-	
-	
 
+
+	public String getTipoRequerimiento() {
+		return tipoRequerimiento;
+	}
+
+	public void setTipoRequerimiento(String tipoRequerimiento) {
+		List<String> requirementTypeList = Arrays.asList(RequirementTypeEnum.ANALISIS.getDisplayValue(), RequirementTypeEnum.CORRECTIVO.getDisplayValue(), RequirementTypeEnum.EVOLUTIVO.getDisplayValue(), RequirementTypeEnum.REWORK.getDisplayValue());
+		this.tipoRequerimiento = requirementTypeList.contains(tipoRequerimiento) ? tipoRequerimiento : null;
+	}
 }

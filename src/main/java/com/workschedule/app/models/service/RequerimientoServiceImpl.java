@@ -15,7 +15,7 @@ import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoSimple;
 
 @Service
-public class RequemientoServiceImpl implements IRequerimientoService {
+public class RequerimientoServiceImpl implements IRequerimientoService {
 
 	@Autowired
 	private IRequerimientoDao requerimientoDao;

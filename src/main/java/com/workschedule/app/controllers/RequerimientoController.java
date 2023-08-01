@@ -1,11 +1,10 @@
 package com.workschedule.app.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import com.workschedule.app.models.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.workschedule.app.models.entity.Aplicacion;
-import com.workschedule.app.models.entity.Fase;
-import com.workschedule.app.models.entity.FaseSimple;
-import com.workschedule.app.models.entity.Requerimiento;
-import com.workschedule.app.models.entity.RequerimientoFase;
-import com.workschedule.app.models.entity.Usuario;
 import com.workschedule.app.models.service.IAplicacionService;
 import com.workschedule.app.models.service.IFaseService;
 import com.workschedule.app.models.service.IRequerimientoFaseService;
@@ -153,7 +146,6 @@ public class RequerimientoController {
 //		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
-		
 		
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();

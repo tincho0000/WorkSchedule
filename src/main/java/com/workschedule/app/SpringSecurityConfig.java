@@ -18,8 +18,6 @@ public class SpringSecurityConfig {
 	@Autowired
 	private LoginSuccesHandler successHandler;
 	
-	
-	
 	//Para correrlo de manera vieja con JDBC (Comentar completa la clase JpaUserDetailsService())
 //	@Autowired
 //	private BCryptPasswordEncoder passwordEncoder;
