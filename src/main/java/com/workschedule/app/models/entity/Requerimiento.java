@@ -1,6 +1,7 @@
 package com.workschedule.app.models.entity;
 
 import com.workschedule.app.enums.RequirementTypeEnum;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.*;
@@ -42,7 +43,9 @@ public class Requerimiento implements Serializable {
 	private String observacion;
 	private String estado;
 	private String tipoRequerimiento;
+	private String metodologia;
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha;
 
 	@OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -142,6 +145,14 @@ public class Requerimiento implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public String getMetodologia() {
+		return metodologia;
+	}
+
+	public void setMetodologia(String metodologia) {
+		this.metodologia = metodologia;
 	}
 
 	@Override

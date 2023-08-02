@@ -146,6 +146,7 @@ public class RequerimientoController {
 //		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		List<Usuario> usuarios = usuarioService.findAll();
 		
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
@@ -162,6 +163,7 @@ public class RequerimientoController {
 		model.addAttribute("listaFasesId", listaFasesId);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("usuarios", usuarios);
 		return "requerimiento/form";
 	}
 
@@ -189,6 +191,7 @@ public class RequerimientoController {
 		List<Fase> fasesBD = faseService.findAll();
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
+		List<Usuario> usuarios = usuarioService.findAll();
 		
 		for (Fase fase : fasesBD) {
 			listaFases.add(fase.getDescripcion());
@@ -227,6 +230,7 @@ public class RequerimientoController {
 			model.addAttribute("fases", fasesBD);
 			model.addAttribute("listaFases", listaFases);
 			model.addAttribute("listaFasesId", listaFasesId);
+			model.addAttribute("usuarios", usuarios);
 			return "requerimiento/form";
 		}
 		

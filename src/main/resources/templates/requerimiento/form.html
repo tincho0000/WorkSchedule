@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
-	<header th:replace="layout/layout :: header"></header>
+	<header th:replace="layout/layout :: header">
+		<link th:href = "@{/css/bootstrap.min.css}" rel="stylesheet">
+	</header>
 
 	<div class="container py-4 text-white">
 		<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
@@ -30,15 +33,15 @@
 
 						<div class="container py-4 text-white">
 							<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
-								<div class="card-header" th:text="${'Información del requerimiento:'}"></div>
+								<div class="card-header" th:utext="#{label.title.new.requirement.section}"></div>
 								<div class="card-body">
 									<div class="form-group row py-3">
-										<label class="col-sm-2 col-form-label" th:text="${'Número del requerimiento:'}"></label>
+										<label class="col-sm-2 col-form-label" th:utext="#{label.new.requirement.number}"></label>
 										<div class="col-sm-2">
 											<input type="text" th:field="*{requerimiento}"
 												   class="form-control" th:errorclass="'form-control is-invalid'" />
 										</div>
-										<label class="col-sm-2 col-form-label text-end" th:text="Descripción"></label>
+										<label class="col-sm-2 col-form-label text-end" th:utext="#{label.new.requirement.description}"></label>
 										<div class="col-sm-6">
 											<input type="text" th:field="*{descripcion}" class="form-control"
 												   th:errorclass="'form-control is-invalid'" />
@@ -51,7 +54,7 @@
 
 									<div class="form-group row py-3">
 									<div class="col-sm-4">
-										<label class="col-sm-2 col-form-label" style="width : 130px;" th:text="'Tipo de Requerimiento'"></label>
+										<label class="col-sm-2 col-form-label" style="width : 130px;" th:utext="#{label.new.requirement.type}"></label>
 											<select class="form-select" name="tipoRequerimiento">
 												<option value="">Seleccionar...</option>
 												<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.RequirementTypeEnum).values()}"
@@ -64,7 +67,7 @@
 											 th:errors="*{tipoRequerimiento}">
 										</div>
 									</div>
-									<label class="col-sm-2 col-form-label text-end" style="margin-top : 3.75rem;" th:text="Aplicación"></label>
+									<label class="col-sm-2 col-form-label text-end" style="margin-top : 3.75rem;" th:utext="#{label.new.requirement.application}"></label>
 									<div class="col-sm-6" style="margin-top : 3.75rem;">
 										<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 											<option value="">Seleccionar...</option>
@@ -81,7 +84,7 @@
 
 					<div class="form-group row py-3">
 						<div class="col-sm-4">
-						<label class="col-sm-2 col-form-label" style="width : 130px;" th:text="Estado"></label>
+						<label class="col-sm-2 col-form-label" style="width : 130px;" th:utext="#{label.new.requirement.state}"></label>
 							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 								<option value="">Seleccionar...</option>
 								<option th:each="estado: ${fases}"
@@ -94,15 +97,41 @@
 							</div>
 
 						</div>
-						<label class="col-sm-2 col-form-label text-end" style="margin-top: 2.5rem;" th:text="Owner"></label>
+						<label class="col-sm-2 col-form-label text-end" style="margin-top: 2.5rem;" th:utext="#{label.new.requirement.owner}"></label>
 						<div class="col-sm-6" style="margin-top: 2.5rem;">
-							<input type="text" th:field="*{usuario}" class="form-control"
-								   th:errorclass="'form-control is-invalid'" />
+							<input list="usuarios" class="form-control" id="usuario" th:field="*{usuario}" th:errorclass="'form-control is-invalid'">  </input>
+							<datalist id="usuarios">
+								<option th:each="row : ${usuarios}" th:value="${row.usuario}" th:label="${row.usuario}">
+							</datalist>
 							<div class="invalid-feedback"
 								 th:if="${#fields.hasErrors('usuario')}"
 								 th:errors="*{usuario}"></div>
 						</div>
 					</div>
+									<div class="form-group row py-3">
+										<div class="col-md-4 mt-5">
+											<label for="fecha" th:utext="#{label.new.requirement.creation.date}"></label>
+											<div class="input-group date">
+												<input type="date" class="form-control" id="fecha" autocomplete="off" th:field="*{fecha}"/>
+											</div>
+										</div>
+										<label class="col-sm-2 col-form-label text-end" style="margin-top: 4.375rem;" th:utext="#{label.new.requirement.methodology}"></label>
+										<div class="col-sm-6" style="margin-top: 4.375rem;">
+											<select class="form-select" name="metodologia">
+												<option value="">Seleccionar...</option>
+												<option th:each="metodologia : ${T(com.workschedule.app.enums.MethodologyEnum).values()}"
+														th:text="${metodologia}"
+														th:value="${metodologia}">
+												</option>
+											</select>
+											<div class="invalid-feedback"
+												 th:if="${#fields.hasErrors('metodologia')}"
+												 th:errors="*{metodologia}"></div>
+										</div>
+									  </div>
+									</div>
+
+
 					</div>
 
 					<div class="form-group row py-3">
@@ -158,6 +187,7 @@
 	<input id="pepe" th:value="${fasesJson}">
 
 	<footer th:replace="layout/layout :: footer"></footer>
+	<link th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" rel="stylesheet"  />
 	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 	<script type="text/javascript" th:inline="javascript">
 	$(document).ready(function() {
