@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head th:replace="layout/layout :: head"></head>
+<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+
+<header th:replace="layout/layout :: header"></header>
+
+
+<a class="button">Crear Planificación</a>
+  <form action="#" th:action="@{/savePlanning}" th:object="${planning}" method="post">
+      <table class="table">
+          <thead>
+          <tr class="bg-primary">
+              <th scope="col">#</th>
+              <th class="table-light" scope="col">Fecha desde</th>
+              <th class="table-light" scope="col">Fecha hasta</th>
+              <th class="table-light" scope="col">Puntos de Configuración</th>
+              <th class="table-light" scope="col">Puntos de Función</th>
+              <th class="table-light" scope="col">Hs no medibles</th>
+              <th class="table-dark" scope="col">Total</th>
+              <th class="table-dark" scope="col">Total hs reales incurridas</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <th class="table-secondary" scope="row">Estimación</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          <tr>
+              <th class="table-secondary" scope="row">Diseño Detallado</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          <tr>
+              <th class="table-secondary" scope="row">Diseño Global/ Técnico</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          <tr>
+              <th class="table-secondary" scope="row">Construcción</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          <tr>
+              <th class="table-secondary" scope="row">Prueba Unitaria y String</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          </tbody>
+          <tr>
+              <th class="table-secondary" scope="row">Soporte Prueba Integración</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+          <tr>
+              <th class="table-secondary" scope="row">Soporte Prueba Aceptacion Usuario</th>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+          </tr>
+      </table>
+        <input type="submit" value="Submit" />
+  </form>
+</body>
+
+<footer th:replace="layout/layout :: footer"></footer>
+</html>
