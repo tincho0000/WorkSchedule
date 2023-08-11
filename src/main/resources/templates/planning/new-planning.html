@@ -7,7 +7,7 @@
 
 
 <a class="button">Crear Planificación</a>
-  <form action="#" th:action="@{/savePlanning}" th:object="${planning}" method="post">
+  <form action="#" th:action="@{/planning/savePlanning}" th:object="${planning}" method="post">
       <table class="table">
           <thead>
           <tr>
@@ -27,25 +27,26 @@
           </tr>
           </thead>
           <tbody>
+          <div th:object="${taskEstimacion}" >
           <tr>
-              <th class="table-secondary" scope="row">Estimación</th>
-              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
-              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <th class="table-secondary" scope="row" th:utext="#{label.new.planning.estimation}"></th>
+              <td class="table-light"><input type="date" class="form-control" th:value="${taskEstimacion.fechaDesdeTarea}" name="fechaDesdeTareaEstimacion" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" th:value="${taskEstimacion.fechaHastaTarea}" name="fechaHastaTareaEstimacion" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" th:value="${taskEstimacion.puntosConfiguracion}" name="puntosConfiguracionEstimacion" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" th:value="${taskEstimacion.puntosFuncion}" name="puntosFuncionEstimacion" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control"  th:value="${taskEstimacion.hsNoMedibles}" name="hsNoMediblesEstimacion" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" th:value="${taskEstimacion.totalHsEstimadasTarea}" name="totalHsEstimadasTareaEstimacion" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" th:value="${taskEstimacion.totalHsRealesEstimadasTarea}" name="totalHsRealesEstimadasTareaEstimacion" autocomplete="off" readonly/></td>
           </tr>
           <tr>
-              <th class="table-secondary" scope="row">Diseño Detallado</th>
-              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="date" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-light"><input type="number" class="form-control" autocomplete="off"/></td>
-              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
-              <td class="table-secondary"><input type="number" class="form-control" autocomplete="off" readonly/></td>
+              <th class="table-secondary" scope="row" th:utext="#{label.new.planning.detail.design}"></th>
+              <td class="table-light"><input type="date" class="form-control" th:value="${disenoDetalladoEstimacion.fechaDesdeTarea}" autocomplete="off"/></td>
+              <td class="table-light"><input type="date" class="form-control" th:value="${disenoDetalladoEstimacion.fechaHastaTarea}" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" th:value="${disenoDetalladoEstimacion.puntosConfiguracion}" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" th:value="${disenoDetalladoEstimacion.puntosFuncion}" autocomplete="off"/></td>
+              <td class="table-light"><input type="number" class="form-control" th:value="${disenoDetalladoEstimacion.hsNoMedibles}" autocomplete="off"/></td>
+              <td class="table-secondary"><input type="number" class="form-control" th:value="${disenoDetalladoEstimacion.totalHsEstimadasTarea}" autocomplete="off" readonly/></td>
+              <td class="table-secondary"><input type="number" class="form-control" th:value="${disenoDetalladoEstimacion.totalHsRealesEstimadasTarea}" autocomplete="off" readonly/></td>
           </tr>
           <tr>
               <th class="table-secondary" scope="row">Diseño Global/ Técnico</th>

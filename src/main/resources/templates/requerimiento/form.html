@@ -21,15 +21,7 @@
 				<form class="row g-3" th:action="@{/requerimientos/form}"
 					th:object="${requerimiento}" method="post">
 
-					<div class="form-group row py-3">
-						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
-						<div class="col-sm-2">
-							<input type="text" th:field="*{requerimiento}"
-								class="form-control" th:errorclass="'form-control is-invalid'" />
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('requerimiento')}"
-								th:errors="*{requerimiento}"></div>
-						</div>
+					<div class="form-group row py-3"></div>
 
 						<div class="container py-4 text-white">
 							<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
@@ -43,12 +35,10 @@
 										</div>
 										<label class="col-sm-2 col-form-label text-end" th:utext="#{label.new.requirement.description}"></label>
 										<div class="col-sm-6">
-											<input type="text" th:field="*{descripcion}" class="form-control"
-												   th:errorclass="'form-control is-invalid'" />
-											<div class="invalid-feedback"
-												 th:if="${#fields.hasErrors('descripcion')}"
-												 th:errors="*{descripcion}"></div>
-										</div>
+											<textarea class="form-control" id="description" rows="5"
+													  name="description"
+													  placeholder="Ingrese descripcion" th:field="*{descripcion}"
+													  required="required"></textarea>
 									</div>
 
 
@@ -101,7 +91,7 @@
 						<div class="col-sm-6" style="margin-top: 2.5rem;">
 							<input list="usuarios" class="form-control" id="usuario" th:field="*{usuario}" th:errorclass="'form-control is-invalid'">  </input>
 							<datalist id="usuarios">
-								<option th:each="row : ${usuarios}" th:value="${row.usuario}" th:label="${row.usuario}">
+								<option th:each="row : ${usuarios}" th:value="${row.id}" th:label="${row.usuario}">
 							</datalist>
 							<div class="invalid-feedback"
 								 th:if="${#fields.hasErrors('usuario')}"
@@ -112,7 +102,7 @@
 										<div class="col-md-4 mt-5">
 											<label for="fecha" th:utext="#{label.new.requirement.creation.date}"></label>
 											<div class="input-group date">
-												<input type="date" class="form-control" id="fecha" autocomplete="off" th:field="*{fecha}"/>
+												<input type="date" class="form-control" id="fecha" autocomplete="off" th:field="*{fecha}" th:value="${fecha}" readonly/>
 											</div>
 										</div>
 										<label class="col-sm-2 col-form-label text-end" style="margin-top: 4.375rem;" th:utext="#{label.new.requirement.methodology}"></label>
@@ -130,81 +120,20 @@
 										</div>
 									  </div>
 									</div>
-
-
 					</div>
 
-					<div class="form-group row py-3">
-						<label for="buscar_fase" class="col-sm-2 col-form-label"
-							th:text="'Buscar Fase'"></label>
-						<div class="col-sm-3">
-							<input type="text" name="buscar_fase" id="buscar_fase"
-								class="form-control" />
-						</div>
-						
-
-						
-					</div>
-					
-					
-
-					<div class="form-group row py-5">
-						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
-
-						<div class="col-sm-6 border-0">
-							<table id="cargarFase"
-								class="table table-sm table-striped table-hover">
-								<thead class="text-white">
-									<tr>
-										<th>Fase</th>
-										<th>Horas</th>
-										<th>Eliminar</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
 
 						<div class="col-sm-3">
-							<h5 class="text-center">
-								<span class="">Total Fases</span>
-							</h5>
-							<h5 class="text-center">
-								<span class="" id="total_fases">0</span>
-							</h5>
-
-						</div>
-
-						<div class="col-sm-3">
-							<input type="submit" th:value="${titulo}" class="btn btn-success" onclick="validar()" />
+							<input type="submit" th:value="${titulo}" class="btn btn-success" />
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<input id="pepe" th:value="${fasesJson}">
 
 	<footer th:replace="layout/layout :: footer"></footer>
 	<link th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" rel="stylesheet"  />
-	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
-	<script type="text/javascript" th:inline="javascript">
-	$(document).ready(function() {
-		var fases = [[${listaFases}]];
-		var fasesId = [[${listaFasesId}]];
-// 		console.log("fases: " +fases);
-		
-		for (i = 0; i < fases.length; i++) {
-			
-			var linea = $("#plantillaFases").html();
-			linea = linea.replace(/{ID}/g, fasesId[i]);
-			linea = linea.replace(/{FASE}/g, fases[i]);
-			$("#cargarFase tbody").append(linea);
-		}
-	});
-	
-	</script>
 
 </body>
 </html>

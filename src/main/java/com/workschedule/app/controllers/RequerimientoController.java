@@ -1,5 +1,6 @@
 package com.workschedule.app.controllers;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.validation.Valid;
@@ -143,11 +144,14 @@ public class RequerimientoController {
 	public String crear(Model model) {
 
 		List<Fase> fases = faseService.findAll();
-//		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
+		requerimiento.setFecha(new Date());
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		List<Usuario> usuarios = usuarioService.findAll();
-		
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedDate = format1.format(cal.getTime());
+
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
 		for (Fase fase : fases) {
@@ -164,6 +168,7 @@ public class RequerimientoController {
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		model.addAttribute("usuarios", usuarios);
+		model.addAttribute("currentDate", formattedDate);
 		return "requerimiento/form";
 	}
 
@@ -183,10 +188,8 @@ public class RequerimientoController {
 	public String guardar(@Valid @ModelAttribute Requerimiento requerimiento, BindingResult result, Model model,
 			@RequestParam(name = "fase_id[]", required = false) Long[] fases,
 			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase, RedirectAttributes flash, SessionStatus status) {
-		
-		boolean existe;
+
 		boolean modificacion = false;
-		List<RequerimientoFase> requerimientoFase = null;
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		List<Fase> fasesBD = faseService.findAll();
 		List<String> listaFases = new ArrayList<>();
@@ -217,74 +220,7 @@ public class RequerimientoController {
 			model.addAttribute("listaFasesId", listaFasesId);
 			return "requerimiento/form";
 		}
-		
-		//Valido que el requerimiento tenga al menos una fase
-		if (fases == null || fases.length == 0) {
-			if (modificacion) {
-				model.addAttribute("titulo", "Editar Requerimiento");
-			} else {
-				model.addAttribute("titulo", "Alta Requerimiento");
-			}
-			model.addAttribute("error", "Error: El requerimiento debe tener al menos una fase!");
-			model.addAttribute("aplicaciones", aplicaciones);
-			model.addAttribute("fases", fasesBD);
-			model.addAttribute("listaFases", listaFases);
-			model.addAttribute("listaFasesId", listaFasesId);
-			model.addAttribute("usuarios", usuarios);
-			return "requerimiento/form";
-		}
-		
-//		System.out.println("Requerimiento" + requerimiento.toString());
-		
-		if (modificacion) {
-			System.out.println("Estoy ante una modificacion");
-			requerimientoFase = requerimientoFaseService.findByRequerimientoId(requerimiento.getId());
-		}
-		
-		//Agregamos las fases al requerimiento si no estan
-		for (int i = 0; i < fases.length; i++) {
-			log.info("ID: " + fases[i] + " Cantidad de Horas: " + horasFase[i]);
-			
-			//Si estamos editando
-			if (modificacion) {
-				existe = false;
-				for (int j = 0; j < requerimientoFase.size(); j++) {
-					//Si existe
-					if (requerimientoFase.get(j).getRequerimientoFaseId().getFaseId() == (long)fases[i] ) {
-						requerimiento.getRequerimientoFases().get(j).setCantidadHoras(horasFase[i]);
-						existe = true;
-					} 
-				}
-				if (!existe) {
-					Fase fase = recuperarFase(fasesBD, fases[i]);
-					requerimiento.addFase(fase, horasFase[i]);
-				}
-				
-				
-			} else {
-				Fase fase = recuperarFase(fasesBD, fases[i]);
-				requerimiento.addFase(fase, horasFase[i]);
-			}
-		}
-		
-		//Buscamos posibles fases eliminadas desde la vista
-		//Si estamos editando
-		
-		if (modificacion) {
-			for (int i = 0; i < requerimientoFase.size(); i++) {
-				existe=false;
-				for (int j = 0; j < fases.length; j++) {
-					if (requerimientoFase.get(i).getRequerimientoFaseId().getFaseId() == (long)fases[j] ) {
-						existe=true;
-					}
-				}
-				if (!existe) {
-					Fase fase = recuperarFase(fasesBD, fases[i]);
-					requerimiento.removeFase(fase);
-				}
-			}
-				
-		}
+			//return "requerimiento/form";
 		
 		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
 		if (!modificacion) {
