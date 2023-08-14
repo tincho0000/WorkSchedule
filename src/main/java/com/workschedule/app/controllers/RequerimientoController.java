@@ -1,9 +1,9 @@
 package com.workschedule.app.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -29,13 +29,16 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.workschedule.app.models.entity.Aplicacion;
+import com.workschedule.app.models.entity.Estimacion;
+import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Fase;
 import com.workschedule.app.models.entity.FaseSimple;
 import com.workschedule.app.models.entity.Requerimiento;
-import com.workschedule.app.models.entity.RequerimientoFase;
 import com.workschedule.app.models.entity.Usuario;
 import com.workschedule.app.models.service.IAplicacionService;
+import com.workschedule.app.models.service.IEstimacionService;
 import com.workschedule.app.models.service.IFaseService;
+import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoFaseService;
 import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IUsuarioService;
@@ -61,6 +64,10 @@ public class RequerimientoController {
 //	IRequerimientoFaseDao requerimientoFaseDao;
 	@Autowired
 	IUsuarioService usuarioService;
+	@Autowired
+	IPlanificacionService planificacionService;
+	@Autowired
+	IEstimacionService estimacionService;
 
 	public RequerimientoController() {
 	}
@@ -73,7 +80,66 @@ public class RequerimientoController {
 										@RequestParam(name = "estadoFilter", defaultValue = "") String estadoFiltro
 			) {
 		
-		/********************Eliminar******************************
+		/******************** buscar ************************/
+		List<EstimacionRequerimientoFase> estimacionRequerimientoFase = requerimientoService.findByRequerimiento("MOR-100");
+		for (EstimacionRequerimientoFase erf : estimacionRequerimientoFase){
+			System.err.println("Fase: " + erf.getFase().getFase()+ " horas: " + erf.getCantidadHoras());
+		}
+//		System.err.println(r.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras());
+		
+		/******************** Alta Req Estimacion ************************/
+//		Requerimiento req = new Requerimiento();
+//		Estimacion est = new Estimacion();
+//		List<Fase> fases1 = faseService.findAll(); 
+//		
+//		
+//		//agrego req
+//		req.setAplicacion(aplicacionService.findOne((long)1));
+//		req.setDescripcion("Se agregan filtros");
+//		req.setEstado("Prueba");
+//		req.setFecha(new Date());
+//		req.setObservacion("Ninguna");
+//		req.setRequerimiento("MOR-200");
+//		req.setUsuario(usuarioService.findOne((long)1));
+//		//Agrego fases al req
+//		for (Fase fase : fases1) {
+//			req.addEstimacionFase(fase, 10, est);
+//		}
+//		
+//		//configuro estimacion
+//		est.setActivo(1);
+//		est.setCantidadHoras(100);
+//		est.setDescripcion("Estimacion 1");
+//		est.setFecha(new Date());
+//		est.setRequerimiento(req);
+//
+//		
+//		requerimientoService.save(req);
+		
+		/******************** Alta Estimacion ************************/
+//		Requerimiento reqbuscado = requerimientoService.findByRequerimiento((long)13);
+//		List<Fase> fases1 = faseService.findAll(); 
+//		Estimacion est = new Estimacion();
+//		for (Fase fase : fases1) {
+//			reqbuscado.addEstimacionFase(fase, 20, est);
+//		}
+//		
+//		//configuro estimacion
+//		est.setActivo(0);
+//		est.setCantidadHoras(110);
+//		est.setDescripcion("Estimacion 4");
+//		est.setFecha(new Date());
+//		est.setRequerimiento(reqbuscado);
+//		
+//		estimacionService.save(est);
+		
+		/********************Eliminar Estimacion***********************/
+//		estimacionService.delete((long)6);
+
+
+
+
+		/********************Eliminar req (no se si funciona)******************************
 		Requerimiento r = requerimientoService.findOne((long) 3);
 		Fase f = faseService.findOne((long) 5);
 		System.out.println(r.toString());
@@ -101,6 +167,22 @@ public class RequerimientoController {
 //		for (RequerimientoFase r : rf ) {
 //			System.out.println( r.getRequerimientoFaseId().toString());
 //		}
+		
+		
+		/*********************************************************/
+		// Select a la tabla de planificacion
+//		List<Planificacion> planificacion = planificacionService.findAll();
+//		
+//		for (Planificacion planif : planificacion) {
+//			System.out.println("Id planif: " + planif.getId());
+//			System.out.println("Id estimacion: " + planif.getEstimacionRequerimientoFases().getEstimacion().getId());
+//			System.out.println("Id req: " + planif.getEstimacionRequerimientoFases().getRequerimiento().getId());
+//			System.out.println("Id fase: " + planif.getEstimacionRequerimientoFases().getFase().getId());
+//		}
+		/*---------------------------------------------------*/
+		// alta de planificacion
+//		Planificacion planificacion = new Planificacion();
+		
 		
 		/*---------------------------------------------------*/
 		
@@ -158,7 +240,7 @@ public class RequerimientoController {
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
 		for (Fase fase : fases) {
-			listaFases.add(fase.getDescripcion());
+			listaFases.add(fase.getFase());
 			listaFasesId.add(fase.getId());
 		}
 		
@@ -192,14 +274,14 @@ public class RequerimientoController {
 		
 		boolean existe;
 		boolean modificacion = false;
-		List<RequerimientoFase> requerimientoFase = null;
+		List<EstimacionRequerimientoFase> requerimientoFase = null;
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		List<Fase> fasesBD = faseService.findAll();
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
 		
 		for (Fase fase : fasesBD) {
-			listaFases.add(fase.getDescripcion());
+			listaFases.add(fase.getFase());
 			listaFasesId.add(fase.getId());
 		}
 		
@@ -239,11 +321,12 @@ public class RequerimientoController {
 		}
 		
 //		System.out.println("Requerimiento" + requerimiento.toString());
-		
+		/*
 		if (modificacion) {
 			System.out.println("Estoy ante una modificacion");
 			requerimientoFase = requerimientoFaseService.findByRequerimientoId(requerimiento.getId());
 		}
+		
 		
 		//Agregamos las fases al requerimiento si no estan
 		for (int i = 0; i < fases.length; i++) {
@@ -271,6 +354,7 @@ public class RequerimientoController {
 			}
 		}
 		
+		
 		//Buscamos posibles fases eliminadas desde la vista
 		//Si estamos editando
 		
@@ -289,6 +373,7 @@ public class RequerimientoController {
 			}
 				
 		}
+		*/
 		
 		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
 		if (!modificacion) {

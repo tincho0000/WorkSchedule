@@ -1,6 +1,7 @@
 package com.workschedule.app.models.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.workschedule.app.models.dao.IRequerimientoDao;
 import com.workschedule.app.models.dao.IRequerimientoSimpleDao;
+import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoSimple;
 
@@ -83,9 +85,10 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 		return requerimientos;
 	}
 	
+	
 	@Override
-	public Requerimiento findByRequerimiento(String requerimiento) {
-		return requerimientoDao.findByRequerimiento(requerimiento);
+	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento) {
+		return requerimientoDao.findByEstimacionRequerimientoFase(requerimiento);
 	}
 
 	@Override
@@ -96,6 +99,16 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 	@Override
 	public List<RequerimientoSimple> findByRequerimientos() {
 		return (List<RequerimientoSimple>) requerimientoSimpleDao.findAll();
+	}
+
+	@Override
+	public Requerimiento findByRequerimiento(Long id) {
+		return requerimientoDao.findById(id).orElse(null);
+	}
+
+	@Override
+	public RequerimientoSimple findByRequerimientoSimple(Long id) {
+		return requerimientoSimpleDao.findById(id).orElse(null);
 	}
 
 

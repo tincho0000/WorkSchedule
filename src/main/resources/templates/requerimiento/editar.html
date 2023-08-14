@@ -41,7 +41,7 @@
 							th:text="'Cantidad' + ' Horas'"></label>
 						<div class="col-sm-2">
 							<input id="horasRequerimiento" type="number"
-								th:field="*{cantidadHoras}" class="form-control" />
+								th:value="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}" class="form-control" />
 						</div>
 						<label class="col-sm-2 col-form-label text-end" th:text="Aplicación"></label>
 						<div class="col-sm-6">
@@ -100,22 +100,22 @@
 								</thead>
 								<tbody>
 
-									<div th:each="requerimientoFase: ${requerimiento.requerimientoFases}" >
-									<tr th:id="'row_' + ${requerimientoFase.fase.id}">
+									<div th:each="estimacionRequerimientoFase: ${requerimiento.estimacionRequerimientoFases}" >
+									<tr th:id="'row_' + ${estimacionRequerimientoFase.fase.id}">
 <!-- 										th:each="requerimientoFase: ${requerimiento.requerimientoFases}"> -->
-										<td class="d-none"><input type="hidden" th:value="${requerimientoFase.fase.id}"
+										<td class="d-none"><input type="hidden" th:value="${estimacionRequerimientoFase.fase.id}"
 											name="fase_id[]" /></td>
-										<td class="text-white" th:text="${requerimientoFase.fase.fase}"></td>
+										<td class="text-white" th:text="${estimacionRequerimientoFase.fase.fase}"></td>
 										<td>
 											<div class="col-sm-6 ">
 												<input type="number"
-													th:value="${requerimientoFase.cantidadHoras}"
+													th:value="${estimacionRequerimientoFase.cantidadHoras}"
 													name="cantidad[]" class="form-control text-end"
 													onchange="itemsHelper.calcularTotalFases();" />
 											</div>
 										</td>
 										<td><a class="btn btn-danger" href="#"
-											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${requerimientoFase.requerimiento.id}', '${requerimientoFase.fase.id}')|"
+											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${estimacionRequerimientoFase.requerimiento.id}', '${estimacionRequerimientoFase.fase.id}')|"
 											onchange="itemsHelper.calcularTotalFases(this.value);">X</a></td>
 									</tr>
 									</div>

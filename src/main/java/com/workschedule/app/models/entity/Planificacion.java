@@ -28,12 +28,14 @@ public class Planificacion implements Serializable {
 //	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private RequerimientoFase requerimientoFases;
 	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumns({
+//		@JoinColumn(name="requerimiento_id", referencedColumnName = "requerimiento_id"),
+//		@JoinColumn(name="fase_id", referencedColumnName = "fase_id")
+//	})
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-		@JoinColumn(name="requerimiento_id", referencedColumnName = "requerimiento_id"),
-		@JoinColumn(name="fase_id", referencedColumnName = "fase_id")
-	})
-	private RequerimientoFase requerimientoFases;
+	@JoinColumn(name="estimacion_requerimiento_fase_id")
+	private EstimacionRequerimientoFase estimacionRequerimientoFases;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="usuario_id")
@@ -54,12 +56,12 @@ public class Planificacion implements Serializable {
 		this.id = id;
 	}
 
-	public RequerimientoFase getRequerimientoFases() {
-		return requerimientoFases;
+	public EstimacionRequerimientoFase getEstimacionRequerimientoFases() {
+		return estimacionRequerimientoFases;
 	}
 
-	public void setRequerimientoFases(RequerimientoFase requerimientoFases) {
-		this.requerimientoFases = requerimientoFases;
+	public void setEstimacionRequerimientoFases(EstimacionRequerimientoFase estimacionRequerimientoFases) {
+		this.estimacionRequerimientoFases = estimacionRequerimientoFases;
 	}
 
 	public Usuario getUsuario() {
@@ -108,9 +110,9 @@ public class Planificacion implements Serializable {
 	}
 	
 
-	public Planificacion(RequerimientoFase requerimientoFases, Usuario usuario, LocalDate fecha, int horasPlanificadas,
+	public Planificacion(EstimacionRequerimientoFase estimacionRequerimientoFases, Usuario usuario, LocalDate fecha, int horasPlanificadas,
 							int horasIncurridas, String observacion) {
-		this.requerimientoFases = requerimientoFases;
+		this.estimacionRequerimientoFases = estimacionRequerimientoFases;
 		this.usuario = usuario;
 		this.fecha = fecha;
 		this.horasPlanificadas = horasPlanificadas;
@@ -120,7 +122,7 @@ public class Planificacion implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(fecha, horasIncurridas, horasPlanificadas, id, usuario, observacion, requerimientoFases);
+		return Objects.hash(fecha, horasIncurridas, horasPlanificadas, id, usuario, observacion, estimacionRequerimientoFases);
 	}
 
 	@Override
@@ -135,12 +137,12 @@ public class Planificacion implements Serializable {
 		return Objects.equals(fecha, other.fecha) && horasIncurridas == other.horasIncurridas
 				&& horasPlanificadas == other.horasPlanificadas && id == other.id && usuario == other.usuario
 				&& Objects.equals(observacion, other.observacion)
-				&& Objects.equals(requerimientoFases, other.requerimientoFases);
+				&& Objects.equals(estimacionRequerimientoFases, other.estimacionRequerimientoFases);
 	}
 
 	@Override
 	public String toString() {
-		return "Planificacion [id=" + id + ", requerimientoFases=" + requerimientoFases + ", idUsuario=" + usuario
+		return "Planificacion [id=" + id + ", requerimientoFases=" + estimacionRequerimientoFases + ", idUsuario=" + usuario
 				+ ", fecha=" + fecha + ", horasPlanificadas=" + horasPlanificadas + ", horasIncurridas="
 				+ horasIncurridas + ", observacion=" + observacion + "]";
 	}

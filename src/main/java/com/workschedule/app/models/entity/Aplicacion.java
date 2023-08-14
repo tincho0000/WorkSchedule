@@ -17,7 +17,7 @@ public class Aplicacion {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String nombre;
+	private String aplicacion;
 
 	@OneToMany(mappedBy = "aplicacion", fetch = FetchType.LAZY)
 	private Set<Requerimiento> requerimientos;
@@ -30,12 +30,12 @@ public class Aplicacion {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public String getAplicacion() {
+		return aplicacion;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setAplicacion(String aplicacion) {
+		this.aplicacion = aplicacion;
 	}
 
 	public Set<Requerimiento> getRequerimientos() {
@@ -51,7 +51,7 @@ public class Aplicacion {
 
 	@Override
 	public String toString() {
-		return "Aplicacion [id=" + id + ", nombre=" + nombre + "]";
+		return "Aplicacion [id=" + id + ", aplicacion=" + aplicacion + "]";
 	}
 	
 	

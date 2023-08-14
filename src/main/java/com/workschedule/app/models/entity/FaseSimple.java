@@ -19,8 +19,8 @@ public class FaseSimple implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String descripcion;
-	private int otro;
+	private String fase;
+	private int licencia;
 
 	/******************* Metodos *******************/
 
@@ -32,25 +32,25 @@ public class FaseSimple implements Serializable {
 		this.id = id;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getFase() {
+		return fase;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setFase(String fase) {
+		this.fase = fase;
 	}
 
-	public int getOtro() {
-		return otro;
+	public int getLicencia() {
+		return licencia;
 	}
 
-	public void setOtro(int otro) {
-		this.otro = otro;
+	public void setLicencia(int licencia) {
+		this.licencia = licencia;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(descripcion, id, otro);
+		return Objects.hash(fase, id, licencia);
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public class FaseSimple implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		FaseSimple other = (FaseSimple) obj;
-		return Objects.equals(descripcion, other.descripcion) && Objects.equals(id, other.id)
-				&& Objects.equals(otro, other.otro);
+		return Objects.equals(fase, other.fase) && Objects.equals(id, other.id)
+				&& Objects.equals(licencia, other.licencia);
 	}
 
 	public FaseSimple() {
@@ -71,7 +71,7 @@ public class FaseSimple implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Fase [id=" + id + ", descripcion=" + descripcion + ", otro=" + otro + "]";
+		return "Fase [id=" + id + ", fase=" + fase + ", licencia=" + licencia + "]";
 	}
 	
 }
