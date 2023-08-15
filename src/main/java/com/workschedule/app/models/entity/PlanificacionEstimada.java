@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "planificacion_estimada")
+@Table(name = "estimacion_planificada")
 public class PlanificacionEstimada implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -3,7 +3,7 @@ package com.workschedule.app.controllers;
 import com.workschedule.app.DTO.PlanningTaskDTO;
 import com.workschedule.app.models.entity.*;
 import com.workschedule.app.models.service.IPlanificacionEstimadaService;
-import com.workschedule.app.models.service.IPlanificacionTareaService;
+import com.workschedule.app.models.service.IEstimacionTareaService;
 import com.workschedule.app.models.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,41 +21,34 @@ public class PlanningController {
 	IPlanificacionEstimadaService planificacionEstimadaService;
 
 	@Autowired
-	IPlanificacionTareaService planificacionTareaService;
+	IEstimacionTareaService estimacionTareaService;
 
 	@Autowired
 	IUsuarioService usuarioService;
 	@PostMapping(value="")
 	public String savePlanning(@ModelAttribute PlanificacionEstimada planning, BindingResult errors, Model model) {
 		PlanningTaskDTO planningDTO = new PlanningTaskDTO();
-		PlanificacionEstimada planificacion = buildNewEstimatePlanning();
-		PlanificacionTarea tareaEstimacion = new PlanificacionTarea();
-		PlanificacionTarea disenoDetalladoEstimacion = new PlanificacionTarea();
-		tareaEstimacion.setPlanificacionOriginal(planificacion);
-		planificacionEstimadaService.save(planificacion);
-		planificacionTareaService.save(tareaEstimacion);
-		planificacionTareaService.save(disenoDetalladoEstimacion);
+		EstimacionTarea tareaEstimacion = new EstimacionTarea();
+		Requerimiento requerimiento = new Requerimiento();
+		tareaEstimacion.setRequerimiento(requerimiento);
+		estimacionTareaService.save(tareaEstimacion);
 		model.addAttribute("planning", planning);
 		model.addAttribute("planningDTO", planningDTO);
 		model.addAttribute("taskEstimacion", tareaEstimacion);
-		model.addAttribute("disenoDetalladoEstimacion", disenoDetalladoEstimacion);
 		return "planning/new-planning";
 	}
 	@GetMapping("/planning/listar-planning")
 	public String showPlanningList(Model model) {
-		model.addAttribute("tareas", planificacionTareaService.getAllTask());
+		model.addAttribute("tareas", estimacionTareaService.getAllTask());
 		return "listar-planning";
 	}
 
-	private PlanificacionEstimada buildNewEstimatePlanning() {
-		PlanificacionEstimada planificacion = new PlanificacionEstimada();
+	private Requerimiento buildNewRequirement() {
+		Requerimiento requerimiento = new Requerimiento();
 		LocalDate currentDate = LocalDate.now();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Usuario usuario = usuarioService.findByUsuario(auth.getName());
-		planificacion.setFechaCreacion(currentDate);
-		planificacion.setUltimaFechaModificacion(currentDate);
-		planificacion.setUser_owner_id(usuario.getId().intValue());
-		return planificacion;
+		return requerimiento;
 	}
 
 		// logic to process input data
