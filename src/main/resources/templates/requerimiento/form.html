@@ -27,36 +27,45 @@
 								th:if="${#fields.hasErrors('requerimiento')}"
 								th:errors="*{requerimiento}"></div>
 						</div>
-						<label class="col-sm-2 col-form-label text-end" th:text="Descripción"></label>
-						<div class="col-sm-6">
-							<input type="text" th:field="*{descripcion}" class="form-control"
-								th:errorclass="'form-control is-invalid'" />
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('descripcion')}"
-								th:errors="*{descripcion}"></div>
-						</div>
-					</div>
-					<div class="form-group row py-1">
-						<label class="col-sm-2 col-form-label"
-							th:text="'Cantidad' + ' Horas'"></label>
-						<div class="col-sm-2">
-							<input id="horasRequerimiento" type="number"
-								th:field="*{cantidadHoras}" class="form-control" />
-						</div>
 						<label class="col-sm-2 col-form-label text-end" th:text="Aplicación"></label>
-						<div class="col-sm-6">
+						<div class="col-sm-2">
 							<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 								<option value="">Seleccionar...</option>
 								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}">
+										th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}">
 								</option>
 							</select>
 							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('aplicacion')}"
-								th:errors="*{aplicacion}">
+								 th:if="${#fields.hasErrors('aplicacion')}"
+								 th:errors="*{aplicacion}">
 							</div>
-							
+
 						</div>
+						<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
+						<div class="col-sm-2">
+							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+								<option value="">Seleccionar...</option>
+								<option th:each="estado: ${fases}"
+										th:text="${estado.fase}" th:value="${estado.fase}">
+								</option>
+							</select>
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('estado')}"
+								 th:errors="*{estado}">
+							</div>
+
+						</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
+						<div class="col-sm-6">
+							<input type="text" th:field="*{descripcion}" class="form-control"
+								   th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('descripcion')}"
+								 th:errors="*{descripcion}"></div>
+						</div>
+					</div>
 					</div>
 
 					<div class="form-group row py-3">
@@ -67,26 +76,65 @@
 					</div>
 
 					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.testing}"></label>
+						<div class="col-sm-2">
+							<input id="fechaPlanificadaTest" type="date" />
+						</div>
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
+						<div class="col-sm-2">
+							<input id="fechaRealTest" type="date" />
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
+							<div class="col-sm-2">
+								<input id="implePlanned" type="date">
+							</div>
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
+						<div class="col-sm-2">
+							<input id="impleReal" type="date">
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.user}"></label>
+						<div class="col-sm-2">
+							<input id="user" type="text" disabled>
+						</div>
+						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
+						<div class="col-sm-2">
+						<select class="form-select" name="tipoRequerimiento" th:field="*{tipoRequerimiento}">
+							<option value="">Seleccionar...</option>
+							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.RequirementType).values()}"
+									th:text="${tipoRequerimiento}"
+									th:value="${tipoRequerimiento.name()}">
+							</option>
+						</select>
+						  <div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('tipoRequerimiento')}"
+							 th:errors="*{tipoRequerimiento}">
+						  </div>
+						</div>
+
+					</div>
+
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label"
+							   th:text="'Cantidad' + ' Horas'"></label>
+						<div class="col-sm-2">
+							<input id="horasRequerimiento" type="number"
+								   th:field="*{cantidadHoras}" class="form-control" />
+						</div>
+					</div>
+
+
+					<div class="form-group row py-3">
 						<label for="buscar_fase" class="col-sm-2 col-form-label"
 							th:text="'Buscar Fase'"></label>
 						<div class="col-sm-3">
 							<input type="text" name="buscar_fase" id="buscar_fase"
 								class="form-control" />
-						</div>
-						
-						<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
-						<div class="col-sm-4">
-							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
-								<option value="">Seleccionar...</option>
-								<option th:each="estado: ${fases}"
-									th:text="${estado.fase}" th:value="${estado.fase}">
-								</option>
-							</select>
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('estado')}"
-								th:errors="*{estado}">
-							</div>
-							
 						</div>
 						
 					</div>
