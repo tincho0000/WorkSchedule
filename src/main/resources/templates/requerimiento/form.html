@@ -176,14 +176,13 @@
 	});
 
 	function addFases() {
-		//alert("entro en el onclick");
 		let objectFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectFases);
 		let fasesList = document.getElementById('fasesTable');
 		console.log("onclick fases:", fases);
 		for (const fase of fases) {
 			let row = document.createElement('tr');
-			let html = '<td>' + fase.id + '</td><td>' + fase.fase + '</td><td><input type="text" /></td>';
+			let html = '<td>' + fase.fase + '</td><td><input type="text" /></td>';
 			row.innerHTML = html;
 			fasesList.appendChild(row);
 		}
