@@ -100,11 +100,11 @@
 					<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.user}"></label>
 						<div class="col-sm-2">
-							<input id="user" type="text" disabled>
+							<input id="user" type="text" class="form-control" disabled>
 						</div>
 						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
 						<div class="col-sm-2">
-						<select class="form-select" name="tipoRequerimiento" th:field="*{tipoRequerimiento}">
+						<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
 							<option value="">Seleccionar...</option>
 							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.RequirementType).values()}"
 									th:text="${tipoRequerimiento}"
@@ -119,55 +119,44 @@
 
 					</div>
 
-					<div class="form-group row py-3">
+					<!--<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label"
 							   th:text="'Cantidad' + ' Horas'"></label>
 						<div class="col-sm-2">
 							<input id="horasRequerimiento" type="number"
 								   th:field="*{cantidadHoras}" class="form-control" />
 						</div>
-					</div>
-
+					</div>-->
 
 					<div class="form-group row py-3">
-						<label for="buscar_fase" class="col-sm-2 col-form-label"
-							th:text="'Buscar Fase'"></label>
-						<div class="col-sm-3">
-							<input type="text" name="buscar_fase" id="buscar_fase"
-								class="form-control" />
+						<div class="col-sm-2">
+						<button type="button" onclick="addFases()" class="btn btn-primary">
+							<span th:utext="#{form.requirement.button.add.estimated}"></span>
+						</button>
 						</div>
-						
 					</div>
 					
 					
 
 					<div class="form-group row py-5">
-						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
 
 						<div class="col-sm-6 border-0">
 							<table id="cargarFase"
-								class="table table-sm table-striped table-hover">
+								   class="table table-sm table-striped table-hover">
 								<thead class="text-white">
-									<tr>
-										<th>Fase</th>
-										<th>Horas</th>
-										<th>Eliminar</th>
-									</tr>
+								<tr>
+									<th>Fase</th>
+									<th>Horas</th>
+									<th>Eliminar</th>
+								</tr>
 								</thead>
-								<tbody>
+								<tbody id='fasesTable'>
 								</tbody>
 							</table>
 						</div>
 
-						<div class="col-sm-3">
-							<h5 class="text-center">
-								<span class="">Total Fases</span>
-							</h5>
-							<h5 class="text-center">
-								<span class="" id="total_fases">0</span>
-							</h5>
 
-						</div>
+
 
 						<div class="col-sm-3">
 							<input type="submit" th:value="${titulo}" class="btn btn-success" onclick="validar()" />
@@ -183,19 +172,45 @@
 	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 	<script type="text/javascript" th:inline="javascript">
 	$(document).ready(function() {
-		
-		var fases = [[${listaFases}]];
-		var fasesId = [[${listaFasesId}]];
-// 		console.log("fases: " +fases);
-		
-		for (i = 0; i < fases.length; i++) {
-			
-			var linea = $("#plantillaFases").html();
-			linea = linea.replace(/{ID}/g, fasesId[i]);
-			linea = linea.replace(/{FASE}/g, fases[i]);
-			$("#cargarFase tbody").append(linea);
-		}
+		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
+
+	function addFases() {
+		//alert("entro en el onclick");
+		let objectFases = sessionStorage.getItem('fases');
+		let fases = JSON.parse(objectFases);
+		let fasesList = document.getElementById('fasesTable');
+		console.log("onclick fases:", fases);
+		for (const fase of fases) {
+			let row = document.createElement('tr');
+			let html = '<td>' + fase.id + '</td><td>' + fase.fase + '</td><td><input type="text" /></td>';
+			row.innerHTML = html;
+			fasesList.appendChild(row);
+		}
+
+	}
+	function loadFases() {
+		/* Function */
+		var fases;
+		console.log("valor original: ", this.value)
+
+		switch(this.value) {
+			case 'EVOLUTIVO':
+				fases = [[${listaEvolutiva}]];
+				break;
+			case 'CORRECTIVO':
+			case 'REWORK':
+				fases = [[${listaCorrectivoRework}]];
+				break;
+			case 'ANALISIS':
+				fases = [[${listaAnalisis}]];
+				break;
+			default:
+				fases = [[${listaAnalisis}]];
+		}
+		console.log("fases", fases);
+		sessionStorage.setItem('fases', JSON.stringify(fases));
+	}
 	
 	</script>
 

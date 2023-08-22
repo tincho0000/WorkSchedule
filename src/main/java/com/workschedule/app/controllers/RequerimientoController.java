@@ -1,8 +1,7 @@
 package com.workschedule.app.controllers;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -231,25 +230,27 @@ public class RequerimientoController {
 	@GetMapping("/form")
 	public String crear(Model model) {
 
-		List<Fase> fases = faseService.findAll();
+		List<FaseSimple> fases = faseService.findFaseAll();
 //		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 		
-		
-		List<String> listaFases = new ArrayList<>();
-		List<Long> listaFasesId = new ArrayList<>();
-		for (Fase fase : fases) {
-			listaFases.add(fase.getFase());
-			listaFasesId.add(fase.getId());
-		}
-		
-		System.out.println(listaFases);
+		List<FaseSimple> listaAnalisis = new ArrayList<>();
+		List<FaseSimple> listaEvolutiva = new ArrayList<>();
+		List<FaseSimple> listaCorrectivoRework = new ArrayList<>();
+		List<String> listaEvolutivaAux = new ArrayList<>(Arrays.asList( "Análisis","Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
+		List<String> listaCorrectivoReworkAux = new ArrayList<>(Arrays.asList("Análisis","Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
+
+		listaAnalisis = fases.stream().filter( fase -> "Análisis".equalsIgnoreCase(fase.getFase())).collect(Collectors.toList());
+		listaCorrectivoRework = fases.stream().filter(fase -> listaCorrectivoReworkAux.contains(fase.getFase())).collect(Collectors.toList());
+		listaEvolutiva = fases.stream().filter(fase -> listaEvolutivaAux.contains(fase.getFase())).collect(Collectors.toList());
+
 
 		model.addAttribute("titulo", "Alta Requerimiento");
 		model.addAttribute("fases", fases);
-		model.addAttribute("listaFases", listaFases);
-		model.addAttribute("listaFasesId", listaFasesId);
+		model.addAttribute("listaEvolutiva", listaEvolutiva);
+		model.addAttribute("listaCorrectivoRework", listaCorrectivoRework);
+		model.addAttribute("listaAnalisis", listaAnalisis);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		return "requerimiento/form";
@@ -261,6 +262,23 @@ public class RequerimientoController {
 			return faseService.findFaseAll();
 		}
 		return faseService.findByDescripcion(termino);
+	}
+
+	@GetMapping(value= "/cargar-fases-filter/{tipoRequerimiento}", produces = {"application/json"})
+	public @ResponseBody List<FaseSimple> cargarFasesFilter(@PathVariable String tipoRequerimiento) {
+		List<String> listaEvolutivaAux = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
+		List<String> listaCorrectivoReworkAux = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
+		switch(tipoRequerimiento) {
+			case "EVOLUTIVO":
+				return faseService.findFaseAll().stream().filter( fase -> listaEvolutivaAux.contains(fase.getFase())).collect(Collectors.toList());
+			case "CORRECTIVO":
+			case "REWORK":
+				return faseService.findFaseAll().stream().filter(fase -> listaCorrectivoReworkAux.contains(fase.getFase())).collect(Collectors.toList());
+			case "ANALISIS":
+                return faseService.findByDescripcion("Análisis");
+			default:
+				return faseService.findFaseAll();
+		}
 	}
 
 	
@@ -279,10 +297,33 @@ public class RequerimientoController {
 		List<Fase> fasesBD = faseService.findAll();
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
-		
+		List<String> listaEvolutiva = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
+		List<String> listaCorrectivoRework = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
 		for (Fase fase : fasesBD) {
-			listaFases.add(fase.getFase());
-			listaFasesId.add(fase.getId());
+			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("EVOLUTIVO")) {
+				if(listaEvolutiva.contains(fase.getFase())) {
+					listaFases.add(fase.getFase());
+					listaFasesId.add(fase.getId());
+				}
+			}
+			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("CORRECTIVO") || requerimiento.getTipoRequerimiento().equalsIgnoreCase("REWORK")) {
+				if(listaCorrectivoRework.contains(fase.getFase())) {
+					listaFases.add(fase.getFase());
+					listaFasesId.add(fase.getId());
+				}
+			}
+			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("Analisis")) {
+				if("Análisis".equalsIgnoreCase(fase.getFase())) {
+					listaFases.add(fase.getFase());
+					listaFasesId.add(fase.getId());
+				}
+			}
+
+		}
+		System.out.println("tipoRequerimiento: " + requerimiento.getTipoRequerimiento());
+		for(int i=0;i<listaFases.size();i++)
+		{
+			System.out.println("FASES: " + listaFases.get(i));
 		}
 		
 		

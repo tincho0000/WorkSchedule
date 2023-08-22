@@ -7,20 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -40,9 +27,11 @@ public class Requerimiento implements Serializable {
 	private String requerimiento;
 	@NotEmpty
 	private String descripcion;
-//	private int cantidadHoras;
+	//private int cantidadHoras;
 	private String observacion;
 	private String estado;
+	@Column(name = "tipo_requerimiento")
+	private String tipoRequerimiento;
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
 
@@ -102,13 +91,12 @@ public class Requerimiento implements Serializable {
 		this.descripcion = nombre;
 	}
 
-//	public int getCantidadHoras() {
-//		return cantidadHoras;
-//	}
-//
-//	public void setCantidadHoras(int horas) {
-//		this.cantidadHoras = horas;
-//	}
+	//public int getCantidadHoras() {
+	//	return cantidadHoras;
+	//}
+	//public void setCantidadHoras(int horas) {
+	//	this.cantidadHoras = horas;
+	//}
 
 	public String getObservacion() {
 		return observacion;
@@ -156,6 +144,14 @@ public class Requerimiento implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public String getTipoRequerimiento() {
+		return tipoRequerimiento;
+	}
+
+	public void setTipoRequerimiento(String tipoRequerimiento) {
+		this.tipoRequerimiento = tipoRequerimiento;
 	}
 
 	@Override
