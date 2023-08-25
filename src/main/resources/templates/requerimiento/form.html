@@ -100,7 +100,7 @@
 					<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.user}"></label>
 						<div class="col-sm-2">
-							<input id="user" type="text" class="form-control" disabled>
+							<input id="user" type="text" th:value="${username}" class="form-control" readonly>
 						</div>
 						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
 						<div class="col-sm-2">
@@ -119,18 +119,18 @@
 
 					</div>
 
-					<!--<div class="form-group row py-3">
+					<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label"
 							   th:text="'Cantidad' + ' Horas'"></label>
 						<div class="col-sm-2">
-							<input id="horasRequerimiento" type="number"
-								   th:field="*{cantidadHoras}" class="form-control" />
+							<input type="number"
+								   id="total_fases" class="form-control" th:readonly="true" oninput="calculateTotal()" />
 						</div>
-					</div>-->
+					</div>
 
 					<div class="form-group row py-3">
 						<div class="col-sm-2">
-						<button type="button" onclick="addFases()" class="btn btn-primary">
+						<button id="addFasesBtn" type="button" onclick="addFases()" class="btn btn-primary">
 							<span th:utext="#{form.requirement.button.add.estimated}"></span>
 						</button>
 						</div>
@@ -155,12 +155,10 @@
 							</table>
 						</div>
 
-
-
-
-						<div class="col-sm-3">
-							<input type="submit" th:value="${titulo}" class="btn btn-success" onclick="validar()" />
+						<div class="d-flex justify-content-center">
+							<input type="submit" th:value="#{form.requirement.save.button.label}" class="btn btn-success" />
 						</div>
+
 					</div>
 				</form>
 			</div>
@@ -172,8 +170,30 @@
 	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 	<script type="text/javascript" th:inline="javascript">
 	$(document).ready(function() {
+		disabledButtonAddFases();
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
+
+	function calculateTotal() {
+		var total=0;
+
+	$('input[name="cantidad[]"]').each(function(){
+		console.log("VALOR: " + $(this).val());
+		if ($(this).val() != ""){
+			total += parseInt($(this).val());
+		} else {
+			// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
+			$(this).val(0);
+		}
+	});
+
+	// 					console.log("TOTAL: " + total);
+		let cantidadHs = document.getElementById('total_fases');
+		cantidadHs.value = total;
+		return total;
+
+	//$('#total_fases').html(total);
+	}
 
 	function addFases() {
 		let objectFases = sessionStorage.getItem('fases');
@@ -182,7 +202,11 @@
 		console.log("onclick fases:", fases);
 		for (const fase of fases) {
 			let row = document.createElement('tr');
-			let html = '<td>' + fase.fase + '</td><td><input type="text" /></td>';
+			let html = '<td class="d-none"><input type="hidden" value="' +fase.id+ '" name="fase_id[]" /></td>' +'<td>' + fase.fase + '</td>' +
+					'<td>' +
+					'<div class="col-sm-6">' +
+					'<input type="number" value="0" name="cantidad[]"  id="cantidad_'+ fase.id +'" class="form-control text-end" onchange="calculateTotal();"/>'
+					+'</div></td>';
 			row.innerHTML = html;
 			fasesList.appendChild(row);
 		}
@@ -190,25 +214,40 @@
 	}
 	function loadFases() {
 		/* Function */
-		var fases;
+		var fases = [];
 		console.log("valor original: ", this.value)
-
-		switch(this.value) {
-			case 'EVOLUTIVO':
-				fases = [[${listaEvolutiva}]];
-				break;
-			case 'CORRECTIVO':
-			case 'REWORK':
-				fases = [[${listaCorrectivoRework}]];
-				break;
-			case 'ANALISIS':
-				fases = [[${listaAnalisis}]];
-				break;
-			default:
-				fases = [[${listaAnalisis}]];
+		if(this.value != null || this.value.trim() != '') {
+			removeDisabledButtonAddFases();
+			switch (this.value) {
+				case 'EVOLUTIVO':
+					fases = [[${listaEvolutiva}]];
+					break;
+				case 'CORRECTIVO':
+				case 'REWORK':
+					fases = [[${listaCorrectivoRework}]];
+					break;
+				case 'ANALISIS':
+					fases = [[${listaAnalisis}]];
+					break;
+				default:
+					disabledButtonAddFases();
+					fases = [[${listaAnalisis}]];
+			}
+		} else {
+			disabledButtonAddFases();
 		}
 		console.log("fases", fases);
 		sessionStorage.setItem('fases', JSON.stringify(fases));
+	}
+
+	function disabledButtonAddFases() {
+		let button = document.getElementById("addFasesBtn");
+		button.setAttribute("disabled", "disabled");
+	}
+
+	function removeDisabledButtonAddFases() {
+		let button = document.getElementById("addFasesBtn");
+		button.removeAttribute("disabled");
 	}
 	
 	</script>

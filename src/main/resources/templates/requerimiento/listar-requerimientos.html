@@ -69,7 +69,7 @@
 								<th class="text-white">APLICACIÓN</th>
 								<th class="text-white">REQUERIMIENTO</th>
 								<th class="text-white">DESCRIPCIÓN</th>
-								<th class="text-white">CANTIDAD HORAS</th>
+								<!--/*<th class="text-white">CANTIDAD HORAS</th>*/-->
 								<th class="text-white">ESTADO</th>
 								<th class="text-center text-white">ACCIÓN</th>
 	<!-- 							<th class="text-center">Ver/Editar</th> -->
@@ -85,7 +85,6 @@
 								<td class="text-white" th:text="${requerimiento.aplicacion.aplicacion}"></td>
 								<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
 								<td class="text-white" th:text="${requerimiento.descripcion}"></td>
-								<td class="text-white" th:text="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}"></td>
 								<td class="text-white" th:text="${requerimiento.estado}"></td>
 								<td class="text-center">
 									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" 

@@ -234,6 +234,7 @@ public class RequerimientoController {
 //		List<FaseSimple> fasesSimple = faseService.findFaseAll();
 		Requerimiento requerimiento = new Requerimiento();
 		List<Aplicacion> aplicaciones = aplicacionService.findAll();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		List<FaseSimple> listaAnalisis = new ArrayList<>();
 		List<FaseSimple> listaEvolutiva = new ArrayList<>();
@@ -253,6 +254,7 @@ public class RequerimientoController {
 		model.addAttribute("listaAnalisis", listaAnalisis);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("username",  auth.getName());
 		return "requerimiento/form";
 	}
 
@@ -263,24 +265,6 @@ public class RequerimientoController {
 		}
 		return faseService.findByDescripcion(termino);
 	}
-
-	@GetMapping(value= "/cargar-fases-filter/{tipoRequerimiento}", produces = {"application/json"})
-	public @ResponseBody List<FaseSimple> cargarFasesFilter(@PathVariable String tipoRequerimiento) {
-		List<String> listaEvolutivaAux = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
-		List<String> listaCorrectivoReworkAux = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
-		switch(tipoRequerimiento) {
-			case "EVOLUTIVO":
-				return faseService.findFaseAll().stream().filter( fase -> listaEvolutivaAux.contains(fase.getFase())).collect(Collectors.toList());
-			case "CORRECTIVO":
-			case "REWORK":
-				return faseService.findFaseAll().stream().filter(fase -> listaCorrectivoReworkAux.contains(fase.getFase())).collect(Collectors.toList());
-			case "ANALISIS":
-                return faseService.findByDescripcion("Análisis");
-			default:
-				return faseService.findFaseAll();
-		}
-	}
-
 	
 	/************************************/
 	/******  @PostMapping("/form") ******/
@@ -288,7 +272,9 @@ public class RequerimientoController {
 	@PostMapping("/form")
 	public String guardar(@Valid @ModelAttribute Requerimiento requerimiento, BindingResult result, Model model,
 			@RequestParam(name = "fase_id[]", required = false) Long[] fases,
-			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase, RedirectAttributes flash, SessionStatus status) {
+			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase,
+			@RequestParam(name= "tipoRequerimiento") String tipoRequerimiento,
+						  RedirectAttributes flash, SessionStatus status) {
 		
 		boolean existe;
 		boolean modificacion = false;
@@ -299,32 +285,11 @@ public class RequerimientoController {
 		List<Long> listaFasesId = new ArrayList<>();
 		List<String> listaEvolutiva = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
 		List<String> listaCorrectivoRework = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
-		for (Fase fase : fasesBD) {
-			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("EVOLUTIVO")) {
-				if(listaEvolutiva.contains(fase.getFase())) {
-					listaFases.add(fase.getFase());
-					listaFasesId.add(fase.getId());
-				}
-			}
-			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("CORRECTIVO") || requerimiento.getTipoRequerimiento().equalsIgnoreCase("REWORK")) {
-				if(listaCorrectivoRework.contains(fase.getFase())) {
-					listaFases.add(fase.getFase());
-					listaFasesId.add(fase.getId());
-				}
-			}
-			if(requerimiento.getTipoRequerimiento().equalsIgnoreCase("Analisis")) {
-				if("Análisis".equalsIgnoreCase(fase.getFase())) {
-					listaFases.add(fase.getFase());
-					listaFasesId.add(fase.getId());
-				}
-			}
-
-		}
-		System.out.println("tipoRequerimiento: " + requerimiento.getTipoRequerimiento());
-		for(int i=0;i<listaFases.size();i++)
-		{
-			System.out.println("FASES: " + listaFases.get(i));
-		}
+		System.out.println("tipoRequerimiento: " + tipoRequerimiento);
+		//for(Long fase : fases)
+		//{
+		//	System.out.println("FASES: " + listaFases.get(fase.intValue()));
+		//}
 		
 		
 		// Distinto de null es porque estamos haciendo una modificacion
