@@ -105,7 +105,7 @@
 						<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
 						<div class="col-sm-2">
 						<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
-							<option value="">Seleccionar...</option>
+							<option value="empty">Seleccionar...</option>
 							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.RequirementType).values()}"
 									th:text="${tipoRequerimiento}"
 									th:value="${tipoRequerimiento.name()}">
@@ -214,9 +214,9 @@
 	}
 	function loadFases() {
 		/* Function */
-		var fases = [];
-		console.log("valor original: ", this.value)
-		if(this.value != null || this.value.trim() != '') {
+		var fases = [[${listaAnalisis}]];
+		console.log("valor original: ", this.value);
+		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddFases();
 			switch (this.value) {
 				case 'EVOLUTIVO':
@@ -231,10 +231,11 @@
 					break;
 				default:
 					disabledButtonAddFases();
-					fases = [[${listaAnalisis}]];
+
 			}
 		} else {
 			disabledButtonAddFases();
+			removeAllElementTable();
 		}
 		console.log("fases", fases);
 		sessionStorage.setItem('fases', JSON.stringify(fases));
@@ -248,6 +249,14 @@
 	function removeDisabledButtonAddFases() {
 		let button = document.getElementById("addFasesBtn");
 		button.removeAttribute("disabled");
+	}
+
+	function removeAllElementTable() {
+		console.log("entro al borrar elem de la tabla");
+		let fasesRow = document.getElementById('fasesTable');
+		while (fasesRow.firstChild) {
+			fasesRow.removeChild(fasesRow.firstChild);
+		}
 	}
 	
 	</script>
