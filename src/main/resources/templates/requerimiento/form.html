@@ -141,18 +141,7 @@
 					<div class="form-group row py-5">
 
 						<div class="col-sm-6 border-0">
-							<table id="cargarFase"
-								   class="table table-sm table-striped table-hover">
-								<thead class="text-white">
-								<tr>
-									<th>Fase</th>
-									<th>Horas</th>
-									<th>Eliminar</th>
-								</tr>
-								</thead>
-								<tbody id='fasesTable'>
-								</tbody>
-							</table>
+							<div class="" id="tableDiv"></div>
 						</div>
 
 						<div class="d-flex justify-content-center">
@@ -198,18 +187,48 @@
 	function addFases() {
 		let objectFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectFases);
-		let fasesList = document.getElementById('fasesTable');
+		let tableDiv = document.getElementById('tableDiv');
+		let tableActual = document.createElement('table')
 		console.log("onclick fases:", fases);
+		tableActual.id= "cargarFase";
+		tableActual.title = "Estimation Table"
+		tableActual.className = "table table-sm table-striped table-hover";
+		let tHead = document.createElement('thead');
+		tHead.className= "text-white";
+		let trHeadNameEstimation = document.createElement('tr');
+		let trHeadColumns = document.createElement('tr');
+		trHeadNameEstimation.innerHTML =
+				'    <th colspan="2" scope="colgroup"><div> <span>Nombre estimación</span>' +
+				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
+				'</div></th>' +
+				'    <th colspan="2" scope="colgroup">'+
+				'<div style="float: right; margin-right: 20px;">'+
+				'<input type="checkbox" id="activeEstimation[]" name="activeEstimation[]" value="0" class="onoffswitch-checkbox"  checked>'+
+				'<label for="activeEstimation[]"> Activo</label>'+
+				'</div>'+
+				'</th>';
+		trHeadColumns.innerHTML = '<th scope="col">Fase</th>' +
+				                  '<th scope="col">Horas</th>' +
+				                  '<th>Eliminar</th>';
+		let tBody = document.createElement('tbody');
+		tBody.id= "fasesTable";
 		for (const fase of fases) {
-			let row = document.createElement('tr');
-			let html = '<td class="d-none"><input type="hidden" value="' +fase.id+ '" name="fase_id[]" /></td>' +'<td>' + fase.fase + '</td>' +
+			let trFase = document.createElement('tr');
+			let htmlBody = '<td class="d-none"><input type="hidden" value="' + fase.id + '" name="fase_id[]" /></td>' + '<td>' + fase.fase + '</td>' +
 					'<td>' +
 					'<div class="col-sm-6">' +
-					'<input type="number" value="0" name="cantidad[]"  id="cantidad_'+ fase.id +'" class="form-control text-end" onchange="calculateTotal();"/>'
-					+'</div></td>';
-			row.innerHTML = html;
-			fasesList.appendChild(row);
+					'<input type="number" value="0" name="cantidad[]"  id="cantidad_' + fase.id + '" class="form-control text-end" onchange="calculateTotal();"/>'
+					+ '</div></td>';
+			trFase.innerHTML = htmlBody;
+			tBody.appendChild(trFase);
 		}
+
+		tHead.appendChild(trHeadNameEstimation);
+		tHead.appendChild(trHeadColumns);
+		tableActual.appendChild(tHead);
+		tableActual.appendChild(tBody);
+
+		tableDiv.appendChild(tableActual);
 
 	}
 	function loadFases() {

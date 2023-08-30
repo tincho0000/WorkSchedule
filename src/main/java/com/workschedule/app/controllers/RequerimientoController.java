@@ -28,7 +28,6 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.workschedule.app.models.entity.Aplicacion;
-import com.workschedule.app.models.entity.Estimacion;
 import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Fase;
 import com.workschedule.app.models.entity.FaseSimple;
@@ -241,6 +240,7 @@ public class RequerimientoController {
 		List<FaseSimple> listaCorrectivoRework = new ArrayList<>();
 		List<String> listaEvolutivaAux = new ArrayList<>(Arrays.asList( "Análisis","Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
 		List<String> listaCorrectivoReworkAux = new ArrayList<>(Arrays.asList("Análisis","Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
+		List<EstimacionRequerimientoFase> estimacionFasesRequerimientoList = new ArrayList<>();
 
 		listaAnalisis = fases.stream().filter( fase -> "Análisis".equalsIgnoreCase(fase.getFase())).collect(Collectors.toList());
 		listaCorrectivoRework = fases.stream().filter(fase -> listaCorrectivoReworkAux.contains(fase.getFase())).collect(Collectors.toList());
@@ -252,6 +252,7 @@ public class RequerimientoController {
 		model.addAttribute("listaEvolutiva", listaEvolutiva);
 		model.addAttribute("listaCorrectivoRework", listaCorrectivoRework);
 		model.addAttribute("listaAnalisis", listaAnalisis);
+		model.addAttribute("estimacionesFases", estimacionFasesRequerimientoList);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		model.addAttribute("username",  auth.getName());
@@ -274,6 +275,7 @@ public class RequerimientoController {
 			@RequestParam(name = "fase_id[]", required = false) Long[] fases,
 			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase,
 			@RequestParam(name= "tipoRequerimiento") String tipoRequerimiento,
+			@RequestParam(name="namesEstimation[]") String[] nombresEstimaciones,
 						  RedirectAttributes flash, SessionStatus status) {
 		
 		boolean existe;
@@ -283,8 +285,6 @@ public class RequerimientoController {
 		List<Fase> fasesBD = faseService.findAll();
 		List<String> listaFases = new ArrayList<>();
 		List<Long> listaFasesId = new ArrayList<>();
-		List<String> listaEvolutiva = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "PI", "PAU", "Implementación", "Homologacion"));
-		List<String> listaCorrectivoRework = new ArrayList<>(Arrays.asList("Análisis", "Estimación", "Desarrollo", "PU", "Implementación", "Homologacion"));
 		System.out.println("tipoRequerimiento: " + tipoRequerimiento);
 		//for(Long fase : fases)
 		//{
@@ -387,12 +387,14 @@ public class RequerimientoController {
 			Usuario usuario = usuarioService.findByUsuario(auth.getName());
 			System.err.println(usuario);
 			requerimiento.setUsuario(usuario);
+			//recorrer todas las estimaciones guardadas en una lista y guardarlas
 		}
 		
 		System.out.println("Requerimiento" + requerimiento.toString());
 		
 		try {
 			requerimientoService.save(requerimiento);
+
 		} catch (DataIntegrityViolationException e) {
 			System.err.println("ERROR: " + e.toString());
 			if (modificacion) {
