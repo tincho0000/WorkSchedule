@@ -2,6 +2,7 @@ package com.workschedule.app.models.service;
 
 import java.util.List;
 
+import com.workschedule.app.models.repository.AplicacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ public class AplicacionServiceImpl implements IAplicacionService {
 	@Autowired
 	IAplicacionDao aplicacionDao;
 
+	@Autowired
+	AplicacionRepository aplicacionRepository;
 	@Override
 	public List<Aplicacion> findAll() {
 		return (List<Aplicacion>) aplicacionDao.findAll();

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.workschedule.app.models.entity.*;
+import com.workschedule.app.models.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,30 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.workschedule.app.models.entity.Aplicacion;
-import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
-import com.workschedule.app.models.entity.Fase;
-import com.workschedule.app.models.entity.FaseSimple;
-import com.workschedule.app.models.entity.Requerimiento;
-import com.workschedule.app.models.entity.Usuario;
-import com.workschedule.app.models.service.IAplicacionService;
-import com.workschedule.app.models.service.IEstimacionService;
-import com.workschedule.app.models.service.IFaseService;
-import com.workschedule.app.models.service.IPlanificacionService;
-import com.workschedule.app.models.service.IRequerimientoFaseService;
-import com.workschedule.app.models.service.IRequerimientoService;
-import com.workschedule.app.models.service.IUsuarioService;
 import com.workschedule.app.util.paginator.PageRender;
 
 @Secured("ROLE_GESTION")
@@ -246,6 +228,8 @@ public class RequerimientoController {
 		listaCorrectivoRework = fases.stream().filter(fase -> listaCorrectivoReworkAux.contains(fase.getFase())).collect(Collectors.toList());
 		listaEvolutiva = fases.stream().filter(fase -> listaEvolutivaAux.contains(fase.getFase())).collect(Collectors.toList());
 
+		requerimiento.addAllEstimacionFases(estimacionFasesRequerimientoList);
+
 
 		model.addAttribute("titulo", "Alta Requerimiento");
 		model.addAttribute("fases", fases);
@@ -266,16 +250,22 @@ public class RequerimientoController {
 		}
 		return faseService.findByDescripcion(termino);
 	}
-	
+
+	//@PostMapping("/addEstimation")
+	//public String agregarEstimacion(@ModelAttribute @RequestBody Requerimiento requerimiento) {
+	//		requerimiento.getEstimacionRequerimientoFases().add(new EstimacionRequerimientoFase());
+	//		return "requerimiento/form";
+	//}
+
 	/************************************/
 	/******  @PostMapping("/form") ******/
 	/************************************/
 	@PostMapping("/form")
 	public String guardar(@Valid @ModelAttribute Requerimiento requerimiento, BindingResult result, Model model,
-			@RequestParam(name = "fase_id[]", required = false) Long[] fases,
-			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase,
-			@RequestParam(name= "tipoRequerimiento") String tipoRequerimiento,
-			@RequestParam(name="namesEstimation[]") String[] nombresEstimaciones,
+						  @RequestParam(name = "fase_id[]", required = false) Long[] fases,
+						  @RequestParam(name = "cantidad[]", required = false) Integer[] horasFase,
+						  @RequestParam(name= "tipoRequerimiento") String tipoRequerimiento,
+						  @RequestParam(name="namesEstimation[]") String[] nombresEstimaciones,
 						  RedirectAttributes flash, SessionStatus status) {
 		
 		boolean existe;
@@ -387,13 +377,37 @@ public class RequerimientoController {
 			Usuario usuario = usuarioService.findByUsuario(auth.getName());
 			System.err.println(usuario);
 			requerimiento.setUsuario(usuario);
-			//recorrer todas las estimaciones guardadas en una lista y guardarlas
+			//recorrer todas las fases con sus hs y las guarda en la tabla de relacion
 		}
 		
 		System.out.println("Requerimiento" + requerimiento.toString());
 		
 		try {
 			requerimientoService.save(requerimiento);
+			if(!requerimiento.getEstimacionRequerimientoFases().isEmpty()) {
+
+				//nombresEstimaciones
+				Estimacion estimacion = new Estimacion();
+				estimacion.setActivo(1);
+				estimacion.setCantidadHoras(100);
+				estimacion.setDescripcion((nombresEstimaciones.length == 0) ? "Estimacion" : nombresEstimaciones[0]);
+				estimacion.setFecha(new Date());
+				estimacion.setRequerimiento(requerimiento);
+				for(int i=0; i <fases.length; i++ ) {
+					Fase fase = faseService.findOne(fases[i]);
+					EstimacionRequerimientoFase estimacionFase = new EstimacionRequerimientoFase();
+					estimacionFase.setEstimacion(estimacion);
+					estimacionFase.setRequerimiento(requerimiento);
+					estimacionFase.setCantidadHoras(horasFase[i]);
+					estimacionFase.setFase(fase);
+					try {
+						estimacionService.save(estimacion);
+						requerimientoFaseService.save(estimacionFase);
+					} catch (Exception e) {
+						System.out.println("Exception: "+ e);
+					}
+				}
+			}
 
 		} catch (DataIntegrityViolationException e) {
 			System.err.println("ERROR: " + e.toString());

@@ -184,6 +184,10 @@ public class Requerimiento implements Serializable {
 	public void addEstimacionRequerimientoFase(EstimacionRequerimientoFase estimacionRequerimientoFases) {
 		this.estimacionRequerimientoFases.add(estimacionRequerimientoFases);
 	}
+
+	public void addAllEstimacionFases(List<EstimacionRequerimientoFase> estimaciones) {
+		this.estimacionRequerimientoFases.addAll(estimaciones);
+	}
 	
 	public void addEstimacionFase(Fase fase, int cantHoras, Estimacion estimacion) {
 		EstimacionRequerimientoFase estimacionRequerimientoFase = new EstimacionRequerimientoFase(this, fase, estimacion);
