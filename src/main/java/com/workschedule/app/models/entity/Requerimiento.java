@@ -3,89 +3,96 @@ package com.workschedule.app.models.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.workschedule.app.enums.Aplicacion;
+import com.workschedule.app.enums.EstadoRequerimiento;
+import com.workschedule.app.enums.TipoRequerimiento;
+
 @Entity
-@Table(name = "Requerimiento", uniqueConstraints={ 
-		@UniqueConstraint(columnNames={"aplicacion_id", "requerimiento", "descripcion"})
-})
+@Table(name = "Requerimiento")
 public class Requerimiento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
 	@NotEmpty
 	private String requerimiento;
+	
 	@NotEmpty
 	private String descripcion;
-//	private int cantidadHoras;
+	
 	private String observacion;
-	private String estado;
-	@Temporal(TemporalType.DATE)
-	private Date fecha;
-
-	@OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<EstimacionRequerimientoFase> estimacionRequerimientoFases;
 	
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "aplicacion_id")
+	@Enumerated(EnumType.STRING)
+	private EstadoRequerimiento estado;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_planif_testing")
+	private Date fechaPlanifTesting;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_real_testing")
+	private Date fechaRealTesting;
+	
+	@Column(name="motivo_replanif_testing")
+	private Date motivoReplanifTesting;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_planif_implementacion")
+	private Date fechaPlanifImplementacion;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_real_implementacion")
+	private Date fechaRealImplementacion;
+	
+	@Column(name="motivo_replanif_implementacion")
+	private Date motivoReplanifImplementacion;
+	
+	@NotNull
+	@Column(name="tipo_requerimiento")
+	@Enumerated(EnumType.STRING)
+	private TipoRequerimiento tipoRequerimiento;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
 	private Aplicacion aplicacion;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "usuario_id")
-	private Usuario usuario;
-	
-//	@OneToMany(mappedBy = "estimacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	private List<Estimacion> estimacion;
 
-	/******************* Metodos *******************/
+	@OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<Estimacion> estimacion;
 	
-	@PrePersist
-	public void prePersist() {
-		fecha = new Date();
+	
+	
+	public Requerimiento() {
+		
+		this.estimacion = new ArrayList<>();
+		
 	}
 	
-//	public List<Estimacion> getEstimacion() {
-//		return estimacion;
-//	}
-//
-//	public void setEstimacion(List<Estimacion> estimacion) {
-//		this.estimacion = estimacion;
-//	}
-
-
-
-	public Long getId() {
-		return id;
+	public void addEstimacion(Estimacion estimacion) {
+		this.estimacion.add(estimacion);
 	}
-
-	public void setId(Long id) {
-		this.id = id;
+	
+	public void deleteEstimacion(int index) {
+		this.estimacion.remove(index);
 	}
-
+	
 	public String getRequerimiento() {
 		return requerimiento;
 	}
@@ -98,17 +105,9 @@ public class Requerimiento implements Serializable {
 		return descripcion;
 	}
 
-	public void setDescripcion(String nombre) {
-		this.descripcion = nombre;
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
-
-//	public int getCantidadHoras() {
-//		return cantidadHoras;
-//	}
-//
-//	public void setCantidadHoras(int horas) {
-//		this.cantidadHoras = horas;
-//	}
 
 	public String getObservacion() {
 		return observacion;
@@ -118,14 +117,78 @@ public class Requerimiento implements Serializable {
 		this.observacion = observacion;
 	}
 
-	public List<EstimacionRequerimientoFase> getEstimacionRequerimientoFases() {
-		return estimacionRequerimientoFases;
+	public EstadoRequerimiento getEstado() {
+		return estado;
 	}
 
-	public void setEstimacionRequerimientoFases(List<EstimacionRequerimientoFase> estimacionRequerimientoFases) {
-		this.estimacionRequerimientoFases = estimacionRequerimientoFases;
+	public void setEstado(EstadoRequerimiento estado) {
+		this.estado = estado;
 	}
-	
+
+	public Date getFechaPlanifTesting() {
+		return fechaPlanifTesting;
+	}
+
+	public void setFechaPlanifTesting(Date fechaPlanifTesting) {
+		this.fechaPlanifTesting = fechaPlanifTesting;
+	}
+
+	public Date getFechaRealTesting() {
+		return fechaRealTesting;
+	}
+
+	public void setFechaRealTesting(Date fechaRealTesting) {
+		this.fechaRealTesting = fechaRealTesting;
+	}
+
+	public Date getMotivoReplanifTesting() {
+		return motivoReplanifTesting;
+	}
+
+	public void setMotivoReplanifTesting(Date motivoReplanifTesting) {
+		this.motivoReplanifTesting = motivoReplanifTesting;
+	}
+
+	public Date getFechaPlanifImplementacion() {
+		return fechaPlanifImplementacion;
+	}
+
+	public void setFechaPlanifImplementacion(Date fechaPlanifImplementacion) {
+		this.fechaPlanifImplementacion = fechaPlanifImplementacion;
+	}
+
+	public Date getFechaRealImplementacion() {
+		return fechaRealImplementacion;
+	}
+
+	public void setFechaRealImplementacion(Date fechaRealImplementacion) {
+		this.fechaRealImplementacion = fechaRealImplementacion;
+	}
+
+	public Date getMotivoReplanifImplementacion() {
+		return motivoReplanifImplementacion;
+	}
+
+	public void setMotivoReplanifImplementacion(Date motivoReplanifImplementacion) {
+		this.motivoReplanifImplementacion = motivoReplanifImplementacion;
+	}
+
+	public TipoRequerimiento getTipoRequerimiento() {
+		return tipoRequerimiento;
+	}
+
+	public void setTipoRequerimiento(TipoRequerimiento tipoRequerimiento) {
+		this.tipoRequerimiento = tipoRequerimiento;
+	}
+
+	public List<Estimacion> getEstimacion() {
+		return estimacion;
+	}
+
+	public void setEstimacion(List<Estimacion> estimacion) {
+		this.estimacion = estimacion;
+	}
+
 	public Aplicacion getAplicacion() {
 		return aplicacion;
 	}
@@ -133,34 +196,12 @@ public class Requerimiento implements Serializable {
 	public void setAplicacion(Aplicacion aplicacion) {
 		this.aplicacion = aplicacion;
 	}
-	
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
-	
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(/*cantidadHoras,*/ estimacionRequerimientoFases, id, descripcion, observacion, requerimiento, aplicacion, fecha, estado, usuario);
+		return Objects.hash(aplicacion, descripcion, estado, estimacion, fechaPlanifImplementacion, fechaPlanifTesting,
+				fechaRealImplementacion, fechaRealTesting, motivoReplanifImplementacion, motivoReplanifTesting,
+				observacion, requerimiento, tipoRequerimiento);
 	}
 
 	@Override
@@ -172,58 +213,41 @@ public class Requerimiento implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Requerimiento other = (Requerimiento) obj;
-		return /*cantidadHoras == other.cantidadHoras && */Objects.equals(estimacionRequerimientoFases, other.estimacionRequerimientoFases)
-				&& Objects.equals(id, other.id) && Objects.equals(descripcion, other.descripcion)
+		return aplicacion == other.aplicacion && Objects.equals(descripcion, other.descripcion)
+				&& estado == other.estado && Objects.equals(estimacion, other.estimacion)
+				&& Objects.equals(fechaPlanifImplementacion, other.fechaPlanifImplementacion)
+				&& Objects.equals(fechaPlanifTesting, other.fechaPlanifTesting)
+				&& Objects.equals(fechaRealImplementacion, other.fechaRealImplementacion)
+				&& Objects.equals(fechaRealTesting, other.fechaRealTesting)
+				&& Objects.equals(motivoReplanifImplementacion, other.motivoReplanifImplementacion)
+				&& Objects.equals(motivoReplanifTesting, other.motivoReplanifTesting)
 				&& Objects.equals(observacion, other.observacion) && Objects.equals(requerimiento, other.requerimiento)
-				&& Objects.equals(aplicacion, other.aplicacion) && Objects.equals(fecha, other.fecha) && Objects.equals(estado, other.estado)
-				&& Objects.equals(usuario, other.usuario);
+				&& Objects.equals(tipoRequerimiento, other.tipoRequerimiento);
 	}
-
-	public Requerimiento() {
-		
-		this.estimacionRequerimientoFases = new ArrayList<>();
-		
-	}
-	
-	public void addEstimacionRequerimientoFase(EstimacionRequerimientoFase estimacionRequerimientoFases) {
-		this.estimacionRequerimientoFases.add(estimacionRequerimientoFases);
-	}
-	
-	public void addEstimacionFase(Fase fase, int cantHoras, Estimacion estimacion) {
-		EstimacionRequerimientoFase estimacionRequerimientoFase = new EstimacionRequerimientoFase(this, fase, estimacion);
-		estimacionRequerimientoFase.setCantidadHoras(cantHoras);
-		estimacionRequerimientoFases.add(estimacionRequerimientoFase);
-        fase.getEstimacionRequerimientoFases().add(estimacionRequerimientoFase);
-    }
-	
-//	public void removeFase(Fase fase) {
-//		
-//		for (Iterator<EstimacionRequerimientoFase> iterator = requerimientoFases.iterator(); iterator.hasNext();) {
-////			RequerimientoFase requerimientoFase = (RequerimientoFase) iterator.next();
-//			
-//			EstimacionRequerimientoFase reqFase = iterator.next();
-//			if (reqFase.getRequerimiento().equals(this) && reqFase.getFase().equals(fase)) {
-//				iterator.remove();
-////				reqFase.getFase().getRequerimientoFase().remove(reqFase);
-//				reqFase.setFase(null);
-//				reqFase.setRequerimiento(null);
-//			}
-//		}
-//    }
-	
-//	public String addFase() {
-//		System.out.println("Hola");
-//		return "";
-//    }
 
 	@Override
 	public String toString() {
-		return "Requerimiento [id=" + id + ", requerimiento=" + requerimiento + ", descripcion=" + descripcion
-				/*+ ", cantidadHoras=" + cantidadHoras */+ ", observacion=" + observacion + ", estado=" + estado
-				+ ", fecha=" + fecha + /*", \nestimacionRequerimientoFases= " + estimacionRequerimientoFases.toString() +*/ ", \naplicacion=" + aplicacion.toString()
-				+ ", usuario=" + usuario.getUsuario() 
-				+ "]";
+		return "Requerimiento [requerimiento=" + requerimiento + ", descripcion=" + descripcion + ", observacion="
+				+ observacion + ", estado=" + estado + ", fechaPlanifTesting=" + fechaPlanifTesting
+				+ ", fechaRealTesting=" + fechaRealTesting + ", motivoReplanifTesting=" + motivoReplanifTesting
+				+ ", fechaPlanifImplementacion=" + fechaPlanifImplementacion + ", fechaRealImplementacion="
+				+ fechaRealImplementacion + ", motivoReplanifImplementacion=" + motivoReplanifImplementacion
+				+ ", tipoRequerimiento=" + tipoRequerimiento + ", estimacion=" + estimacion + ", aplicacion="
+				+ aplicacion + "]";
 	}
+	
+	
+	
+
+	/******************* Metodos *******************/
+	
+//	@PrePersist
+//	public void prePersist() {
+//		fecha = new Date();
+//	}
+	
+	
+
 	
 	
 	

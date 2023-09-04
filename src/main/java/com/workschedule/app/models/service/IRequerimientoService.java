@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
+//import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoSimple;
 
@@ -25,9 +25,11 @@ public interface IRequerimientoService {
 
 	public void save(Requerimiento requerimiento);
 
-	public void delete(Long id);
+	public void delete(Requerimiento requerimiento);
 	
-	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento);
+	public Requerimiento findByRequerimiento(String requerimiento);
+	
+//	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento);
 	
 	public List<RequerimientoSimple> findByRequerimientoContaining(String requerimiento);
 	public List<RequerimientoSimple> findByRequerimientos();

@@ -34,8 +34,8 @@ public class Planificacion implements Serializable {
 //		@JoinColumn(name="fase_id", referencedColumnName = "fase_id")
 //	})
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="estimacion_requerimiento_fase_id")
-	private EstimacionRequerimientoFase estimacionRequerimientoFases;
+	@JoinColumn(name="estimacion_id")
+	private Estimacion estimacion;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="usuario_id")
@@ -56,12 +56,12 @@ public class Planificacion implements Serializable {
 		this.id = id;
 	}
 
-	public EstimacionRequerimientoFase getEstimacionRequerimientoFases() {
-		return estimacionRequerimientoFases;
+	public Estimacion getEstimacion() {
+		return estimacion;
 	}
 
-	public void setEstimacionRequerimientoFases(EstimacionRequerimientoFase estimacionRequerimientoFases) {
-		this.estimacionRequerimientoFases = estimacionRequerimientoFases;
+	public void setEstimacionRequerimientoFases(Estimacion estimacion) {
+		this.estimacion = estimacion;
 	}
 
 	public Usuario getUsuario() {
@@ -110,9 +110,9 @@ public class Planificacion implements Serializable {
 	}
 	
 
-	public Planificacion(EstimacionRequerimientoFase estimacionRequerimientoFases, Usuario usuario, LocalDate fecha, int horasPlanificadas,
+	public Planificacion(Estimacion estimacion, Usuario usuario, LocalDate fecha, int horasPlanificadas,
 							int horasIncurridas, String observacion) {
-		this.estimacionRequerimientoFases = estimacionRequerimientoFases;
+		this.estimacion = estimacion;
 		this.usuario = usuario;
 		this.fecha = fecha;
 		this.horasPlanificadas = horasPlanificadas;
@@ -122,7 +122,7 @@ public class Planificacion implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(fecha, horasIncurridas, horasPlanificadas, id, usuario, observacion, estimacionRequerimientoFases);
+		return Objects.hash(fecha, horasIncurridas, horasPlanificadas, id, usuario, observacion, estimacion);
 	}
 
 	@Override
@@ -137,12 +137,12 @@ public class Planificacion implements Serializable {
 		return Objects.equals(fecha, other.fecha) && horasIncurridas == other.horasIncurridas
 				&& horasPlanificadas == other.horasPlanificadas && id == other.id && usuario == other.usuario
 				&& Objects.equals(observacion, other.observacion)
-				&& Objects.equals(estimacionRequerimientoFases, other.estimacionRequerimientoFases);
+				&& Objects.equals(estimacion, other.estimacion);
 	}
 
 	@Override
 	public String toString() {
-		return "Planificacion [id=" + id + ", requerimientoFases=" + estimacionRequerimientoFases + ", idUsuario=" + usuario
+		return "Planificacion [id=" + id + ", estimacion=" + estimacion + ", idUsuario=" + usuario
 				+ ", fecha=" + fecha + ", horasPlanificadas=" + horasPlanificadas + ", horasIncurridas="
 				+ horasIncurridas + ", observacion=" + observacion + "]";
 	}

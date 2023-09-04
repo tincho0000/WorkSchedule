@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.workschedule.app.models.dao.IRequerimientoDao;
 import com.workschedule.app.models.dao.IRequerimientoSimpleDao;
-import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoSimple;
 
@@ -50,8 +49,8 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 
 	@Transactional
 	@Override
-	public void delete(Long id) {
-		requerimientoDao.deleteById(id);
+	public void delete(Requerimiento requerimiento) {
+		requerimientoDao.delete(requerimiento);;
 	}
 
 	@Transactional(readOnly = true)
@@ -86,10 +85,10 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 	}
 	
 	
-	@Override
-	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento) {
-		return requerimientoDao.findByEstimacionRequerimientoFase(requerimiento);
-	}
+//	@Override
+//	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento) {
+//		return requerimientoDao.findByEstimacionRequerimientoFase(requerimiento);
+//	}
 
 	@Override
 	public List<RequerimientoSimple> findByRequerimientoContaining(String requerimiento) {
@@ -109,6 +108,11 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 	@Override
 	public RequerimientoSimple findByRequerimientoSimple(Long id) {
 		return requerimientoSimpleDao.findById(id).orElse(null);
+	}
+
+	@Override
+	public Requerimiento findByRequerimiento(String requerimiento) {
+		return requerimientoDao.findByRequerimiento(requerimiento);
 	}
 
 

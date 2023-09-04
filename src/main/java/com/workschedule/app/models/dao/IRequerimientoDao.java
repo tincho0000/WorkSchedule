@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.workschedule.app.models.entity.EstimacionRequerimientoFase;
 import com.workschedule.app.models.entity.Requerimiento;
 
 public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimiento, Long> {
@@ -26,19 +25,23 @@ public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimie
 //			+ "and r.id = erf.requerimiento_id "
 //			+ "and erf.estimacion_id = e.id "
 //			+ "and e.activo = 1" , nativeQuery=true)
-	@Query("select erf from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "
-			+ "where r.requerimiento like %?1% "
-			+ "and r.id = erf.requerimiento "
-			+ "and erf.estimacion = e.id "
-			+ "and e.activo = 1")
-	public List<EstimacionRequerimientoFase> findByEstimacionRequerimientoFase(String requerimiento);
 	
-	@Query("select r from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "
-			+ "where r.id = ?1 "
-			+ "and r.id = erf.requerimiento "
-			+ "and erf.estimacion = e.id "
-			+ "and e.activo = 1")
-	public Optional<Requerimiento> findById(Long id);
+	
+//	@Query("select erf from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "
+//			+ "where r.requerimiento like %?1% "
+//			+ "and r.id = erf.requerimiento "
+//			+ "and erf.estimacion = e.id "
+//			+ "and e.activo = 1")
+//	public List<EstimacionRequerimientoFase> findByEstimacionRequerimientoFase(String requerimiento);
+	
+//	@Query("select r from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "
+//			+ "where r.id = ?1 "
+//			+ "and r.id = erf.requerimiento "
+//			+ "and erf.estimacion = e.id "
+//			+ "and e.activo = 1")
+//	public Optional<Requerimiento> findById(Long id);
+	
+	public Requerimiento findByRequerimiento(String requerimiento);
 	
 	
 }
