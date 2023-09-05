@@ -226,31 +226,13 @@ public class RequerimientoController {
 //		return "redirect:/requerimientos/listar-requerimientos";
 //	}
 
-//	@GetMapping("/form")
-//	public String crear(Model model) {
-//
-//		List<Fase> fases = faseService.findAll();
-//		Requerimiento requerimiento = new Requerimiento();
-//		List<Aplicacion> aplicaciones = aplicacionService.findAll();
-//		
-//		
-//		List<String> listaFases = new ArrayList<>();
-//		List<Long> listaFasesId = new ArrayList<>();
-//		for (Fase fase : fases) {
-//			listaFases.add(fase.getFase());
-//			listaFasesId.add(fase.getId());
-//		}
-//		
-//		System.out.println(listaFases);
-//
-//		model.addAttribute("titulo", "Alta Requerimiento");
-//		model.addAttribute("fases", fases);
-//		model.addAttribute("listaFases", listaFases);
-//		model.addAttribute("listaFasesId", listaFasesId);
-//		model.addAttribute("requerimiento", requerimiento);
-//		model.addAttribute("aplicaciones", aplicaciones);
-//		return "requerimiento/form";
-//	}
+	@GetMapping("/form")
+	public String crear(Model model) {
+		Requerimiento requerimiento = new Requerimiento();
+		requerimiento.setEstimacion(new ArrayList<>());
+		model.addAttribute("requerimiento", requerimiento);
+		return "requerimiento/form";
+	}
 
 //	@GetMapping(value = "/cargar-fases/{termino}", produces = { "application/json" })
 //	public @ResponseBody List<FaseSimple> cargarFases(@PathVariable String termino) {
