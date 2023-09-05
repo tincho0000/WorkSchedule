@@ -9,14 +9,17 @@
 	<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
-			<h4 class="card-title text-end pb-2">
-				<a class="btn btn-outline-light"
-				   th:href="@{'/requerimientos/listar-requerimientos'}"
-				   th:text="'&laquo; Volver'"></a>
-			</h4>
 
 			<form class="row g-3" th:action="@{/requerimientos/form}"
 				  th:object="${requerimiento}" method="post">
+				<h4 class="card-title text-end pb-2">
+					<a class="btn btn-outline-light"
+					   th:href="@{'/requerimientos/listar-requerimientos'}"
+					   th:text="'&laquo; Volver'"></a>
+					<a class="btn btn-success"
+					   th:href="@{'/requerimientos/form'}"
+					   th:utext="#{form.requirement.save.button.label}"></a>
+				</h4>
 
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
@@ -63,9 +66,9 @@
 						<div class="col-sm-6">
 							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
-							<div class="invalid-feedback"
-								 th:if="${#fields.hasErrors('descripcion')}"
-								 th:errors="*{descripcion}"></div>
+							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
+								<p th:errors="*{descripcion}"></p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -159,10 +162,6 @@
 						<div class="" id="tableDiv"></div>
 					</div>
 
-					<div class="d-flex justify-content-center">
-						<input type="submit" th:value="#{form.requirement.save.button.label}" class="btn btn-success" />
-					</div>
-
 				</div>
 			</form>
 		</div>
@@ -248,7 +247,8 @@
 	}
 	function loadFases() {
 		/* Function */
-		var fases = [[${com.workschedule.app.enums.Fase.values()}]];
+		var fases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		console.log("fases originales", fases.toString());
 		console.log("valor original: ", this.value);
 		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddFases();
