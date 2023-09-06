@@ -227,8 +227,9 @@
 		let tBody = document.createElement('tbody');
 		tBody.id= "fasesTable";
 		for (const fase of fases) {
+			console.log("bucle fase", fase);
 			let trFase = document.createElement('tr');
-			let htmlBody = '<td class="d-none"><input type="hidden" value="' + fase.id + '" name="fase_id[]" /></td>' + '<td>' + fase.fase + '</td>' +
+			let htmlBody = '<td>' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-sm-6">' +
 					'<input type="number" value="0" name="cantidad[]"  id="cantidad_' + fase.id + '" class="form-control text-end" onchange="calculateTotal();"/>'
@@ -246,24 +247,28 @@
 
 	}
 	function loadFases() {
-		/* Function */
-		var fases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		/* Function load fases depends at requirement type selected */
+		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		var fases = Object.values(enumFases);
+		var fasesFilter;
 		console.log("fases originales", fases.toString());
 		console.log("valor original: ", this.value);
 		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddFases();
 			switch (this.value) {
 				case 'EVOLUTIVO':
-					fases = fases;
+					fasesFilter = fases;
 				//	fases = [[${listaEvolutiva}]];
 					break;
 				case 'CORRECTIVO':
 				case 'REWORK':
-					fases = fases;
+					fasesFilter = fases;
 				//	fases = [[${listaCorrectivoRework}]];
 					break;
 				case 'ANALISIS':
-					fases = fases.filter(predicateAnalisis(this.value));
+					console.log("entro por analisis");
+					fasesFilter = fases.filter(element => element === "ANALISIS");
+					console.log("fase filtrada: ", fasesFilter);
 					break;
 				default:
 					disabledButtonAddFases();
@@ -273,8 +278,8 @@
 			disabledButtonAddFases();
 			removeAllElementTable();
 		}
-		console.log("fases", fases);
-		sessionStorage.setItem('fases', JSON.stringify(fases));
+		console.log("fases", fasesFilter);
+		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
 
 	function disabledButtonAddFases() {
