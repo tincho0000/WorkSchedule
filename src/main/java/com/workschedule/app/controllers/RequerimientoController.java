@@ -221,10 +221,11 @@ public class RequerimientoController {
 
 	@GetMapping("/form")
 	public String crear(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Requerimiento requerimiento = new Requerimiento();
 		requerimiento.setEstimacion(new ArrayList<>());
-		//model.addAttribute("fases", listaFases);
 		model.addAttribute("requerimiento", requerimiento);
+		model.addAttribute("username",  auth.getName());
 		return "requerimiento/form";
 	}
 
