@@ -40,12 +40,12 @@ import com.workschedule.app.util.paginator.PageRender;
 @RequestMapping("/requerimientos")
 @SessionAttributes("requerimiento")
 public class RequerimientoController {
-	
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	IRequerimientoService requerimientoService;
-//	@Autowired
+	//	@Autowired
 //	IRequerimientoFaseDao requerimientoFaseDao;
 	@Autowired
 	IUsuarioService usuarioService;
@@ -53,21 +53,21 @@ public class RequerimientoController {
 	IPlanificacionService planificacionService;
 	@Autowired
 	IEstimacionService estimacionService;
-	
+
 	public RequerimientoController() {
 	}
-	
+
 	@GetMapping("/listar-requerimientos")
-	public String listarRequerimientos(	Model model,
-										@RequestParam(name = "page", defaultValue = "0") int page,
-										@RequestParam(name = "reqFilter", defaultValue = "") String requerimientoFiltro,
-										@RequestParam(name = "appFilter", defaultValue = "") String aplicacionFiltro,
-										@RequestParam(name = "estadoFilter", defaultValue = "") String estadoFiltro
-			) {
-		
-		
+	public String listarRequerimientos(Model model,
+									   @RequestParam(name = "page", defaultValue = "0") int page,
+									   @RequestParam(name = "reqFilter", defaultValue = "") String requerimientoFiltro,
+									   @RequestParam(name = "appFilter", defaultValue = "") String aplicacionFiltro,
+									   @RequestParam(name = "estadoFilter", defaultValue = "") String estadoFiltro
+	) {
+
+
 		/******************** Alta Req + estimacion************************/
-		
+
 //		Requerimiento req = new Requerimiento();
 //		req.setAplicacion(Aplicacion.SHV);
 //		req.setDescripcion("descripcion");
@@ -100,18 +100,18 @@ public class RequerimientoController {
 //		}
 //		
 //		requerimientoService.save(req);
-		
-		
+
+
 		/******************** buscar ************************/
 		Requerimiento requerimiento = requerimientoService.findByRequerimiento("SHV-100");
-		
+
 		/******************** Alta Estimacion ************************/
-		
-		List<Fase> fases2 = Fase.obtenerFases(); 
-		
+
+		List<Fase> fases2 = Fase.obtenerFases();
+
 		//Agrego fases al req
 		for (Fase fase : fases2) {
-			
+
 			Estimacion estimacion = new Estimacion();
 			estimacion.setActivo(0);
 			estimacion.setCantidadHoras(10);
@@ -122,21 +122,21 @@ public class RequerimientoController {
 			estimacion.setVersion(2);
 			estimacion.setFase(fase);
 			requerimiento.addEstimacion(estimacion);
-			
+
 		}
-		
+
 		requerimientoService.save(requerimiento);
-		
+
 		/********************Eliminar Estimacion***********************/
 //		estimacionService.delete((long)11);
 
 		//********************Eliminar req ******************************
-		
+
 //		Requerimiento requerimiento = requerimientoService.findByRequerimiento("SHV-100");
 //		requerimientoService.delete(requerimiento);
-		
+
 		//********************Eliminar estimacion ******************************
-		
+
 //		Requerimiento requerimiento = requerimientoService.findByRequerimiento("SHV-100");
 //				
 //		for (int i = 0; i < requerimiento.getEstimacion().size(); i++) {
@@ -146,20 +146,20 @@ public class RequerimientoController {
 //		}
 //		requerimientoService.save(requerimiento);
 //		
-		
+
 		/*********************************************************/
 		//Buscar por ID de Req y fase
 //		RequerimientoFaseId requerimientoFaseId = new RequerimientoFaseId((long)1, (long)1);
 //		requerimientoFaseDao.findByRequerimientoFaseId(requerimientoFaseId);
 //		System.out.println( ( requerimientoFaseDao.findByRequerimientoFaseId(requerimientoFaseId) ).toString() );
-		
+
 		//Buscar por ID de Req solamente
 //		List<RequerimientoFase> rf = requerimientoFaseDao.findByRequerimientoId((long)2);
 //		for (RequerimientoFase r : rf ) {
 //			System.out.println( r.getRequerimientoFaseId().toString());
 //		}
-		
-		
+
+
 		/*********************************************************/
 		// Select a la tabla de planificacion
 //		List<Planificacion> planificacion = planificacionService.findAll();
@@ -173,28 +173,27 @@ public class RequerimientoController {
 		/*---------------------------------------------------*/
 		// alta de planificacion
 //		Planificacion planificacion = new Planificacion();
-		
-		
+
+
 		/*---------------------------------------------------*/
-		
-		
-		
+
+
 		String url = "";
-		if ( aplicacionFiltro == null) {
-			url = "/requerimientos/listar-requerimientos?reqFilter"+requerimientoFiltro+"&estadoFilter="+estadoFiltro;
+		if (aplicacionFiltro == null) {
+			url = "/requerimientos/listar-requerimientos?reqFilter" + requerimientoFiltro + "&estadoFilter=" + estadoFiltro;
 		} else {
-			url = "/requerimientos/listar-requerimientos?reqFilter="+requerimientoFiltro+"&appFilter="+aplicacionFiltro+"&estadoFilter="+estadoFiltro;
+			url = "/requerimientos/listar-requerimientos?reqFilter=" + requerimientoFiltro + "&appFilter=" + aplicacionFiltro + "&estadoFilter=" + estadoFiltro;
 		}
 		System.err.println("requerimientoFiltro: " + requerimientoFiltro);
 		System.err.println("aplicacionFiltro: " + aplicacionFiltro);
 		System.err.println("estadoFiltro: " + estadoFiltro);
-		
+
 		Page<Requerimiento> requerimientos = requerimientoService.findByFiltros(page, requerimientoFiltro, aplicacionFiltro, estadoFiltro);
 		PageRender<Requerimiento> pageRender = new PageRender<>(url, requerimientos);
-		
+
 		List<String> aplicaciones = Aplicacion.obtenerAplicaciones();
 		List<Fase> fases = Fase.obtenerFases();
-		
+
 		model.addAttribute("titulo", "Lista de Requerimientos");
 		model.addAttribute("requerimientos", requerimientos);
 		model.addAttribute("aplicaciones", aplicaciones);
@@ -205,7 +204,7 @@ public class RequerimientoController {
 		model.addAttribute("page", pageRender);
 		return "requerimiento/listar-requerimientos";
 	}
-	
+
 //	@GetMapping("/eliminar/{id}")
 //	public String eliminarRequerimiento(@PathVariable(value="id") Long id, RedirectAttributes flash) {
 //		Requerimiento requerimiento = requerimientoService.findOne(id);
@@ -221,14 +220,26 @@ public class RequerimientoController {
 
 	@GetMapping("/form")
 	public String crear(Model model) {
+		String titulo = "Alta de requerimiento";
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Requerimiento requerimiento = new Requerimiento();
 		requerimiento.setEstimacion(new ArrayList<>());
+		model.addAttribute("titulo", titulo);
 		model.addAttribute("requerimiento", requerimiento);
-		model.addAttribute("username",  auth.getName());
+		model.addAttribute("username", auth.getName());
 		return "requerimiento/form";
 	}
 
+	@PostMapping("/form")
+	public String guardar(@Valid @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model) {
+		if (requerimiento.getEstimacion().isEmpty()) {
+			System.out.println("No se lleno la lista de estimaciones");
+		} else {
+			System.out.println("Se lleno la lista de estimaciones");
+			System.out.println("estimaciones: " + requerimiento.getEstimacion());
+		}
+        return "redirect:listar-requerimientos";
+    }
 //	@GetMapping(value = "/cargar-fases/{termino}", produces = { "application/json" })
 //	public @ResponseBody List<FaseSimple> cargarFases(@PathVariable String termino) {
 //		if (termino.equals("*")) {
