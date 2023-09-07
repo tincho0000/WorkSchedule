@@ -176,7 +176,7 @@
 
 				<div class="form-group row py-3">
 					<div class="col-sm-2">
-						<button id="addFasesBtn" type="button" onclick="addFases()" class="btn btn-primary">
+						<button id="addFasesBtn" type="button" onclick="addFases()" disabled class="btn btn-primary">
 							<span th:utext="#{form.requirement.button.add.estimated}"></span>
 						</button>
 					</div>
@@ -201,7 +201,6 @@
 <script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 <script type="text/javascript" th:inline="javascript">
 	$(document).ready(function() {
-		disabledButtonAddFases();
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
@@ -218,19 +217,19 @@
 			}
 		});
 
-		// 					console.log("TOTAL: " + total);
 		let cantidadHs = document.getElementById('total_fases');
 		cantidadHs.value = total;
 		return total;
-
-		//$('#total_fases').html(total);
 	}
 
 	function addFases() {
+		console.log("llamo a la funcion addFases");
 		let objectFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectFases);
 		let tableDiv = document.getElementById('tableDiv');
-		let tableActual = document.createElement('table')
+		let tableActual = document.createElement('table');
+		var countEstimation = 0;
+		countEstimation++;
 		console.log("onclick fases:", fases);
 		tableActual.id= "cargarFase";
 		tableActual.title = "Estimation Table"
@@ -238,9 +237,11 @@
 		let tHead = document.createElement('thead');
 		tHead.className= "text-white";
 		let trHeadNameEstimation = document.createElement('tr');
+		//trHeadNameEstimation.setAttribute("th:each", "currentEstimation, stat : ${requerimiento.estimacion}")
 		let trHeadColumns = document.createElement('tr');
 		trHeadNameEstimation.innerHTML =
-				'<th colspan="2" scope="colgroup"><div> <span>Nombre estimación</span>' +
+				'<th colspan="2" scope="colgroup">'+
+				'<div> <span>Nombre estimación</span>' +
 				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
 				'</div></th>' +
 				'    <th colspan="2" scope="colgroup">'+
@@ -278,35 +279,29 @@
 		/* Function load fases depends at requirement type selected */
 		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
 		var fases = Object.values(enumFases);
-		var fasesFilter;
-		console.log("fases originales", fases.toString());
-		console.log("valor original: ", this.value);
+		var fasesFilter = [];
 		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddFases();
 			switch (this.value) {
 				case 'EVOLUTIVO':
 					fasesFilter = fases;
-				//	fases = [[${listaEvolutiva}]];
 					break;
 				case 'CORRECTIVO':
 				case 'REWORK':
-					fasesFilter = fases;
-				//	fases = [[${listaCorrectivoRework}]];
+				case 'EMERGENCIA':
+					fasesFilter = fases.filter(fase => fase !== "SOPORTE_PRUEBAS_PI" && fase !== "SOPORTE_PRUEBAS_PAU");
 					break;
 				case 'ANALISIS':
-					console.log("entro por analisis");
-					fasesFilter = fases.filter(element => element === "ANALISIS");
-					console.log("fase filtrada: ", fasesFilter);
+					fasesFilter = fases.filter(fase => fase === "ANALISIS");
 					break;
 				default:
 					disabledButtonAddFases();
-
+					break;
 			}
 		} else {
 			disabledButtonAddFases();
 			removeAllElementTable();
 		}
-		console.log("fases", fasesFilter);
 		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
 
@@ -316,8 +311,9 @@
 	}
 
 	function removeDisabledButtonAddFases() {
-		let button = document.getElementById("addFasesBtn");
-		button.removeAttribute("disabled");
+		//let button =
+		document.getElementById("addFasesBtn").disabled = false;
+		//button.removeAttribute("disabled");
 	}
 
 	function removeAllElementTable() {
@@ -326,10 +322,6 @@
 		while (fasesRow.firstChild) {
 			fasesRow.removeChild(fasesRow.firstChild);
 		}
-	}
-
-	function predicateAnalisis(fase) {
-		return  "ANALISIS" === fase;
 	}
 
 </script>
