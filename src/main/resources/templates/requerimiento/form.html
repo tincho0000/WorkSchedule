@@ -16,9 +16,8 @@
 					<a class="btn btn-outline-light"
 					   th:href="@{'/requerimientos/listar-requerimientos'}"
 					   th:text="'&laquo; Volver'"></a>
-					<a class="btn btn-success"
-					   th:href="@{'/requerimientos/form'}"
-					   th:utext="#{form.requirement.save.button.label}"></a>
+					<button class="btn btn-success" type="submit"
+					   th:utext="#{form.requirement.save.button.label}"></button>
 				</h4>
 
 				<div class="form-group row py-3">
@@ -200,6 +199,7 @@
 <footer th:replace="layout/layout :: footer"></footer>
 <script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 <script type="text/javascript" th:inline="javascript">
+	var countEstimation=0;
 	$(document).ready(function() {
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
@@ -220,17 +220,14 @@
 		let cantidadHs = document.getElementById('total_fases');
 		cantidadHs.value = total;
 		return total;
-	}
+	    }
 
 	function addFases() {
-		console.log("llamo a la funcion addFases");
 		let objectFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectFases);
 		let tableDiv = document.getElementById('tableDiv');
 		let tableActual = document.createElement('table');
-		var countEstimation = 0;
 		countEstimation++;
-		console.log("onclick fases:", fases);
 		tableActual.id= "cargarFase";
 		tableActual.title = "Estimation Table"
 		tableActual.className = "table table-sm table-striped table-hover";
@@ -243,6 +240,7 @@
 				'<th colspan="2" scope="colgroup">'+
 				'<div> <span>Nombre estimación</span>' +
 				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
+				'<label>Version: '+countEstimation+'</label>'
 				'</div></th>' +
 				'    <th colspan="2" scope="colgroup">'+
 				'<div style="float: right; margin-right: 20px;">'+
@@ -256,15 +254,7 @@
 		let tBody = document.createElement('tbody');
 		tBody.id= "fasesTable";
 		for (const fase of fases) {
-			console.log("bucle fase", fase);
-			let trFase = document.createElement('tr');
-			let htmlBody = '<td>' + fase + '</td>' +
-					'<td>' +
-					'<div class="col-sm-6">' +
-					'<input type="number" value="0" name="cantidad[]"  id="cantidad_' + fase.id + '" class="form-control text-end" onchange="calculateTotal();"/>'
-					+ '</div></td>';
-			trFase.innerHTML = htmlBody;
-			tBody.appendChild(trFase);
+			tBody.appendChild(buildFase(fase, countEstimation));
 		}
 
 		tHead.appendChild(trHeadNameEstimation);
@@ -274,6 +264,24 @@
 
 		tableDiv.appendChild(tableActual);
 
+	}
+	function buildFase(fase, index) {
+		const trFases = document.createElement('tr');
+		var listEstimaciones = [[${requerimiento.estimacion}]];
+		trFases.setAttribute("th:each", "estimacion : listEstimaciones");
+		trFases.id = "row_' + index + '";
+		let htmlBody =
+				'<td>' + fase + '</td>' +
+				'<td>' +
+				'<div class="col-sm-6">' +
+				'<input type="number" value="0" th:field="*{estimacion.cantidadHoras}" name="cantidad[]"  id="cantidad_' + index + '" class="form-control text-end" onchange="calculateTotal();"/>'+
+				'<input type="hidden" th:field="*{estimacion.version}" value='+index+' name="version[]" readonly/>'+
+				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox()" name="faseActiva[]">'+
+				+ '</div></td>'+
+				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>'+
+				'</tr>';
+			trFases.innerHTML = htmlBody;
+		return trFases;
 	}
 	function loadFases() {
 		/* Function load fases depends at requirement type selected */
@@ -311,17 +319,21 @@
 	}
 
 	function removeDisabledButtonAddFases() {
-		//let button =
 		document.getElementById("addFasesBtn").disabled = false;
-		//button.removeAttribute("disabled");
+	}
+
+	function deleteFase(that) {
+		that.parentNode.parentNode.remove();
 	}
 
 	function removeAllElementTable() {
-		console.log("entro al borrar elem de la tabla");
 		let fasesRow = document.getElementById('fasesTable');
 		while (fasesRow.firstChild) {
 			fasesRow.removeChild(fasesRow.firstChild);
 		}
+	}
+	function obtenerValorCheckBox() {
+		return 1;
 	}
 
 </script>

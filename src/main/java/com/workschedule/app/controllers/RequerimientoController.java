@@ -232,6 +232,7 @@ public class RequerimientoController {
 
 	@PostMapping("/form")
 	public String guardar(@Valid @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model) {
+		System.out.println("entro al endpoint");
 		if (requerimiento.getEstimacion().isEmpty()) {
 			System.out.println("No se lleno la lista de estimaciones");
 		} else {
