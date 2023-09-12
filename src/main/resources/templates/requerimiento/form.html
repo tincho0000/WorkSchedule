@@ -240,7 +240,7 @@
 				'<th colspan="2" scope="colgroup">'+
 				'<div> <span>Nombre estimación</span>' +
 				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
-				'<label>Version: '+countEstimation+'</label>'
+				'<label>Version: '+countEstimation+'</label>'+
 				'</div></th>' +
 				'    <th colspan="2" scope="colgroup">'+
 				'<div style="float: right; margin-right: 20px;">'+
@@ -278,8 +278,7 @@
 				'<input type="hidden" th:field="*{estimacion.version}" value='+index+' name="version[]" readonly/>'+
 				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox()" name="faseActiva[]">'+
 				+ '</div></td>'+
-				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>'+
-				'</tr>';
+				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
 			trFases.innerHTML = htmlBody;
 		return trFases;
 	}
@@ -323,6 +322,13 @@
 	}
 
 	function deleteFase(that) {
+		console.log("that.parentNode", that.parentNode);
+		console.log("that.parentNode.parentNode", that.parentNode.parentNode);
+		console.log("that.parentNode.parentNode.parentNode", that.parentNode.parentNode.parentNode);
+		console.log("es la tabla", that.parentNode.parentNode.parentNode.parentNode);
+		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
+			that.parentNode.parentNode.parentNode.parentNode.remove();
+		}
 		that.parentNode.parentNode.remove();
 	}
 
