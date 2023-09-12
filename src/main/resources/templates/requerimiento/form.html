@@ -3,153 +3,351 @@
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
-	<header th:replace="layout/layout :: header"></header>
+<header th:replace="layout/layout :: header"></header>
 
-	<div class="container py-4 text-white">
-		<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
-			<div class="card-header" th:text="${titulo}"></div>
-			<div class="card-body">
+<div class="container py-4 text-white">
+	<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+		<div class="card-header" th:text="${titulo}"></div>
+		<div class="card-body">
+
+			<form class="row g-3" th:action="@{/requerimientos/form}"
+				  th:object="${requerimiento}" method="post">
 				<h4 class="card-title text-end pb-2">
 					<a class="btn btn-outline-light"
-						th:href="@{'/requerimientos/listar-requerimientos'}"
-						th:text="'&laquo; Volver'"></a>
+					   th:href="@{'/requerimientos/listar-requerimientos'}"
+					   th:text="'&laquo; Volver'"></a>
+					<button class="btn btn-success" type="submit"
+					   th:utext="#{form.requirement.save.button.label}"></button>
 				</h4>
 
-				<form class="row g-3" th:action="@{/requerimientos/form}"
-					th:object="${requerimiento}" method="post">
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
+					<div class="col-sm-2">
+						<input type="text" th:field="*{requerimiento}"
+							   class="form-control" th:errorclass="'form-control is-invalid'" />
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('requerimiento')}"
+							 th:errors="*{requerimiento}"></div>
+					</div>
+					<label class="col-sm-2 col-form-label text-end" th:text="Aplicación"></label>
+					<div class="col-sm-2">
+						<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
+							<option value="">Seleccionar...</option>
+							<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
+									th:text="${aplicacion}"
+									th:value="${aplicacion}">
+							</option>
+						</select>
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('aplicacion')}"
+							 th:errors="*{aplicacion}">
+						</div>
+
+					</div>
+					<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
+					<div class="col-sm-2">
+						<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+							<option value="">Seleccionar...</option>
+							<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
+									th:text="${estado}"
+									th:value="${estado.name()}">
+							</option>
+						</select>
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('estado')}"
+							 th:errors="*{estado}">
+						</div>
+
+					</div>
 
 					<div class="form-group row py-3">
-						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
-						<div class="col-sm-2">
-							<input type="text" th:field="*{requerimiento}"
-								class="form-control" th:errorclass="'form-control is-invalid'" />
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('requerimiento')}"
-								th:errors="*{requerimiento}"></div>
-						</div>
-						<label class="col-sm-2 col-form-label text-end" th:text="Descripción"></label>
+						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
 						<div class="col-sm-6">
 							<input type="text" th:field="*{descripcion}" class="form-control"
-								th:errorclass="'form-control is-invalid'" />
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('descripcion')}"
-								th:errors="*{descripcion}"></div>
-						</div>
-					</div>
-					<div class="form-group row py-1">
-						<label class="col-sm-2 col-form-label"
-							th:text="'Cantidad' + ' Horas'"></label>
-						<div class="col-sm-2">
-							<input id="horasRequerimiento" type="number"
-								th:field="*{cantidadHoras}" class="form-control" />
-						</div>
-						<label class="col-sm-2 col-form-label text-end" th:text="Aplicación"></label>
-						<div class="col-sm-6">
-							<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
-								<option value="">Seleccionar...</option>
-								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}">
-								</option>
-							</select>
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('aplicacion')}"
-								th:errors="*{aplicacion}">
+								   th:errorclass="'form-control is-invalid'" />
+							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
+								<p th:errors="*{descripcion}"></p>
 							</div>
-							
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
+					<div class="col-sm-10">
+						<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.testing}"></label>
+					<div class="col-sm-2">
+						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
+							   th:errorclass="'form-control is-invalid'" />
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('fechaPlanifTesting')}"
+							 th:errors="*{fechaPlanifTesting}"></div>
+					</div>
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
+					<div class="col-sm-2">
+						<input id="fechaRealTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealTesting}" />
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('fechaRealTesting')}"
+							 th:errors="*{fechaRealTesting}"></div>
+					</div>
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.reason.replanning.testing}"></label>
+					<div class="col-sm-2">
+						<select class="form-select" name="motivoReplanifTesting" id="motivoReplanifTesting" th:field="*{motivoReplanifTesting}" >
+							<option value="empty">Seleccionar...</option>
+							<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
+									th:text="${motivoReplanifTesting}"
+									th:value="${motivoReplanifTesting}">
+							</option>
+						</select>
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('motivoReplanifTesting')}"
+							 th:errors="*{motivoReplanifTesting}">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
+					<div class="col-sm-2">
+						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
+							 th:errors="*{fechaPlanifImplementacion}"></div>
+					</div>
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
+					<div class="col-sm-2">
+						<input id="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('fechaRealImplementacion')}"
+							 th:errors="*{fechaRealImplementacion}"></div>
+					</div>
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.reason.replanning.imple}"></label>
+					<div class="col-sm-2">
+						<select class="form-select" name="motivoReplanifImplementacion" id="motivoReplanifImplementacion" th:field="*{motivoReplanifImplementacion}" >
+							<option value="empty">Seleccionar...</option>
+							<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
+									th:text="${motivoReplanifImplementacion}"
+									th:value="${motivoReplanifImplementacion}">
+							</option>
+						</select>
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('motivoReplanifImplementacion')}"
+							 th:errors="*{motivoReplanifImplementacion}">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.user}"></label>
+					<div class="col-sm-2">
+						<input id="user" type="text" th:value="${username}" class="form-control" readonly>
+					</div>
+					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
+					<div class="col-sm-2">
+						<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
+							<option value="empty">Seleccionar...</option>
+							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
+									th:text="${tipoRequerimiento}"
+									th:value="${tipoRequerimiento}">
+							</option>
+						</select>
+						<div class="invalid-feedback"
+							 th:if="${#fields.hasErrors('tipoRequerimiento')}"
+							 th:errors="*{tipoRequerimiento}">
 						</div>
 					</div>
 
-					<div class="form-group row py-3">
-						<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
-						<div class="col-sm-10">
-							<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
+				</div>
+
+				<div class="form-group row py-3">
+					<label class="col-sm-2 col-form-label"
+						   th:text="'Cantidad' + ' Horas'"></label>
+					<div class="col-sm-2">
+						<input type="number"
+							   id="total_fases" class="form-control" th:readonly="true" oninput="calculateTotal()" />
+					</div>
+				</div>
+
+				<div class="form-group row py-3">
+					<div class="col-sm-2">
+						<button id="addFasesBtn" type="button" onclick="addFases()" disabled class="btn btn-primary">
+							<span th:utext="#{form.requirement.button.add.estimated}"></span>
+						</button>
+					</div>
+				</div>
+
+
+
+				<div class="form-group row py-5">
+
+					<div class="col-sm-6 border-0">
+						<div class="" id="tableDiv">
+							<tbody>
 						</div>
 					</div>
 
-					<div class="form-group row py-3">
-						<label for="buscar_fase" class="col-sm-2 col-form-label"
-							th:text="'Buscar Fase'"></label>
-						<div class="col-sm-3">
-							<input type="text" name="buscar_fase" id="buscar_fase"
-								class="form-control" />
-						</div>
-						
-						<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
-						<div class="col-sm-4">
-							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
-								<option value="">Seleccionar...</option>
-								<option th:each="estado: ${fases}"
-									th:text="${estado.fase}" th:value="${estado.fase}">
-								</option>
-							</select>
-							<div class="invalid-feedback"
-								th:if="${#fields.hasErrors('estado')}"
-								th:errors="*{estado}">
-							</div>
-							
-						</div>
-						
-					</div>
-					
-					
-
-					<div class="form-group row py-5">
-						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
-
-						<div class="col-sm-6 border-0">
-							<table id="cargarFase"
-								class="table table-sm table-striped table-hover">
-								<thead class="text-white">
-									<tr>
-										<th>Fase</th>
-										<th>Horas</th>
-										<th>Eliminar</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-
-						<div class="col-sm-3">
-							<h5 class="text-center">
-								<span class="">Total Fases</span>
-							</h5>
-							<h5 class="text-center">
-								<span class="" id="total_fases">0</span>
-							</h5>
-
-						</div>
-
-						<div class="col-sm-3">
-							<input type="submit" th:value="${titulo}" class="btn btn-success" onclick="validar()" />
-						</div>
-					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 	</div>
-	<input id="pepe" th:value="${fasesJson}">
+</div>
+<input id="pepe" th:value="${fasesJson}">
 
-	<footer th:replace="layout/layout :: footer"></footer>
-	<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
-	<script type="text/javascript" th:inline="javascript">
+<footer th:replace="layout/layout :: footer"></footer>
+<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
+<script type="text/javascript" th:inline="javascript">
+	var countEstimation=0;
 	$(document).ready(function() {
-		
-		var fases = [[${listaFases}]];
-		var fasesId = [[${listaFasesId}]];
-// 		console.log("fases: " +fases);
-		
-		for (i = 0; i < fases.length; i++) {
-			
-			var linea = $("#plantillaFases").html();
-			linea = linea.replace(/{ID}/g, fasesId[i]);
-			linea = linea.replace(/{FASE}/g, fases[i]);
-			$("#cargarFase tbody").append(linea);
-		}
+		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
-	
-	</script>
+
+	function calculateTotal() {
+		var total=0;
+
+		$('input[name="cantidad[]"]').each(function(){
+			console.log("this pesos: ", $(this));
+			console.log("this solo: ", this);
+			console.log("this.parentNode", this.parentNode);
+			console.log("VALOR: " + $(this).val());
+			if ($(this).val() != ""){
+				total += parseInt($(this).val());
+			} else {
+				// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
+				$(this).val(0);
+			}
+		});
+
+		let cantidadHs = document.getElementById('total_fases');
+		cantidadHs.value = total;
+		return total;
+	    }
+
+	function addFases() {
+		let objectFases = sessionStorage.getItem('fases');
+		let fases = JSON.parse(objectFases);
+		let tableDiv = document.getElementById('tableDiv');
+		let tableActual = document.createElement('table');
+		countEstimation++;
+		tableActual.id= "cargarFase";
+		tableActual.title = "Estimation Table"
+		tableActual.className = "table table-sm table-striped table-hover";
+		let tHead = document.createElement('thead');
+		tHead.className= "text-white";
+		let trHeadNameEstimation = document.createElement('tr');
+		//trHeadNameEstimation.setAttribute("th:each", "currentEstimation, stat : ${requerimiento.estimacion}")
+		let trHeadColumns = document.createElement('tr');
+		trHeadNameEstimation.innerHTML =
+				'<th colspan="2" scope="colgroup">'+
+				'<div> <span>Nombre estimación</span>' +
+				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
+				'<label>Version: '+countEstimation+'</label>'+
+				'</div></th>' +
+				'    <th colspan="2" scope="colgroup">'+
+				'<div style="float: right; margin-right: 20px;">'+
+				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" value="0" class="onoffswitch-checkbox"  checked>'+
+				'<label for="activeEstimation[]"> Activo</label>'+
+				'</div>'+
+				'</th>';
+		trHeadColumns.innerHTML = '<th scope="col">Fase</th>' +
+				'<th scope="col">Horas</th>' +
+				'<th>Eliminar</th>';
+		let tBody = document.createElement('tbody');
+		tBody.id= "fasesTable";
+		for (const fase of fases) {
+			tBody.appendChild(buildFase(fase, countEstimation));
+		}
+
+		tHead.appendChild(trHeadNameEstimation);
+		tHead.appendChild(trHeadColumns);
+		tableActual.appendChild(tHead);
+		tableActual.appendChild(tBody);
+
+		tableDiv.appendChild(tableActual);
+
+	}
+	function buildFase(fase, index) {
+		const trFases = document.createElement('tr');
+		trFases.setAttribute("th:each", "estimacion : ${requerimiento.estimacion}");
+		trFases.id = "row_' + index + '";
+		let htmlBody =
+				'<td>' + fase + '</td>' +
+				'<td>' +
+				'<div class="col-sm-6">' +
+				'<input type="number" value="0" th:field="*{estimacion.cantidadHoras}" name="cantidad[]"  id="cantidad_' + index + '" class="form-control text-end" onchange="calculateTotal();"/>'+
+				'<input type="hidden" th:field="*{estimacion.version}" value='+index+' name="version[]" readonly/>'+
+				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox();" name="faseActiva[]"/>'+
+				+ '</div></td>'+
+				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
+			trFases.innerHTML = htmlBody;
+		return trFases;
+	}
+	function loadFases() {
+		/* Function load fases depends at requirement type selected */
+		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		var fases = Object.values(enumFases);
+		var fasesFilter = [];
+		if(this.value != null && this.value != "empty") {
+			removeDisabledButtonAddFases();
+			switch (this.value) {
+				case 'EVOLUTIVO':
+					fasesFilter = fases;
+					break;
+				case 'CORRECTIVO':
+				case 'REWORK':
+				case 'EMERGENCIA':
+					fasesFilter = fases.filter(fase => fase !== "SOPORTE_PRUEBAS_PI" && fase !== "SOPORTE_PRUEBAS_PAU");
+					break;
+				case 'ANALISIS':
+					fasesFilter = fases.filter(fase => fase === "ANALISIS");
+					break;
+				default:
+					disabledButtonAddFases();
+					break;
+			}
+		} else {
+			disabledButtonAddFases();
+			removeAllElementTable();
+		}
+		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
+	}
+
+	function disabledButtonAddFases() {
+		let button = document.getElementById("addFasesBtn");
+		button.setAttribute("disabled", "disabled");
+	}
+
+	function removeDisabledButtonAddFases() {
+		document.getElementById("addFasesBtn").disabled = false;
+	}
+
+	function deleteFase(that) {
+		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
+			that.parentNode.parentNode.parentNode.parentNode.remove();
+		}
+		that.parentNode.parentNode.remove();
+	}
+
+	function removeAllElementTable() {
+		let fasesRow = document.getElementById('fasesTable');
+		while (fasesRow.firstChild) {
+			fasesRow.removeChild(fasesRow.firstChild);
+		}
+	}
+	function obtenerValorCheckBox() {
+		console.log("valor check:", document.querySelector('.activeCheckbox').checked() );
+		if(document.querySelector('.activeCheckbox').checked()) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+</script>
 
 </body>
 </html>

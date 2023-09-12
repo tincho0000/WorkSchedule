@@ -7,9 +7,10 @@ public enum Fase {
 	ANALISIS,
 	ESTIMACION,
 	CONSTRUCCION,
-	PRUEBA,
-	IMPLEMENTACION;
-	
+	SOPORTE_PRUEBAS_PI,
+	SOPORTE_PRUEBAS_PAU,
+	IMPLEMENTACION,
+	HOMOLOGACION;
 
 	public static List<Fase> obtenerFases() {
 	    

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum TipoRequerimiento {
+	ANALISIS,
+	REWORK,
 	EVOLUTIVO,
 	CORRECTIVO,
 	EMERGENCIA;

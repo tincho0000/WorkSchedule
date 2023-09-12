@@ -22,7 +22,9 @@ import javax.validation.constraints.NotNull;
 
 import com.workschedule.app.enums.Aplicacion;
 import com.workschedule.app.enums.EstadoRequerimiento;
+import com.workschedule.app.enums.MotivoReplanificacion;
 import com.workschedule.app.enums.TipoRequerimiento;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Requerimiento")
@@ -44,26 +46,32 @@ public class Requerimiento implements Serializable {
 	private EstadoRequerimiento estado;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_planif_testing")
 	private Date fechaPlanifTesting;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_testing")
 	private Date fechaRealTesting;
 	
 	@Column(name="motivo_replanif_testing")
-	private Date motivoReplanifTesting;
+	@Enumerated(EnumType.STRING)
+	private MotivoReplanificacion motivoReplanifTesting;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_planif_implementacion")
 	private Date fechaPlanifImplementacion;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_implementacion")
 	private Date fechaRealImplementacion;
 	
 	@Column(name="motivo_replanif_implementacion")
-	private Date motivoReplanifImplementacion;
+	@Enumerated(EnumType.STRING)
+	private MotivoReplanificacion motivoReplanifImplementacion;
 	
 	@NotNull
 	@Column(name="tipo_requerimiento")
@@ -141,11 +149,11 @@ public class Requerimiento implements Serializable {
 		this.fechaRealTesting = fechaRealTesting;
 	}
 
-	public Date getMotivoReplanifTesting() {
+	public MotivoReplanificacion getMotivoReplanifTesting() {
 		return motivoReplanifTesting;
 	}
 
-	public void setMotivoReplanifTesting(Date motivoReplanifTesting) {
+	public void setMotivoReplanifTesting(MotivoReplanificacion motivoReplanifTesting) {
 		this.motivoReplanifTesting = motivoReplanifTesting;
 	}
 
@@ -165,11 +173,11 @@ public class Requerimiento implements Serializable {
 		this.fechaRealImplementacion = fechaRealImplementacion;
 	}
 
-	public Date getMotivoReplanifImplementacion() {
+	public MotivoReplanificacion getMotivoReplanifImplementacion() {
 		return motivoReplanifImplementacion;
 	}
 
-	public void setMotivoReplanifImplementacion(Date motivoReplanifImplementacion) {
+	public void setMotivoReplanifImplementacion(MotivoReplanificacion motivoReplanifImplementacion) {
 		this.motivoReplanifImplementacion = motivoReplanifImplementacion;
 	}
 
