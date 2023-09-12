@@ -82,7 +82,7 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifTesting" type="date" th:field="*{fechaPlanifTesting}" class="form-control"
+						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
 							   th:errorclass="'form-control is-invalid'" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifTesting')}"
@@ -90,7 +90,7 @@
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealTesting" type="date" th:field="*{fechaRealTesting}" />
+						<input id="fechaRealTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealTesting}" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealTesting')}"
 							 th:errors="*{fechaRealTesting}"></div>
@@ -114,14 +114,14 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifImplementacion" type="date" th:field="*{fechaPlanifImplementacion}">
+						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
 							 th:errors="*{fechaPlanifImplementacion}"></div>
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealImplementacion" type="date" th:field="*{fechaRealImplementacion}">
+						<input id="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealImplementacion')}"
 							 th:errors="*{fechaRealImplementacion}"></div>
@@ -186,7 +186,9 @@
 				<div class="form-group row py-5">
 
 					<div class="col-sm-6 border-0">
-						<div class="" id="tableDiv"></div>
+						<div class="" id="tableDiv">
+							<tbody>
+						</div>
 					</div>
 
 				</div>
@@ -208,6 +210,9 @@
 		var total=0;
 
 		$('input[name="cantidad[]"]').each(function(){
+			console.log("this pesos: ", $(this));
+			console.log("this solo: ", this);
+			console.log("this.parentNode", this.parentNode);
 			console.log("VALOR: " + $(this).val());
 			if ($(this).val() != ""){
 				total += parseInt($(this).val());
@@ -244,7 +249,7 @@
 				'</div></th>' +
 				'    <th colspan="2" scope="colgroup">'+
 				'<div style="float: right; margin-right: 20px;">'+
-				'<input type="checkbox" id="activeEstimation[]" name="activeEstimation[]" value="0" class="onoffswitch-checkbox"  checked>'+
+				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" value="0" class="onoffswitch-checkbox"  checked>'+
 				'<label for="activeEstimation[]"> Activo</label>'+
 				'</div>'+
 				'</th>';
@@ -267,8 +272,7 @@
 	}
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
-		var listEstimaciones = [[${requerimiento.estimacion}]];
-		trFases.setAttribute("th:each", "estimacion : listEstimaciones");
+		trFases.setAttribute("th:each", "estimacion : ${requerimiento.estimacion}");
 		trFases.id = "row_' + index + '";
 		let htmlBody =
 				'<td>' + fase + '</td>' +
@@ -276,7 +280,7 @@
 				'<div class="col-sm-6">' +
 				'<input type="number" value="0" th:field="*{estimacion.cantidadHoras}" name="cantidad[]"  id="cantidad_' + index + '" class="form-control text-end" onchange="calculateTotal();"/>'+
 				'<input type="hidden" th:field="*{estimacion.version}" value='+index+' name="version[]" readonly/>'+
-				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox()" name="faseActiva[]">'+
+				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox();" name="faseActiva[]"/>'+
 				+ '</div></td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
 			trFases.innerHTML = htmlBody;
@@ -322,10 +326,6 @@
 	}
 
 	function deleteFase(that) {
-		console.log("that.parentNode", that.parentNode);
-		console.log("that.parentNode.parentNode", that.parentNode.parentNode);
-		console.log("that.parentNode.parentNode.parentNode", that.parentNode.parentNode.parentNode);
-		console.log("es la tabla", that.parentNode.parentNode.parentNode.parentNode);
 		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
 			that.parentNode.parentNode.parentNode.parentNode.remove();
 		}
@@ -339,7 +339,12 @@
 		}
 	}
 	function obtenerValorCheckBox() {
-		return 1;
+		console.log("valor check:", document.querySelector('.activeCheckbox').checked() );
+		if(document.querySelector('.activeCheckbox').checked()) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 
 </script>

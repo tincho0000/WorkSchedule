@@ -24,6 +24,7 @@ import com.workschedule.app.enums.Aplicacion;
 import com.workschedule.app.enums.EstadoRequerimiento;
 import com.workschedule.app.enums.MotivoReplanificacion;
 import com.workschedule.app.enums.TipoRequerimiento;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Requerimiento")
@@ -45,10 +46,12 @@ public class Requerimiento implements Serializable {
 	private EstadoRequerimiento estado;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_planif_testing")
 	private Date fechaPlanifTesting;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_testing")
 	private Date fechaRealTesting;
 	
@@ -57,10 +60,12 @@ public class Requerimiento implements Serializable {
 	private MotivoReplanificacion motivoReplanifTesting;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_planif_implementacion")
 	private Date fechaPlanifImplementacion;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_implementacion")
 	private Date fechaRealImplementacion;
 	

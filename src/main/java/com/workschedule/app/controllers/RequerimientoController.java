@@ -1,5 +1,8 @@
 package com.workschedule.app.controllers;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -220,11 +223,17 @@ public class RequerimientoController {
 
 	@GetMapping("/form")
 	public String crear(Model model) {
+		final String formatDate = "yyyy-MM-dd";
 		String titulo = "Alta de requerimiento";
+		LocalDate date = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatDate);
+		String text = date.format(formatter);
+		LocalDate currentDate = LocalDate.parse(text, formatter);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Requerimiento requerimiento = new Requerimiento();
 		requerimiento.setEstimacion(new ArrayList<>());
 		model.addAttribute("titulo", titulo);
+		model.addAttribute("currentDate", currentDate);
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("username", auth.getName());
 		return "requerimiento/form";
