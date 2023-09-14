@@ -8346,3 +8346,24 @@ textarea.form-control {
         border: 1px solid transparent;
         background: #fbceb5;
         color: #fff; }
+      .input-totalizador {
+
+      }
+      .input-totalizador:disabled {
+        display: block;
+        width: 100%;
+        vertical-align: middle;
+        background-image: none;
+        border: 1px solid #ced4da;
+        border-radius: .375rem;
+        font-size: 1rem;
+        font-weight: 400;
+        height: 40px !important;
+        padding: 20px 10px;
+        line-height: 28px;
+        appearance: none;
+        position : relative !important;
+        pointer-events:none !important;
+        color:#dcd3d3 !important;
+        background:#F5F5F5 !important;
+      }

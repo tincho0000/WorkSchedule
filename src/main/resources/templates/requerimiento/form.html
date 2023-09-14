@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
@@ -169,7 +170,7 @@
 						   th:text="'Cantidad' + ' Horas'"></label>
 					<div class="col-sm-2">
 						<input type="number"
-							   id="total_fases" class="form-control" th:readonly="true" oninput="calculateTotal()" />
+							   id="total_fases" class="input-totalizador" oninput="calculateTotal()" disabled />
 					</div>
 				</div>
 
@@ -186,8 +187,8 @@
 				<div class="form-group row py-5">
 
 					<div class="col-sm-6 border-0">
-						<div class="" id="tableDiv">
-							<tbody>
+						<div class="" id="tablaEstimaciones">
+							<!--<tbody th:replace="requerimiento/fases-table :: agregarTablaFase(${requerimiento.estimacion)"></tbody>!-->
 						</div>
 					</div>
 
@@ -202,7 +203,13 @@
 <script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
+	var valorCheckBox=1;
 	$(document).ready(function() {
+		/*if(document.querySelector('.activeCheckbox').checked()) {
+			valorCheckBox = 1;
+		} else {
+			valorCheckBox = 0;
+		}*/
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
@@ -214,7 +221,7 @@
 			console.log("this solo: ", this);
 			console.log("this.parentNode", this.parentNode);
 			console.log("VALOR: " + $(this).val());
-			if ($(this).val() != ""){
+			if ($(this).val() != "" && valorCheckBox == 1){
 				total += parseInt($(this).val());
 			} else {
 				// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
@@ -228,31 +235,18 @@
 	    }
 
 	function addFases() {
-		let objectFases = sessionStorage.getItem('fases');
-		let fases = JSON.parse(objectFases);
-		let tableDiv = document.getElementById('tableDiv');
-		let tableActual = document.createElement('table');
+		let objectoFases = sessionStorage.getItem('fases');
+		let fases = JSON.parse(objectoFases);
+		let tablaDiv = document.getElementById('tablaEstimaciones');
+		let tablaActual = document.createElement('table');
 		countEstimation++;
-		tableActual.id= "cargarFase";
-		tableActual.title = "Estimation Table"
-		tableActual.className = "table table-sm table-striped table-hover";
+		tablaActual.id= "cargarFase";
+		tablaActual.title = "Estimacion Tabla";
+		tablaActual.className = "table table-sm table-striped table-hover";
 		let tHead = document.createElement('thead');
 		tHead.className= "text-white";
-		let trHeadNameEstimation = document.createElement('tr');
-		//trHeadNameEstimation.setAttribute("th:each", "currentEstimation, stat : ${requerimiento.estimacion}")
 		let trHeadColumns = document.createElement('tr');
-		trHeadNameEstimation.innerHTML =
-				'<th colspan="2" scope="colgroup">'+
-				'<div> <span>Nombre estimación</span>' +
-				'<input type="text" value="" name="namesEstimation[]" class="form-control text-end" />' +
-				'<label>Version: '+countEstimation+'</label>'+
-				'</div></th>' +
-				'    <th colspan="2" scope="colgroup">'+
-				'<div style="float: right; margin-right: 20px;">'+
-				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" value="0" class="onoffswitch-checkbox"  checked>'+
-				'<label for="activeEstimation[]"> Activo</label>'+
-				'</div>'+
-				'</th>';
+
 		trHeadColumns.innerHTML = '<th scope="col">Fase</th>' +
 				'<th scope="col">Horas</th>' +
 				'<th>Eliminar</th>';
@@ -262,28 +256,57 @@
 			tBody.appendChild(buildFase(fase, countEstimation));
 		}
 
-		tHead.appendChild(trHeadNameEstimation);
 		tHead.appendChild(trHeadColumns);
-		tableActual.appendChild(tHead);
-		tableActual.appendChild(tBody);
+		tablaActual.appendChild(tHead);
+		tablaActual.appendChild(tBody);
 
-		tableDiv.appendChild(tableActual);
+		let card = document.createElement("div");
+		card.className = "card";
+		card.style.marginTop = "0.625rem";
+		let cardHeader = document.createElement("div")
+		cardHeader.className = "card-header text-white bg-primary mb-3";
+		cardHeader.innerHTML = '<div>' +
+				'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
+				'<label>Version: '+countEstimation+'</label>'+
+				'</div>'+
+				'<div style="float: right;margin-right: 20px;">' +
+				'<label for="activeEstimation[]"> Activo</label>' +
+				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" class="onoffswitch-checkbox"  checked>'+
+				'</div>';
+		let cardBody = document.createElement("div");
+		cardBody.className = "card-body text-white bg-secondary mb-3";
+		cardBody.style.maxWidth = "34rem";
+		cardBody.style.marginTop = "-0.9rem";
+
+		let sectionGeneralAction = document.createElement("div");
+		sectionGeneralAction.className = "row py-3";
+		sectionGeneralAction.innerHTML =
+		'<div class="col-sm-2">'+
+		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);">Eliminar la estimacíon</button>'+
+		'</div>'+
+		'<div class="col-sm-2">'+
+		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;">Agregar fase</button>'+
+		'</div>';
+		cardBody.appendChild(tablaActual);
+		cardBody.appendChild(sectionGeneralAction);
+		card.appendChild(cardHeader);
+		card.appendChild(cardBody);
+
+		tablaDiv.appendChild(card);
+
 
 	}
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
-		trFases.setAttribute("th:each", "estimacion : ${requerimiento.estimacion}");
 		trFases.id = "row_' + index + '";
-		let htmlBody =
+		let htmlInputs =
 				'<td>' + fase + '</td>' +
 				'<td>' +
 				'<div class="col-sm-6">' +
-				'<input type="number" value="0" th:field="*{estimacion.cantidadHoras}" name="cantidad[]"  id="cantidad_' + index + '" class="form-control text-end" onchange="calculateTotal();"/>'+
-				'<input type="hidden" th:field="*{estimacion.version}" value='+index+' name="version[]" readonly/>'+
-				'<input type="hidden" th:field="*{estimacion.activo}>" value="obtenerValorCheckBox();" name="faseActiva[]"/>'+
+				'<input type="number" name="cantidad[]" class="form-control text-end" onchange="calculateTotal()"/>'+
 				+ '</div></td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
-			trFases.innerHTML = htmlBody;
+			trFases.innerHTML = htmlInputs;
 		return trFases;
 	}
 	function loadFases() {
@@ -307,11 +330,13 @@
 					break;
 				default:
 					disabledButtonAddFases();
+					//mandar un alerta no se encontraron valores por deafult
 					break;
 			}
 		} else {
 			disabledButtonAddFases();
 			removeAllElementTable();
+			//mandar un alerta que el valor es null (contactar con el administrador)->
 		}
 		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
@@ -327,23 +352,19 @@
 
 	function deleteFase(that) {
 		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
-			that.parentNode.parentNode.parentNode.parentNode.remove();
+			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
 		}
 		that.parentNode.parentNode.remove();
+	}
+
+	function deleteAllEstimation(that) {
+		that.parentNode.parentNode.parentNode.parentNode.remove();
 	}
 
 	function removeAllElementTable() {
 		let fasesRow = document.getElementById('fasesTable');
 		while (fasesRow.firstChild) {
 			fasesRow.removeChild(fasesRow.firstChild);
-		}
-	}
-	function obtenerValorCheckBox() {
-		console.log("valor check:", document.querySelector('.activeCheckbox').checked() );
-		if(document.querySelector('.activeCheckbox').checked()) {
-			return 1;
-		} else {
-			return 0;
 		}
 	}
 
