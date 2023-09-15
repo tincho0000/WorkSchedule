@@ -198,6 +198,23 @@
 	</div>
 </div>
 <input id="pepe" th:value="${fasesJson}">
+<div class="modal fade" tabindex="-1" id="new-phase-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Agrega una nueva fase</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input type="text" id="namePhase" name="namePhase" placeholder="Nombre de Fase"/>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="addNewPhase(this);">Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <footer th:replace="layout/layout :: footer"></footer>
 <script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
@@ -282,7 +299,7 @@
 		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);">Eliminar la estimacíon</button>'+
 		'</div>'+
 		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;">Agregar fase</button>'+
+		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal">Agregar fase</button>'+
 		'</div>';
 		cardBody.appendChild(tablaActual);
 		cardBody.appendChild(sectionGeneralAction);
@@ -346,6 +363,17 @@
 
 	function removeDisabledButtonAddFases() {
 		document.getElementById("addFasesBtn").disabled = false;
+	}
+
+	function addNewPhase(that) {
+		let tBody = document.getElementById("fasesTable");
+		let valNewPhase = document.getElementById('namePhase');
+		let rows = document.getElementById("fasesTable").rows.length;
+		tBody.appendChild(buildFase(valNewPhase.value, rows + 1));
+		let modalEl1 = document.getElementById("new-phase-modal");
+		let modal = bootstrap.Modal.getInstance(modalEl1);
+		modal.hide();
+
 	}
 
 	function deleteFase(that) {
