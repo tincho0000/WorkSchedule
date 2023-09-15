@@ -210,7 +210,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="addNewPhase(this);">Guardar</button>
+				<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
 			</div>
 		</div>
 	</div>
@@ -365,7 +365,7 @@
 		document.getElementById("addFasesBtn").disabled = false;
 	}
 
-	function addNewPhase(that) {
+	function addNewPhase() {
 		let tBody = document.getElementById("fasesTable");
 		let valNewPhase = document.getElementById('namePhase');
 		let rows = document.getElementById("fasesTable").rows.length;
@@ -373,7 +373,6 @@
 		let modalEl1 = document.getElementById("new-phase-modal");
 		let modal = bootstrap.Modal.getInstance(modalEl1);
 		modal.hide();
-
 	}
 
 	function deleteFase(that) {
