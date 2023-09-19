@@ -169,14 +169,14 @@
 					<label class="col-sm-2 col-form-label"
 						   th:text="'Cantidad' + ' Horas'"></label>
 					<div class="col-sm-2">
-						<input type="number"
-							   id="total_fases" class="input-totalizador" oninput="calculateTotal()" disabled />
+						<input type="text"
+							   id="total_fases" class="input-totalizador" disabled />
 					</div>
 				</div>
 
 				<div class="form-group row py-3">
 					<div class="col-sm-2">
-						<button id="addFasesBtn" type="button" onclick="addFases()" disabled class="btn btn-primary">
+						<button id="addEstimationBtn" type="button" onclick="addEstimation()" disabled class="btn btn-primary">
 							<span th:utext="#{form.requirement.button.add.estimated}"></span>
 						</button>
 					</div>
@@ -230,25 +230,23 @@
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
-	function calculateTotal() {
+	function calculateTotal(that) {
 		var total=0;
+		  $('input[type="number"]').each(function(){
+			  if(that.value != "" && !that.disabled) {
+				  total += parseInt(that.value);
+			  } else {
+				  total += 0;
+			  }
+		  });
 
-		$('input[name="cantidad[]"]').each(function(){
-			console.log("VALOR: " + $(this).val());
-			if ($(this).val() != "" && valorCheckBox == 1){
-				total += parseInt($(this).val()) || 0;
-			} else {
-				// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
-				$(this).val(0);
-			}
-		});
-
-		let cantidadHs = document.getElementById('total_fases');
-		cantidadHs.value = total;
-		return total;
+		  document.getElementById("total_fases").value = total;
 	    }
 
-	function addFases() {
+	function addEstimation() {
+		document.querySelectorAll('input[type=checkbox]').forEach(function(checkElement) {
+			checkElement.checked = false;
+		});
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
 		let tablaDiv = document.getElementById('tablaEstimaciones');
@@ -276,6 +274,7 @@
 
 		let card = document.createElement("div");
 		card.className = "card";
+		card.id = "card_" + countEstimation;
 		card.style.marginTop = "0.625rem";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
@@ -285,7 +284,7 @@
 				'</div>'+
 				'<div style="float: right;margin-right: 20px;">' +
 				'<label for="activeEstimation[]"> Activo</label>' +
-				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" class="onoffswitch-checkbox"  checked>'+
+				'<input type="checkbox" id="activeEstimation[]" name="activeEstimation[]" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>'+
 				'</div>';
 		let cardBody = document.createElement("div");
 		cardBody.className = "card-body text-white bg-secondary mb-3";
@@ -313,14 +312,15 @@
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
 		trFases.id = "row_' + index + '";
+		let cantidadInput = "cantidad_" + countEstimation;
 		let htmlInputs =
 				'<td>' + fase + '</td>' +
 				'<td>' +
 				  '<div class="col-sm-6">' +
-				  '<input type="number" id="cantidad[]" name="cantidad[]" value="0" min="0" class="form-control text-end" onchange="calculateTotal()"/>' +
+				  '<input type="number" id="'+cantidadInput+'" name="'+cantidadInput+'" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
 				  '</div>' +
 				'</td>'+
-				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
+				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
 			trFases.innerHTML = htmlInputs;
 		return trFases;
 	}
@@ -330,7 +330,7 @@
 		var fases = Object.values(enumFases);
 		var fasesFilter = [];
 		if(this.value != null && this.value != "empty") {
-			removeDisabledButtonAddFases();
+			removeDisabledButtonAddEstimation();
 			switch (this.value) {
 				case 'EVOLUTIVO':
 					fasesFilter = fases;
@@ -344,25 +344,25 @@
 					fasesFilter = fases.filter(fase => fase === "ANALISIS");
 					break;
 				default:
-					disabledButtonAddFases();
+					disabledButtonAddEstimation();
 					//mandar un alerta no se encontraron valores por deafult
 					break;
 			}
 		} else {
-			disabledButtonAddFases();
+			disabledButtonAddEstimation();
 			removeAllElementTable();
 			//mandar un alerta que el valor es null (contactar con el administrador)->
 		}
 		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
 
-	function disabledButtonAddFases() {
-		let button = document.getElementById("addFasesBtn");
+	function disabledButtonAddEstimation() {
+		let button = document.getElementById("addEstimationBtn");
 		button.setAttribute("disabled", "disabled");
 	}
 
-	function removeDisabledButtonAddFases() {
-		document.getElementById("addFasesBtn").disabled = false;
+	function removeDisabledButtonAddEstimation() {
+		document.getElementById("addEstimationBtn").disabled = false;
 	}
 
 	function addNewPhase() {
@@ -375,11 +375,12 @@
 		modal.hide();
 	}
 
-	function deleteFase(that) {
+	function deletePhase(that) {
 		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
 			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
 		}
 		that.parentNode.parentNode.remove();
+		calculateTotal(that);
 	}
 
 	function deleteAllEstimation(that) {
@@ -391,6 +392,22 @@
 		while (fasesRow.firstChild) {
 			fasesRow.removeChild(fasesRow.firstChild);
 		}
+	}
+
+	function verifyWhenDisabledInput(that) {
+		if(that.checked) {
+			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+				checkElement.checked = false;
+			});
+			that.checked = true;
+		}
+		that.parentNode.parentNode.parentNode.querySelectorAll('input[type="number"]').forEach(function (element) {
+			if(that.checked) {
+				element.removeAttr("disabled");
+			} else {
+				element.setAttribute("disabled", "disabled");
+			}
+		});
 	}
 
 </script>
