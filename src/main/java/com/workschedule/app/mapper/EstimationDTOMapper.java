@@ -12,9 +12,10 @@ public class EstimationDTOMapper {
     public EstimationDTO convert(String source) {
         JsonFactory factory = new JsonFactory();
         ObjectMapper objectMappper = new ObjectMapper();
+        EstimationDTO estimation = new EstimationDTO();
         try {
             JsonParser parser = factory.createParser(source);
-            EstimationDTO estimation = objectMappper.readValue(parser, EstimationDTO.class);
+             estimation = objectMappper.readValue(parser, EstimationDTO.class);
             System.out.println("fase:" + estimation.getFase() + "/ version:" + estimation.getVersion() + "/cant hs:" + estimation.getCantidadHoras());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -23,10 +24,10 @@ public class EstimationDTOMapper {
         }
 
         EstimationDTO estimationDTO = new EstimationDTO();
-        estimationDTO.setFase(estimationDTO.getFase());
-        estimationDTO.setVersion(estimationDTO.getVersion());
-        estimationDTO.setCantidadHoras(estimationDTO.getCantidadHoras());
-        estimationDTO.setUsuarioAlta(estimationDTO.getUsuarioAlta());
+        estimationDTO.setFase(estimation.getFase());
+        estimationDTO.setVersion(estimation.getVersion());
+        estimationDTO.setCantidadHoras(estimation.getCantidadHoras());
+        estimationDTO.setUsuarioAlta(estimation.getUsuarioAlta());
         return estimationDTO;
     }
 }

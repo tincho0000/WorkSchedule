@@ -20,6 +20,15 @@ public enum Fase {
 	public String getFase() {
 		return nombreFase;
 	}
+
+	public static Fase fromString(String text) {
+		for (Fase b : Fase.values()) {
+			if (b.nombreFase.equalsIgnoreCase(text)) {
+				return b;
+			}
+		}
+		return null;
+	}
 	public static List<Fase> obtenerFases() {
 	    
 		return Arrays.asList(Fase.values());

@@ -65,14 +65,13 @@ public class Estimacion implements Serializable{
 	private Requerimiento requerimiento;
 
 	public Estimacion (String fase, int version, int cantHs, Requerimiento req, String userCreate) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-     this.setFase(Fase.valueOf(fase));
+		System.out.println("se esta por crear la fase:" + fase);
+	 this.setFase(Fase.fromString(fase));
 	 this.setVersion(version);
 	 this.setCantidadHoras(cantHs);
 	 this.setRequerimiento(req);
 	 this.setUsuarioAlta(userCreate);
-	 String currentDate = sdf.format(new Date());
-	 this.setFechaAlta(new Date(currentDate));
+	 this.setFechaAlta(new Date());
 	}
 	public Estimacion() {
 

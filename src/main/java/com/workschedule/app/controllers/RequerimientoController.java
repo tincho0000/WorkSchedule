@@ -234,7 +234,7 @@ public class RequerimientoController {
 	}
 
 	@PostMapping("/form")
-	public String guardar(@Valid @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
+	public String guardar(@ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
 	@RequestParam(name="myInputHidden", required = false) String[] estimaciones )  {
 		System.out.println("entro al endpoint");
 		List<EstimationDTO> listaEstimaciones = new ArrayList<>();

@@ -253,12 +253,12 @@
 		document.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
 					console.log("entra al foreach de los inputs");
-					console.log("el elemento parent es:",input.parentNode);
-					console.log("el elemento parent.parent es:",input.parentNode.parentNode);
-					console.log("el elemento parent.parent.parent es:",input.parentNode.parentNode.parentNode);
+
 					const estimacion = new Object();
+					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+					const versionSplit = versionLabel.split(" ");
 					estimacion.fase = input.parentNode.parentNode.parentNode.firstChild.textContent;
-					estimacion.version = version;
+					estimacion.version = versionSplit[1];
 					//estimacion.activo= 1;
 					estimacion.cantidadHoras = input.value;
 					//estimacion.fechaAlta = Date.now();
