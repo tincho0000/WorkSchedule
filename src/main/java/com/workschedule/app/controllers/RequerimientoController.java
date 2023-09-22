@@ -1,19 +1,19 @@
 package com.workschedule.app.controllers;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.workschedule.app.dto.EstimationDTO;
+import com.workschedule.app.mapper.EstimationDTOMapper;
+import com.workschedule.app.models.entity.Estimacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -22,16 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.workschedule.app.enums.Aplicacion;
-import com.workschedule.app.enums.EstadoRequerimiento;
 import com.workschedule.app.enums.Fase;
-import com.workschedule.app.enums.TipoRequerimiento;
-import com.workschedule.app.models.entity.Estimacion;
 import com.workschedule.app.models.entity.Requerimiento;
-import com.workschedule.app.models.entity.Usuario;
 import com.workschedule.app.models.service.IEstimacionService;
 import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoService;
@@ -106,14 +100,14 @@ public class RequerimientoController {
 
 
 		/******************** buscar ************************/
-		Requerimiento requerimiento = requerimientoService.findByRequerimiento("SHV-100");
+		//Requerimiento requerimiento = requerimientoService.findByRequerimiento("SHV-100");
 
 		/******************** Alta Estimacion ************************/
 
-		List<Fase> fases2 = Fase.obtenerFases();
+		//List<Fase> fases2 = Fase.obtenerFases();
 
 		//Agrego fases al req
-		for (Fase fase : fases2) {
+		/*for (Fase fase : fases2) {
 
 			Estimacion estimacion = new Estimacion();
 			estimacion.setActivo(0);
@@ -128,7 +122,7 @@ public class RequerimientoController {
 
 		}
 
-		requerimientoService.save(requerimiento);
+		requerimientoService.save(requerimiento);*/
 
 		/********************Eliminar Estimacion***********************/
 //		estimacionService.delete((long)11);
@@ -240,16 +234,22 @@ public class RequerimientoController {
 	}
 
 	@PostMapping("/form")
-	public String guardar(@Valid @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model) {
+	public String guardar(@Valid @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
+	@RequestParam(name="myInputHidden", required = false) String[] estimaciones )  {
 		System.out.println("entro al endpoint");
-		if (requerimiento.getEstimacion().isEmpty()) {
-			System.out.println("No se lleno la lista de estimaciones");
-		} else {
-			System.out.println("Se lleno la lista de estimaciones");
-			System.out.println("estimaciones: " + requerimiento.getEstimacion());
+		List<EstimationDTO> listaEstimaciones = new ArrayList<>();
+		for(int i=0; i < estimaciones.length ; i++) {
+			listaEstimaciones.add(new EstimationDTOMapper().convert(estimaciones[i]));
 		}
-        return "redirect:listar-requerimientos";
+
+		List<Estimacion> listEstimaciones = listaEstimaciones.stream().map( estimacionDTO -> new Estimacion(estimacionDTO.getFase(),estimacionDTO.getVersion(), estimacionDTO.getCantidadHoras(), requerimiento, estimacionDTO.getUsuarioAlta())).collect(Collectors.toList());
+		requerimiento.setEstimacion(listEstimaciones);
+		requerimientoService.save(requerimiento);
+
+		return "requerimiento/form";
     }
+
+
 //	@GetMapping(value = "/cargar-fases/{termino}", produces = { "application/json" })
 //	public @ResponseBody List<FaseSimple> cargarFases(@PathVariable String termino) {
 //		if (termino.equals("*")) {

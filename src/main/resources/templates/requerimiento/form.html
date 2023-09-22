@@ -182,6 +182,11 @@
 					</div>
 				</div>
 
+				<!--<input id="listEstimation" type="text" th:field="${requerimiento.estimacion}" th:value="getListEstimation();" class="form-control" readonly>-->
+				<!--<input type="hidden" th:each="estimacion : ${requerimiento.estimacion}">Hi Planet X!</input>
+				<tr th:each="estimacion, stat : ${requerimiento.estimacion}">
+					<input type="hidden" th:value="${estimacion.id}" />
+					   </tr> -->
 
 
 				<div class="form-group row py-5">
@@ -221,15 +226,67 @@
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
 	var valorCheckBox=1;
+	console.log("empieza por aca");
 	$(document).ready(function() {
-		/*if(document.querySelector('.activeCheckbox').checked()) {
-			valorCheckBox = 1;
-		} else {
-			valorCheckBox = 0;
-		}*/
+		$("#cantidadHoras").change(function (input) {
+			console.log("change");
+			console.log("next element", input.nextSibling);
+			input.nextSibling.value = "pepe";
+		});
+		console.log("esta pasando por aca");
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
+	class Estimation {
+		constructor(fase, cantHs, version, nombreEstimacion, activo, fechaAlta, fechaUpdate) {
+			this.fase = fase;
+			this.cantidadHoras = cantHs;
+			this.nombreEstimacion = nombreEstimacion;
+			this.version = version;
+			this.activo = activo;
+			this.fechaAlta = fechaAlta;
+			this.fechaUpdate = fechaUpdate;
+		}
+	}
+
+	function createEstimationObj(version) {
+		document.querySelectorAll('#cantidadHoras')
+				.forEach((input) => {
+					console.log("entra al foreach de los inputs");
+					console.log("el elemento parent es:",input.parentNode);
+					console.log("el elemento parent.parent es:",input.parentNode.parentNode);
+					console.log("el elemento parent.parent.parent es:",input.parentNode.parentNode.parentNode);
+					const estimacion = new Object();
+					estimacion.fase = input.parentNode.parentNode.parentNode.firstChild.textContent;
+					estimacion.version = version;
+					//estimacion.activo= 1;
+					estimacion.cantidadHoras = input.value;
+					//estimacion.fechaAlta = Date.now();
+					//estimacion.fechaUpdate = Date.now();
+					estimacion.usuarioAlta = [[${username}]];
+					//estimacion.usuarioUpdate = "";
+					//estimacion.requerimiento = [[${requerimiento}]];
+					//let est = new Estimation("fase",input.value, "version", "estimacion");
+					let  jsonString = JSON.stringify(estimacion);
+					console.log("elemnto siguiente:", input.nextSibling);
+					input.nextSibling.value = jsonString;
+				});
+	}
+
+	function getListEstimation() {
+		let listEstimation = [];
+		document.querySelectorAll('#myInputHidden')
+				.forEach((input) => {
+					listEstimation.add(input.value);
+				});
+		return listEstimation;
+	}
+
+	function buildObjectEstimation(that) {
+		console.log("esta es la construccion de la estimacion: ",that);
+		const est = new Estimation('fase1', '1', '2', "estimacion test", "1");
+		console.log("la fase de prueba es:", est.fase);
+	}
 	function calculateTotal(that) {
 		var total=0;
 		  $('input[type="number"]').each(function(){
@@ -307,6 +364,7 @@
 
 		tablaDiv.appendChild(card);
 
+		createEstimationObj(countEstimation);
 
 	}
 	function buildFase(fase, index) {
@@ -317,7 +375,8 @@
 				'<td>' + fase + '</td>' +
 				'<td>' +
 				  '<div class="col-sm-6">' +
-				  '<input type="number" id="'+cantidadInput+'" name="'+cantidadInput+'" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+				  '<input type="number" id="cantidadHoras" name="cantidadHoras" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+				  '<input type="text" id="myInputHidden" name="myInputHidden" value="">'+
 				  '</div>' +
 				'</td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
