@@ -231,29 +231,23 @@
 		$("#cantidadHoras").change(function (input) {
 			console.log("change");
 			console.log("next element", input.nextSibling);
-			input.nextSibling.value = "pepe";
+			const estimacion = new Object();
+			let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+			const versionSplit = versionLabel.split(" ");
+			estimacion.fase = input.parentNode.parentNode.parentNode.firstChild.textContent;
+			estimacion.version = versionSplit[1];
+			//estimacion.activo= 1;
+			estimacion.cantidadHoras = input.value;
+			estimacion.usuarioAlta = [[${username}]];
+			let  jsonString = JSON.stringify(estimacion);
+			input.nextSibling.value = jsonString;
 		});
-		console.log("esta pasando por aca");
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
-
-	class Estimation {
-		constructor(fase, cantHs, version, nombreEstimacion, activo, fechaAlta, fechaUpdate) {
-			this.fase = fase;
-			this.cantidadHoras = cantHs;
-			this.nombreEstimacion = nombreEstimacion;
-			this.version = version;
-			this.activo = activo;
-			this.fechaAlta = fechaAlta;
-			this.fechaUpdate = fechaUpdate;
-		}
-	}
 
 	function createEstimationObj(version) {
 		document.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
-					console.log("entra al foreach de los inputs");
-
 					const estimacion = new Object();
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
@@ -261,12 +255,8 @@
 					estimacion.version = versionSplit[1];
 					//estimacion.activo= 1;
 					estimacion.cantidadHoras = input.value;
-					//estimacion.fechaAlta = Date.now();
-					//estimacion.fechaUpdate = Date.now();
 					estimacion.usuarioAlta = [[${username}]];
 					//estimacion.usuarioUpdate = "";
-					//estimacion.requerimiento = [[${requerimiento}]];
-					//let est = new Estimation("fase",input.value, "version", "estimacion");
 					let  jsonString = JSON.stringify(estimacion);
 					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
