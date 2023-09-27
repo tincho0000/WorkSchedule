@@ -3,12 +3,14 @@ package com.workschedule.app.controllers;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import com.workschedule.app.dto.EstimationDTO;
+import com.workschedule.app.mapper.EstimacionMapper;
 import com.workschedule.app.mapper.EstimationDTOMapper;
 import com.workschedule.app.models.entity.Estimacion;
 import org.slf4j.Logger;
@@ -210,7 +212,7 @@ public class RequerimientoController {
 //			flash.addFlashAttribute("success", "Rquerimiento eliminado con exito! El ID es: " + requerimiento.getRequerimiento());
 //			return "redirect:/requerimientos/listar-requerimientos";
 //		}
-//		
+//
 //		flash.addFlashAttribute("error", "El rquerimiento no existe en la BD!");
 //		return "redirect:/requerimientos/listar-requerimientos";
 //	}
@@ -237,13 +239,11 @@ public class RequerimientoController {
 	public String guardar(@ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
 	@RequestParam(name="myInputHidden", required = false) String[] estimaciones )  {
 		System.out.println("entro al endpoint");
-		List<EstimationDTO> listaEstimaciones = new ArrayList<>();
-		for(int i=0; i < estimaciones.length ; i++) {
-			listaEstimaciones.add(new EstimationDTOMapper().convert(estimaciones[i]));
-		}
 
-		List<Estimacion> listEstimaciones = listaEstimaciones.stream().map( estimacionDTO -> new Estimacion(estimacionDTO.getFase(),estimacionDTO.getVersion(), estimacionDTO.getCantidadHoras(), requerimiento, estimacionDTO.getUsuarioAlta())).collect(Collectors.toList());
-		requerimiento.setEstimacion(listEstimaciones);
+		System.out.println("entro al endpoint");
+
+		List<EstimationDTO> listEstimaciones = Arrays.asList(estimaciones).stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
+		requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convert(estimacionDTO, requerimiento)).collect(Collectors.toList()));
 		requerimientoService.save(requerimiento);
 
 		return "requerimiento/form";
@@ -258,7 +258,7 @@ public class RequerimientoController {
 //		return faseService.findByDescripcion(termino);
 //	}
 
-	
+
 	/************************************/
 	/******  @PostMapping("/form") ******/
 	/************************************/
@@ -266,7 +266,7 @@ public class RequerimientoController {
 //	public String guardar(@Valid @ModelAttribute Requerimiento requerimiento, BindingResult result, Model model,
 //			@RequestParam(name = "fase_id[]", required = false) Long[] fases,
 //			@RequestParam(name = "cantidad[]", required = false) Integer[] horasFase, RedirectAttributes flash, SessionStatus status) {
-//		
+//
 //		boolean existe;
 //		boolean modificacion = false;
 //		List<EstimacionRequerimientoFase> requerimientoFase = null;
@@ -274,19 +274,19 @@ public class RequerimientoController {
 //		List<Fase> fasesBD = faseService.findAll();
 //		List<String> listaFases = new ArrayList<>();
 //		List<Long> listaFasesId = new ArrayList<>();
-//		
+//
 //		for (Fase fase : fasesBD) {
 //			listaFases.add(fase.getFase());
 //			listaFasesId.add(fase.getId());
 //		}
-//		
-//		
+//
+//
 //		// Distinto de null es porque estamos haciendo una modificacion
 //		if (requerimiento.getId() != null) {
 //			modificacion = true;
 //		}
-//		
-//		
+//
+//
 //		if(result.hasErrors()) {
 //			if (modificacion) {
 //				model.addAttribute("titulo", "Editar Requerimiento");
@@ -299,7 +299,7 @@ public class RequerimientoController {
 //			model.addAttribute("listaFasesId", listaFasesId);
 //			return "requerimiento/form";
 //		}
-//		
+//
 //		//Valido que el requerimiento tenga al menos una fase
 //		if (fases == null || fases.length == 0) {
 //			if (modificacion) {
@@ -314,19 +314,19 @@ public class RequerimientoController {
 //			model.addAttribute("listaFasesId", listaFasesId);
 //			return "requerimiento/form";
 //		}
-//		
+//
 ////		System.out.println("Requerimiento" + requerimiento.toString());
 //		/*
 //		if (modificacion) {
 //			System.out.println("Estoy ante una modificacion");
 //			requerimientoFase = requerimientoFaseService.findByRequerimientoId(requerimiento.getId());
 //		}
-//		
-//		
+//
+//
 //		//Agregamos las fases al requerimiento si no estan
 //		for (int i = 0; i < fases.length; i++) {
 //			log.info("ID: " + fases[i] + " Cantidad de Horas: " + horasFase[i]);
-//			
+//
 //			//Si estamos editando
 //			if (modificacion) {
 //				existe = false;
@@ -335,24 +335,24 @@ public class RequerimientoController {
 //					if (requerimientoFase.get(j).getRequerimientoFaseId().getFaseId() == (long)fases[i] ) {
 //						requerimiento.getRequerimientoFases().get(j).setCantidadHoras(horasFase[i]);
 //						existe = true;
-//					} 
+//					}
 //				}
 //				if (!existe) {
 //					Fase fase = recuperarFase(fasesBD, fases[i]);
 //					requerimiento.addFase(fase, horasFase[i]);
 //				}
-//				
-//				
+//
+//
 //			} else {
 //				Fase fase = recuperarFase(fasesBD, fases[i]);
 //				requerimiento.addFase(fase, horasFase[i]);
 //			}
 //		}
-//		
-//		
+//
+//
 //		//Buscamos posibles fases eliminadas desde la vista
 //		//Si estamos editando
-//		
+//
 //		if (modificacion) {
 //			for (int i = 0; i < requerimientoFase.size(); i++) {
 //				existe=false;
@@ -366,10 +366,10 @@ public class RequerimientoController {
 //					requerimiento.removeFase(fase);
 //				}
 //			}
-//				
+//
 //		}
 //		*/
-//		
+//
 //		//Si no es modificacion incluimos el usuario que da de alta el requerimiento
 //		if (!modificacion) {
 //			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -377,9 +377,9 @@ public class RequerimientoController {
 //			System.err.println(usuario);
 //			requerimiento.setUsuario(usuario);
 //		}
-//		
+//
 //		System.out.println("Requerimiento" + requerimiento.toString());
-//		
+//
 //		try {
 //			requerimientoService.save(requerimiento);
 //		} catch (DataIntegrityViolationException e) {
@@ -396,9 +396,9 @@ public class RequerimientoController {
 //			model.addAttribute("listaFasesId", listaFasesId);
 //			return "requerimiento/form";
 //		}
-//		
+//
 //		status.setComplete();
-//		
+//
 //		if (modificacion) {
 //			flash.addFlashAttribute("success","Requerimiento modificado con exito");
 //		}else {
@@ -407,35 +407,35 @@ public class RequerimientoController {
 //
 //		return "redirect:listar-requerimientos";
 //	}
-//	
+//
 //	@GetMapping("/editar/{id}")
 //	public String editarRequerimiento( @PathVariable(value="id") Long id, RedirectAttributes flash, Model model) {
-//		
+//
 //		Requerimiento requerimiento = requerimientoService.findOne(id);
 //		List<Aplicacion> aplicaciones = aplicacionService.findAll();
 //		List<Fase> fases = faseService.findAll();
-//		
+//
 //		model.addAttribute("titulo", "Editar Requerimiento");
 //		model.addAttribute("requerimiento", requerimiento);
 //		model.addAttribute("aplicaciones", aplicaciones);
 //		model.addAttribute("fases", fases);
 //		return "/requerimiento/editar";
 //	}
-//	
-//	
+//
+//
 //	/****************************************/
 //	/************* Utilidades ***************/
 //	/****************************************/
 //	public Fase recuperarFase(List<Fase> fases, Long id) {
-//		
+//
 //		for (int i = 0; i < fases.size(); i++) {
 //			if (fases.get(i).getId() == id) {
 //				return fases.get(i);
 //			}
 //		}
-//		
+//
 //		return null;
-//		
+//
 //	}
 
 }

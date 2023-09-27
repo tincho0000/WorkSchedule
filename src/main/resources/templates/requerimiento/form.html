@@ -228,54 +228,50 @@
 	var valorCheckBox=1;
 	console.log("empieza por aca");
 	$(document).ready(function() {
-		$("#cantidadHoras").change(function (input) {
-			console.log("change");
-			console.log("next element", input.nextSibling);
-			const estimacion = new Object();
-			let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
-			const versionSplit = versionLabel.split(" ");
-			estimacion.fase = input.parentNode.parentNode.parentNode.firstChild.textContent;
-			estimacion.version = versionSplit[1];
-			//estimacion.activo= 1;
-			estimacion.cantidadHoras = input.value;
-			estimacion.usuarioAlta = [[${username}]];
-			let  jsonString = JSON.stringify(estimacion);
-			input.nextSibling.value = jsonString;
-		});
+		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
+		let existAtLestOneTable = document.querySelectorAll("table").length;
+
+		if(!buttonAddEstimationDisabled && existAtLestOneTable > 0) {
+
+			$("#cantidadHoras").change(function (input) {
+				console.log("change");
+				console.log("next element", input.nextSibling);
+				let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+				const versionSplit = versionLabel.split(" ");
+				const originalObject = {fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
+					cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
+				const copiedObject = Object.assign({}, originalObject);
+				let  jsonString = JSON.stringify(copiedObject, null, 2);
+				input.nextSibling.value = jsonString;
+			});
+		}
+
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
-	function createEstimationObj(version) {
-		document.querySelectorAll('#cantidadHoras')
+	function createEstimationObj(version, tablaDiv) {
+		//resetear en cero todos los input hidden q ya dejarian de ser activos
+
+
+		const replacerFase = (key, value) => {
+			if (key === "fase") {
+				return value.replace('""','"')
+			}
+			return value
+		}
+
+		tablaDiv.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
-					const estimacion = new Object();
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					estimacion.fase = input.parentNode.parentNode.parentNode.firstChild.textContent;
-					estimacion.version = versionSplit[1];
-					//estimacion.activo= 1;
-					estimacion.cantidadHoras = input.value;
-					estimacion.usuarioAlta = [[${username}]];
-					//estimacion.usuarioUpdate = "";
-					let  jsonString = JSON.stringify(estimacion);
+					const originalObject = {fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
+						cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
+					const copiedObject = Object.assign({}, originalObject);
+
+					let  jsonString = JSON.stringify(copiedObject, replacerFase, 2);
 					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
 				});
-	}
-
-	function getListEstimation() {
-		let listEstimation = [];
-		document.querySelectorAll('#myInputHidden')
-				.forEach((input) => {
-					listEstimation.add(input.value);
-				});
-		return listEstimation;
-	}
-
-	function buildObjectEstimation(that) {
-		console.log("esta es la construccion de la estimacion: ",that);
-		const est = new Estimation('fase1', '1', '2', "estimacion test", "1");
-		console.log("la fase de prueba es:", est.fase);
 	}
 	function calculateTotal(that) {
 		var total=0;
@@ -331,7 +327,7 @@
 				'</div>'+
 				'<div style="float: right;margin-right: 20px;">' +
 				'<label for="activeEstimation[]"> Activo</label>' +
-				'<input type="checkbox" id="activeEstimation[]" name="activeEstimation[]" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>'+
+				'<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>'+
 				'</div>';
 		let cardBody = document.createElement("div");
 		cardBody.className = "card-body text-white bg-secondary mb-3";
@@ -354,7 +350,7 @@
 
 		tablaDiv.appendChild(card);
 
-		createEstimationObj(countEstimation);
+		createEstimationObj(countEstimation, tablaDiv);
 
 	}
 	function buildFase(fase, index) {
@@ -377,6 +373,7 @@
 		/* Function load fases depends at requirement type selected */
 		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
 		var fases = Object.values(enumFases);
+		console.log("estas son las fases:", fases);
 		var fasesFilter = [];
 		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddEstimation();
@@ -444,19 +441,29 @@
 	}
 
 	function verifyWhenDisabledInput(that) {
+		console.log("es el checkbox 1 -->" ,that.parentNode.parentNode);
+		console.log("es el checkbox 2 -->" ,that.parentNode.parentNode.parentNode);
+		console.log("es el checkbox 3 -->" ,that.parentNode.parentNode.parentNode.parentNode);
 		if(that.checked) {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
 			});
 			that.checked = true;
 		}
-		that.parentNode.parentNode.parentNode.querySelectorAll('input[type="number"]').forEach(function (element) {
-			if(that.checked) {
-				element.removeAttr("disabled");
-			} else {
-				element.setAttribute("disabled", "disabled");
-			}
-		});
+		that.parentNode.parentNode.parentNode.querySelectorAll('input[type="number"]').forEach(
+				function (currentValue, currentIndex, listObj) {
+					let objEstimation = JSON.parse(currentValue.nextSibling.value);
+					if(that.checked === true ) {
+							currentValue.removeAttribute("disabled")
+						    objEstimation.activo = "1";
+					} else {
+						objEstimation.activo = "0";
+						currentValue.setAttribute("disabled", "");
+					}
+					currentValue.nextSibling.value = JSON.stringify(objEstimation[0], null, 2);
+				}
+		);
+
 	}
 
 </script>

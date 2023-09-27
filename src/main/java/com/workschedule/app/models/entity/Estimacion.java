@@ -64,14 +64,15 @@ public class Estimacion implements Serializable{
 	@JoinColumn(name = "requerimiento_id")
 	private Requerimiento requerimiento;
 
-	public Estimacion (String fase, int version, int cantHs, Requerimiento req, String userCreate) {
+	public Estimacion (String fase, int version, int cantHs, Requerimiento req, String userCreate, int activo) {
 		System.out.println("se esta por crear la fase:" + fase);
-	 this.setFase(Fase.fromString(fase));
+	 this.setFase(Fase.fromString(fase.trim()));
 	 this.setVersion(version);
 	 this.setCantidadHoras(cantHs);
 	 this.setRequerimiento(req);
 	 this.setUsuarioAlta(userCreate);
 	 this.setFechaAlta(new Date());
+	 this.setActivo(activo);
 	}
 	public Estimacion() {
 

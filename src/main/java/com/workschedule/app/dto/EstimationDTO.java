@@ -9,7 +9,7 @@ public class EstimationDTO {
     private int version;
     private int cantidadHoras;
     private String usuarioAlta;
-    //private int activo;
+    private int activo;
     //private Date fechaAlta;
     //private Date fechaUpdate;
     //private String usuarioAlta;
@@ -48,51 +48,11 @@ public class EstimationDTO {
         this.usuarioAlta = usuarioAlta;
     }
 
-    /*public int getActivo() {
+    public int getActivo() {
         return activo;
     }
 
     public void setActivo(int activo) {
         this.activo = activo;
     }
-
-    public Date getFechaAlta() {
-        return fechaAlta;
-    }
-
-    public void setFechaAlta(Date fechaAlta) {
-        this.fechaAlta = fechaAlta;
-    }
-
-    public Date getFechaUpdate() {
-        return fechaUpdate;
-    }
-
-    public void setFechaUpdate(Date fechaUpdate) {
-        this.fechaUpdate = fechaUpdate;
-    }
-
-    public String getUsuarioAlta() {
-        return usuarioAlta;
-    }
-
-    public void setUsuarioAlta(String usuarioAlta) {
-        this.usuarioAlta = usuarioAlta;
-    }
-
-    public String getUsuarioUpdate() {
-        return usuarioUpdate;
-    }
-
-    public void setUsuarioUpdate(String usuarioUpdate) {
-        this.usuarioUpdate = usuarioUpdate;
-    }
-
-    public Requerimiento getRequerimiento() {
-        return requerimiento;
-    }
-
-    public void setRequerimiento(Requerimiento requerimiento) {
-        this.requerimiento = requerimiento;
-    }*/
 }
