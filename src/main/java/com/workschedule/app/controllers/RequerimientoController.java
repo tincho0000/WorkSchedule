@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -235,14 +236,14 @@ public class RequerimientoController {
 		return "requerimiento/form";
 	}
 
-	@PostMapping("/form")
+	@PostMapping(value="/form", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public String guardar(@ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
-	@RequestParam(name="myInputHidden", required = false) String[] estimaciones )  {
+	@RequestParam(name="myInputHidden", required = false) List<String> estimaciones)  {
 		System.out.println("entro al endpoint");
 
 		System.out.println("entro al endpoint");
 
-		List<EstimationDTO> listEstimaciones = Arrays.asList(estimaciones).stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
+		List<EstimationDTO> listEstimaciones = estimaciones.stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
 		requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convert(estimacionDTO, requerimiento)).collect(Collectors.toList()));
 		requerimientoService.save(requerimiento);
 

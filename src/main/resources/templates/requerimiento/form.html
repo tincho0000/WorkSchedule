@@ -1,6 +1,5 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
@@ -195,6 +194,7 @@
 						<div class="" id="tablaEstimaciones">
 							<!--<tbody th:replace="requerimiento/fases-table :: agregarTablaFase(${requerimiento.estimacion)"></tbody>!-->
 						</div>
+						<input type="hidden" id="myInputHidden2" name="myInputHidden2">
 					</div>
 
 				</div>
@@ -202,7 +202,7 @@
 		</div>
 	</div>
 </div>
-<input id="pepe" th:value="${fasesJson}">
+<input type="hidden" id="num_fases" name="num_fases">
 <div class="modal fade" tabindex="-1" id="new-phase-modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -222,27 +222,32 @@
 </div>
 
 <footer th:replace="layout/layout :: footer"></footer>
-<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
+<!--<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>-->
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
 	var valorCheckBox=1;
 	console.log("empieza por aca");
 	$(document).ready(function() {
 		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
-		let existAtLestOneTable = document.querySelectorAll("table").length;
+		let numberTables = document.querySelectorAll("table").length;
+		//contar numero de tr con fases para pasar al back
+		document.getElementById("myInputHidden2").value = numberTables;
 
-		if(!buttonAddEstimationDisabled && existAtLestOneTable > 0) {
+		if(!buttonAddEstimationDisabled && numberTables > 0) {
 
-			$("#cantidadHoras").change(function (input) {
-				console.log("change");
-				console.log("next element", input.nextSibling);
-				let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
-				const versionSplit = versionLabel.split(" ");
-				const originalObject = {fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
-					cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
-				const copiedObject = Object.assign({}, originalObject);
-				let  jsonString = JSON.stringify(copiedObject, null, 2);
-				input.nextSibling.value = jsonString;
+			document.querySelectorAll('input[type="number"]').forEach( element => {
+				element.addEventListener('change', event => {
+					console.log("change", event);
+					console.log("target", event.target);
+					console.log("next element", element.nextSibling);
+					let versionLabel = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+					const versionSplit = versionLabel.split(" ");
+					const originalObject = {fase: element.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
+						cantidadHoras: parseInt(element.value), usuarioAlta: [[${username}]], activo: 1};
+					const copiedObject = Object.assign({}, originalObject);
+					let  jsonString = JSON.stringify(copiedObject, null, 2).replace(/\\"/g, '"');
+					element.nextSibling.value = jsonString;
+				});
 			});
 		}
 
@@ -252,14 +257,6 @@
 	function createEstimationObj(version, tablaDiv) {
 		//resetear en cero todos los input hidden q ya dejarian de ser activos
 
-
-		const replacerFase = (key, value) => {
-			if (key === "fase") {
-				return value.replace('""','"')
-			}
-			return value
-		}
-
 		tablaDiv.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
@@ -267,8 +264,7 @@
 					const originalObject = {fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
 						cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
 					const copiedObject = Object.assign({}, originalObject);
-
-					let  jsonString = JSON.stringify(copiedObject, replacerFase, 2);
+					let  jsonString = JSON.stringify(copiedObject, null, 2).replace(/\\"/g, '"');
 					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
 				});
@@ -362,7 +358,7 @@
 				'<td>' +
 				  '<div class="col-sm-6">' +
 				  '<input type="number" id="cantidadHoras" name="cantidadHoras" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
-				  '<input type="text" id="myInputHidden" name="myInputHidden" value="">'+
+				  '<input type="hidden" id="myInputHidden" name="myInputHidden" />'+
 				  '</div>' +
 				'</td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
