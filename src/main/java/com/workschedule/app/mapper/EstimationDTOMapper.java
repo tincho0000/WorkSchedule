@@ -13,9 +13,9 @@ public class EstimationDTOMapper {
         JsonFactory factory = new JsonFactory();
         ObjectMapper objectMappper = new ObjectMapper();
         EstimationDTO estimation = new EstimationDTO();
+        String fixValue = source.replaceAll("\r", "").replaceAll("\n", "");
         try {
-            JsonParser parser = factory.createParser(source);
-            parser.getIntValue();
+            JsonParser parser = factory.createParser(fixValue);
             estimation = objectMappper.readValue(parser, EstimationDTO.class);
             System.out.println("fase:" + estimation.getFase() + "/ version:" + estimation.getVersion() + "/cant hs:" + estimation.getCantidadHoras());
         } catch (JsonProcessingException e) {

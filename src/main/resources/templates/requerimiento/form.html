@@ -82,7 +82,7 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
+						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
 							   th:errorclass="'form-control is-invalid'" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifTesting')}"
@@ -90,7 +90,7 @@
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealTesting}" />
+						<input id="fechaRealTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaRealTesting}" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealTesting')}"
 							 th:errors="*{fechaRealTesting}"></div>
@@ -114,7 +114,7 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
+						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
 							 th:errors="*{fechaPlanifImplementacion}"></div>
@@ -181,18 +181,11 @@
 					</div>
 				</div>
 
-				<!--<input id="listEstimation" type="text" th:field="${requerimiento.estimacion}" th:value="getListEstimation();" class="form-control" readonly>-->
-				<!--<input type="hidden" th:each="estimacion : ${requerimiento.estimacion}">Hi Planet X!</input>
-				<tr th:each="estimacion, stat : ${requerimiento.estimacion}">
-					<input type="hidden" th:value="${estimacion.id}" />
-					   </tr> -->
-
 
 				<div class="form-group row py-5">
 
 					<div class="col-sm-6 border-0">
 						<div class="" id="tablaEstimaciones">
-							<!--<tbody th:replace="requerimiento/fases-table :: agregarTablaFase(${requerimiento.estimacion)"></tbody>!-->
 						</div>
 						<input type="hidden" id="myInputHidden2" name="myInputHidden2">
 					</div>
@@ -242,10 +235,9 @@
 					console.log("next element", element.nextSibling);
 					let versionLabel = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					const originalObject = {fase: element.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
-						cantidadHoras: parseInt(element.value), usuarioAlta: [[${username}]], activo: 1};
+					const originalObject = { fase: element.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(element.value), usuarioAlta: [[${username}]], activo: 1};
 					const copiedObject = Object.assign({}, originalObject);
-					let  jsonString = JSON.stringify(copiedObject, null, 2).replace(/\\"/g, '"');
+					let  jsonString = JSON.stringify(copiedObject, null, 2);
 					element.nextSibling.value = jsonString;
 				});
 			});
@@ -256,18 +248,20 @@
 
 	function createEstimationObj(version, tablaDiv) {
 		//resetear en cero todos los input hidden q ya dejarian de ser activos
-
 		tablaDiv.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
+					let i =0;
+					i++;
+					console.log("se crearon tantas estimaciones:", i);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					const originalObject = {fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]),
-						cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
+					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
 					const copiedObject = Object.assign({}, originalObject);
-					let  jsonString = JSON.stringify(copiedObject, null, 2).replace(/\\"/g, '"');
+					let  jsonString = JSON.stringify(copiedObject, null, 2);
 					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
 				});
+
 	}
 	function calculateTotal(that) {
 		var total=0;
@@ -446,17 +440,28 @@
 			});
 			that.checked = true;
 		}
+		const replacerTo_1 = (key, value) => {
+			if (key === "activo") return `1`
+
+			return value
+		}
+		const replacerTo_Zero = (key, value) => {
+			if (key === "activo") return `0`
+
+			return value
+		}
 		that.parentNode.parentNode.parentNode.querySelectorAll('input[type="number"]').forEach(
 				function (currentValue, currentIndex, listObj) {
-					let objEstimation = JSON.parse(currentValue.nextSibling.value);
+					let objEstimation = currentValue.nextSibling.value;
+					let newValueEstimation;
 					if(that.checked === true ) {
-							currentValue.removeAttribute("disabled")
-						    objEstimation.activo = "1";
+						currentValue.removeAttribute("disabled")
+						newValueEstimation = JSON.stringify(objEstimation, replacerTo_1, 2);
 					} else {
-						objEstimation.activo = "0";
 						currentValue.setAttribute("disabled", "");
+						newValueEstimation = JSON.stringify(objEstimation,replacerTo_Zero, 2);
 					}
-					currentValue.nextSibling.value = JSON.stringify(objEstimation[0], null, 2);
+					currentValue.nextSibling.value = newValueEstimation;
 				}
 		);
 

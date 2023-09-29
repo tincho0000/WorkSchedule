@@ -2,17 +2,12 @@ package com.workschedule.app.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 import com.workschedule.app.dto.EstimationDTO;
 import com.workschedule.app.mapper.EstimacionMapper;
 import com.workschedule.app.mapper.EstimationDTOMapper;
-import com.workschedule.app.models.entity.Estimacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,7 +223,6 @@ public class RequerimientoController {
 		LocalDate currentDate = LocalDate.parse(text, formatter);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Requerimiento requerimiento = new Requerimiento();
-		requerimiento.setEstimacion(new ArrayList<>());
 		model.addAttribute("titulo", titulo);
 		model.addAttribute("currentDate", currentDate);
 		model.addAttribute("requerimiento", requerimiento);
@@ -236,7 +230,7 @@ public class RequerimientoController {
 		return "requerimiento/form";
 	}
 
-	@PostMapping(value="/form", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value="/form", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String guardar(@ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
 	@RequestParam(name="myInputHidden", required = false) List<String> estimaciones)  {
 		System.out.println("entro al endpoint");
