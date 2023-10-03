@@ -11,6 +11,7 @@ import com.workschedule.app.mapper.EstimationDTOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import com.workschedule.app.enums.Aplicacion;
@@ -29,6 +31,9 @@ import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IUsuarioService;
 import com.workschedule.app.util.paginator.PageRender;
+
+import javax.swing.*;
+import javax.validation.Valid;
 
 @Secured("ROLE_GESTION")
 @Controller
@@ -51,6 +56,11 @@ public class RequerimientoController {
 
 	public RequerimientoController() {
 	}
+
+	//@InitBinder
+	//public void initBinder(WebDataBinder binder) {
+	//	binder.registerCustomEditor(List.class, new CustomCollectionEditor(List.class));
+	//}
 
 	@GetMapping("/listar-requerimientos")
 	public String listarRequerimientos(Model model,
@@ -230,16 +240,18 @@ public class RequerimientoController {
 		return "requerimiento/form";
 	}
 
-	@PostMapping(value="/form", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String guardar(@ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
-	@RequestParam(name="myInputHidden", required = false) List<String> estimaciones)  {
+	@PostMapping(value="/form", produces = "application/json;charset=UTF-8")
+	public String guardar(@Valid  @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
+						  @RequestParam(name="estimacionHidden", required=false) List<String> estimaciones,
+						  @RequestParam(name="longitudEstimaciones", required = false) int longitudEstimaciones)  {
 		System.out.println("entro al endpoint");
 
 		System.out.println("entro al endpoint");
-
-		List<EstimationDTO> listEstimaciones = estimaciones.stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
-		requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convert(estimacionDTO, requerimiento)).collect(Collectors.toList()));
-		requerimientoService.save(requerimiento);
+		if(estimaciones != null) {
+			List<EstimationDTO> listEstimaciones = estimaciones.stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
+			requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convert(estimacionDTO, requerimiento)).collect(Collectors.toList()));
+			requerimientoService.save(requerimiento);
+		}
 
 		return "requerimiento/form";
     }

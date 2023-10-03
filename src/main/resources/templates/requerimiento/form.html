@@ -101,7 +101,7 @@
 							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
 									th:text="${motivoReplanifTesting}"
-									th:value="${motivoReplanifTesting}">
+									th:value="${motivoReplanifTesting.name()}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -132,7 +132,7 @@
 							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
 									th:text="${motivoReplanifImplementacion}"
-									th:value="${motivoReplanifImplementacion}">
+									th:value="${motivoReplanifImplementacion.name()}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -187,7 +187,7 @@
 					<div class="col-sm-6 border-0">
 						<div class="" id="tablaEstimaciones">
 						</div>
-						<input type="hidden" id="myInputHidden2" name="myInputHidden2">
+						<input type="hidden" id="longitudEstimaciones" name="longitudEstimaciones">
 					</div>
 
 				</div>
@@ -195,7 +195,6 @@
 		</div>
 	</div>
 </div>
-<input type="hidden" id="num_fases" name="num_fases">
 <div class="modal fade" tabindex="-1" id="new-phase-modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -219,26 +218,30 @@
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
 	var valorCheckBox=1;
+	var numEstimaciones = 0;
 	console.log("empieza por aca");
 	$(document).ready(function() {
 		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
-		let numberTables = document.querySelectorAll("table").length;
+		let numberTables = document.querySelectorAll("#table").length;
 		//contar numero de tr con fases para pasar al back
-		document.getElementById("myInputHidden2").value = numberTables;
+		console.log("numero de tablas:", numberTables);
+		let cantidadHs = document.querySelectorAll("#cantidadHoras");
 
-		if(!buttonAddEstimationDisabled && numberTables > 0) {
+		if(!buttonAddEstimationDisabled) {
+			console.log("entro para insertar cambios de valores");
 
-			document.querySelectorAll('input[type="number"]').forEach( element => {
-				element.addEventListener('change', event => {
+			cantidadHs.forEach( function (currentElement, index) {
+				currentElement.addEventListener('change', event => {
+					numEstimaciones++;
 					console.log("change", event);
 					console.log("target", event.target);
-					console.log("next element", element.nextSibling);
-					let versionLabel = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+					console.log("next element", currentElement.nextSibling);
+					let versionLabel = currentElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					const originalObject = { fase: element.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(element.value), usuarioAlta: [[${username}]], activo: 1};
+					const originalObject = { fase: currentElement.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(currentElement.value), usuarioAlta: [[${username}]], activo: 1};
 					const copiedObject = Object.assign({}, originalObject);
 					let  jsonString = JSON.stringify(copiedObject, null, 2);
-					element.nextSibling.value = jsonString;
+					currentElement.nextSibling.value = jsonString;
 				});
 			});
 		}
@@ -250,9 +253,8 @@
 		//resetear en cero todos los input hidden q ya dejarian de ser activos
 		tablaDiv.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
-					let i =0;
-					i++;
-					console.log("se crearon tantas estimaciones:", i);
+					numEstimaciones++;
+					console.log("se crearon tantas estimaciones:", numEstimaciones);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
 					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
@@ -342,6 +344,8 @@
 
 		createEstimationObj(countEstimation, tablaDiv);
 
+		document.getElementById("longitudEstimaciones").value = $(".horas").length;
+
 	}
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
@@ -351,8 +355,8 @@
 				'<td>' + fase + '</td>' +
 				'<td>' +
 				  '<div class="col-sm-6">' +
-				  '<input type="number" id="cantidadHoras" name="cantidadHoras" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
-				  '<input type="hidden" id="myInputHidden" name="myInputHidden" />'+
+				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="horas" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+				  '<input type="hidden" id="estimacionHidden" name="estimacionHidden" />'+
 				  '</div>' +
 				'</td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
