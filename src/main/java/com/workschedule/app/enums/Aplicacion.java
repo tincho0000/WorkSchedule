@@ -10,14 +10,14 @@ public enum Aplicacion {
 	OYP("OYP"),
 	DEI("DEIMOS");
 	
-	private final String aplacacion;
+	private final String aplicacion;
 	
 	Aplicacion (String label){
-		this.aplacacion = label;
+		this.aplicacion = label;
 	}
 	
 	public String getAplicacion() {
-		return aplacacion;
+		return aplicacion;
 	}
 	
 	public static List<String> obtenerAplicaciones() {
