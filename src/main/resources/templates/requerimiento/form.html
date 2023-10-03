@@ -220,6 +220,12 @@
 	var valorCheckBox=1;
 	var numEstimaciones = 0;
 	console.log("empieza por aca");
+	const replacerTo_Zero = (key, value) => {
+		if (key === "activo") {
+			return 0;
+		}
+		return value
+	}
 	$(document).ready(function() {
 		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
 		let numberTables = document.querySelectorAll("#table").length;
@@ -282,6 +288,22 @@
 		document.querySelectorAll('input[type=checkbox]').forEach(function(checkElement) {
 			checkElement.checked = false;
 		});
+
+	document.querySelectorAll('#cantidadHoras')
+				.forEach((input) => {
+					let estimationDeactive = JSON.parse(input.nextSibling.value);
+					let newValue = JSON.stringify(estimationDeactive, function (key, value) {
+						if (key == "activo") {
+							return 0;
+						} else {
+							return value;
+						}
+					});
+					console.log("estimacion:", newValue);
+					console.log("cambio el valor de la estimacion a desactivo");
+					input.nextSibling.value = newValue;
+				});
+
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
 		let tablaDiv = document.getElementById('tablaEstimaciones');
@@ -356,7 +378,7 @@
 				'<td>' +
 				  '<div class="col-sm-6">' +
 				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="horas" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
-				  '<input type="hidden" id="estimacionHidden" name="estimacionHidden" />'+
+				  '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden" />'+
 				  '</div>' +
 				'</td>'+
 				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
