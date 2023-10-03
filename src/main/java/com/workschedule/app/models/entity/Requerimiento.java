@@ -232,19 +232,6 @@ public class Requerimiento implements Serializable {
 				&& Objects.equals(observacion, other.observacion) && Objects.equals(requerimiento, other.requerimiento)
 				&& Objects.equals(tipoRequerimiento, other.tipoRequerimiento);
 	}
-
-	@Override
-	public String toString() {
-		return "Requerimiento [requerimiento=" + requerimiento + ", descripcion=" + descripcion + ", observacion="
-				+ observacion + ", estado=" + estado + ", fechaPlanifTesting=" + fechaPlanifTesting
-				+ ", fechaRealTesting=" + fechaRealTesting + ", motivoReplanifTesting=" + motivoReplanifTesting
-				+ ", fechaPlanifImplementacion=" + fechaPlanifImplementacion + ", fechaRealImplementacion="
-				+ fechaRealImplementacion + ", motivoReplanifImplementacion=" + motivoReplanifImplementacion
-				+ ", tipoRequerimiento=" + tipoRequerimiento + ", estimacion=" + estimacion + ", aplicacion="
-				+ aplicacion + "]";
-	}
-	
-	
 	
 
 	/******************* Metodos *******************/

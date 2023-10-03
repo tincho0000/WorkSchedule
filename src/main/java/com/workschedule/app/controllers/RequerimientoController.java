@@ -57,10 +57,10 @@ public class RequerimientoController {
 	public RequerimientoController() {
 	}
 
-	//@InitBinder
-	//public void initBinder(WebDataBinder binder) {
-	//	binder.registerCustomEditor(List.class, new CustomCollectionEditor(List.class));
-	//}
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(List.class, new CustomCollectionEditor(List.class));
+	}
 
 	@GetMapping("/listar-requerimientos")
 	public String listarRequerimientos(Model model,
