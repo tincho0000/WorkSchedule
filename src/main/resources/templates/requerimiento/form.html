@@ -214,42 +214,14 @@
 </div>
 
 <footer th:replace="layout/layout :: footer"></footer>
-<!--<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>-->
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
-	var valorCheckBox=1;
 	var numEstimaciones = 0;
-	console.log("empieza por aca");
-	const replacerTo_Zero = (key, value) => {
-		if (key === "activo") {
-			return 0;
-		}
-		return value
-	}
 	$(document).ready(function() {
 		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
-		let numberTables = document.querySelectorAll("#table").length;
-		//contar numero de tr con fases para pasar al back
-		console.log("numero de tablas:", numberTables);
-		let cantidadHs = document.querySelectorAll("#cantidadHoras");
 
 		if(!buttonAddEstimationDisabled) {
-			console.log("entro para insertar cambios de valores");
-
-			cantidadHs.forEach( function (currentElement, index) {
-				currentElement.addEventListener('change', event => {
-					numEstimaciones++;
-					console.log("change", event);
-					console.log("target", event.target);
-					console.log("next element", currentElement.nextSibling);
-					let versionLabel = currentElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
-					const versionSplit = versionLabel.split(" ");
-					const originalObject = { fase: currentElement.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(currentElement.value), usuarioAlta: [[${username}]], activo: 1};
-					const copiedObject = Object.assign({}, originalObject);
-					let  jsonString = JSON.stringify(copiedObject, null, 2);
-					currentElement.nextSibling.value = jsonString;
-				});
-			});
+			//
 		}
 
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
@@ -257,6 +229,12 @@
 
 	function createEstimationObj(version, tablaDiv) {
 		//resetear en cero todos los input hidden q ya dejarian de ser activos
+		/*var elements = document.getElementsByName('cantidadHoras');
+		for (var i = 0; i < elements.length; i++) {
+			let estimacion = JSON.parse(elements[i].nextSibling.nodeValue);
+			estimacion.activo = 0;
+			elements[i].nextSibling.value = JSON.stringify(estimacion, null, 2);
+		}*/
 		tablaDiv.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
 					numEstimaciones++;
@@ -273,13 +251,22 @@
 	}
 	function calculateTotal(that) {
 		var total=0;
-		  $('input[type="number"]').each(function(){
-			  if(that.value != "" && !that.disabled) {
-				  total += parseInt(that.value);
-			  } else {
-				  total += 0;
-			  }
-		  });
+		var elements = document.body.getElementsByTagName('cantidadHoras');
+
+		for (var i = 0; i < elements.length; i++) {
+			if(isNaN(parseInt(elements[i].value))) {
+				total += 0;
+			} else if(elements[i].value.trim() !== "" && !elements[i].disabled) { //&& attrDisabled == null
+				total += parseInt(elements[i].value);
+			} else {
+				total += 0;
+			}
+		}
+		let obj = JSON.parse(that.nextSibling.value);
+		obj.cantidadHoras = that.value;
+		that.nextSibling.value = JSON.stringify(obj, null, 2);
+
+		console.log("el nuevo hidden es:", that.nextSibling.value);
 
 		  document.getElementById("total_fases").value = total;
 	    }
@@ -288,21 +275,6 @@
 		document.querySelectorAll('input[type=checkbox]').forEach(function(checkElement) {
 			checkElement.checked = false;
 		});
-
-	document.querySelectorAll('#cantidadHoras')
-				.forEach((input) => {
-					let estimationDeactive = JSON.parse(input.nextSibling.value);
-					let newValue = JSON.stringify(estimationDeactive, function (key, value) {
-						if (key == "activo") {
-							return 0;
-						} else {
-							return value;
-						}
-					});
-					console.log("estimacion:", newValue);
-					console.log("cambio el valor de la estimacion a desactivo");
-					input.nextSibling.value = newValue;
-				});
 
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
@@ -466,28 +438,18 @@
 			});
 			that.checked = true;
 		}
-		const replacerTo_1 = (key, value) => {
-			if (key === "activo") return `1`
 
-			return value
-		}
-		const replacerTo_Zero = (key, value) => {
-			if (key === "activo") return `0`
-
-			return value
-		}
-		that.parentNode.parentNode.parentNode.querySelectorAll('input[type="number"]').forEach(
-				function (currentValue, currentIndex, listObj) {
-					let objEstimation = currentValue.nextSibling.value;
-					let newValueEstimation;
-					if(that.checked === true ) {
-						currentValue.removeAttribute("disabled")
-						newValueEstimation = JSON.stringify(objEstimation, replacerTo_1, 2);
+		that.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+				(currentInput) => {
+					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+					if(that.checked !== true ) {
+						currentInput.removeAttribute("disabled");
+						objEstimacion.activo = 0 ;
 					} else {
-						currentValue.setAttribute("disabled", "");
-						newValueEstimation = JSON.stringify(objEstimation,replacerTo_Zero, 2);
+						currentInput.setAttribute("disabled", "");
+						objEstimacion.activo = 1;
 					}
-					currentValue.nextSibling.value = newValueEstimation;
+					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 				}
 		);
 
