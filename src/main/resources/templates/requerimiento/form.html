@@ -20,7 +20,7 @@
 					   th:utext="#{form.requirement.save.button.label}"></button>
 				</h4>
 
-				<div class="form-group row py-3">
+				<div class="form-group row py-2">
 					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
 					<div class="col-sm-2">
 						<input type="text" th:field="*{requerimiento}"
@@ -60,7 +60,7 @@
 
 					</div>
 
-					<div class="form-group row py-3">
+					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
 						<div class="col-sm-6">
 							<input type="text" th:field="*{descripcion}" class="form-control"
@@ -72,9 +72,9 @@
 					</div>
 				</div>
 
-				<div class="form-group row py-3">
+				<div class="form-group row padding-top-1">
 					<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
-					<div class="col-sm-10">
+					<div class="col-sm-6">
 						<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
 					</div>
 				</div>
@@ -227,16 +227,25 @@
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
-	function createEstimationObj(version, tablaDiv) {
+	function createEstimationObj(version, cardBody) {
 		//resetear en cero todos los input hidden q ya dejarian de ser activos
-		/*var elements = document.getElementsByName('cantidadHoras');
-		for (var i = 0; i < elements.length; i++) {
-			let estimacion = JSON.parse(elements[i].nextSibling.nodeValue);
-			estimacion.activo = 0;
-			elements[i].nextSibling.value = JSON.stringify(estimacion, null, 2);
-		}*/
-		tablaDiv.querySelectorAll('#cantidadHoras')
+		let cantEstimaciones = $(".horas").length
+		if(cantEstimaciones > 1) {
+			disabledAllInput();
+			var elements = document.getElementsByName('cantidadHoras');
+			for (var i = 0; i < elements.length; i++) {
+				var my_json_string = elements[i].nextSibling.value;
+				console.log("valor node json:", my_json_string);
+				//const activoJson = { "activo": 0 };
+				//const copiedObject = Object.assign(my_json_string, activoJson);
+				let estimacion = JSON.parse(my_json_string);
+				estimacion.activo = 0;
+				//elements[i].nextSibling.value = JSON.stringify(estimacion, null, 2);
+			}
+		}
+		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
+					input.removeAttribute("disabled");
 					numEstimaciones++;
 					console.log("se crearon tantas estimaciones:", numEstimaciones);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
@@ -282,6 +291,7 @@
 		let tablaActual = document.createElement('table');
 		countEstimation++;
 		tablaActual.id= "cargarFase";
+		tablaActual.tagName="cargarFase";
 		tablaActual.title = "Estimacion Tabla";
 		tablaActual.className = "table table-sm table-striped table-hover";
 		let tHead = document.createElement('thead');
@@ -336,7 +346,7 @@
 
 		tablaDiv.appendChild(card);
 
-		createEstimationObj(countEstimation, tablaDiv);
+		createEstimationObj(countEstimation, cardBody);
 
 		document.getElementById("longitudEstimaciones").value = $(".horas").length;
 
@@ -344,7 +354,6 @@
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
 		trFases.id = "row_' + index + '";
-		let cantidadInput = "cantidad_" + countEstimation;
 		let htmlInputs =
 				'<td>' + fase + '</td>' +
 				'<td>' +
@@ -428,9 +437,16 @@
 		}
 	}
 
+	function disabledAllInput() {
+	document.querySelectorAll("#cantidadHoras").forEach(
+				(currentInput) => {
+					currentInput.setAttribute("disabled", "");
+	         });
+	}
+
 	function verifyWhenDisabledInput(that) {
 		console.log("es el checkbox 1 -->" ,that.parentNode.parentNode);
-		console.log("es el checkbox 2 -->" ,that.parentNode.parentNode.parentNode);
+		console.log("es el checkbox 2 -->" ,that.parentNode.parentNode.parentNode.children.namedItem("cargarFase"));
 		console.log("es el checkbox 3 -->" ,that.parentNode.parentNode.parentNode.parentNode);
 		if(that.checked) {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
@@ -442,12 +458,12 @@
 		that.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
 				(currentInput) => {
 					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
-					if(that.checked !== true ) {
+					if(that.checked === true ) {
 						currentInput.removeAttribute("disabled");
-						objEstimacion.activo = 0 ;
+						objEstimacion.activo = 1 ;
 					} else {
 						currentInput.setAttribute("disabled", "");
-						objEstimacion.activo = 1;
+						objEstimacion.activo = 0;
 					}
 					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 				}
