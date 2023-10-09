@@ -182,15 +182,12 @@
 				</div>
 
 
-				<div class="form-group row py-5">
-
-					<div class="col-sm-6 border-0">
-						<div class="" id="tablaEstimaciones">
+					<div>
+						<div id="tablaEstimaciones" class="row col-12">
 						</div>
 						<input type="hidden" id="longitudEstimaciones" name="longitudEstimaciones">
 					</div>
 
-				</div>
 			</form>
 		</div>
 	</div>
@@ -228,35 +225,26 @@
 	});
 
 	function createEstimationObj(version, cardBody) {
-		//resetear en cero todos los input hidden q ya dejarian de ser activos
 		let cantEstimaciones = $(".horas").length
-		if(cantEstimaciones > 1) {
-			disabledAllInput();
-			var elements = document.getElementsByName('cantidadHoras');
-			for (var i = 0; i < elements.length; i++) {
-				var my_json_string = elements[i].nextSibling.value;
-				console.log("valor node json:", my_json_string);
-				//const activoJson = { "activo": 0 };
-				//const copiedObject = Object.assign(my_json_string, activoJson);
-				let estimacion = JSON.parse(my_json_string);
-				estimacion.activo = 0;
-				//elements[i].nextSibling.value = JSON.stringify(estimacion, null, 2);
-			}
+		if(cantEstimaciones === 0) {
+			buildHiddenInput(cardBody, "1");
+		} else {
+			buildHiddenInput(cardBody, "0");
 		}
+	}
+	function buildHiddenInput(cardBody, valorActivo){
 		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
-					input.removeAttribute("disabled");
 					numEstimaciones++;
 					console.log("se crearon tantas estimaciones:", numEstimaciones);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: 1};
+					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: valorActivo};
 					const copiedObject = Object.assign({}, originalObject);
 					let  jsonString = JSON.stringify(copiedObject, null, 2);
 					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
 				});
-
 	}
 	function calculateTotal(that) {
 		var total=0;
@@ -281,10 +269,6 @@
 	    }
 
 	function addEstimation() {
-		document.querySelectorAll('input[type=checkbox]').forEach(function(checkElement) {
-			checkElement.checked = false;
-		});
-
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
 		let tablaDiv = document.getElementById('tablaEstimaciones');
@@ -312,19 +296,16 @@
 		tablaActual.appendChild(tBody);
 
 		let card = document.createElement("div");
-		card.className = "card";
+		card.className = "card col-6";
 		card.id = "card_" + countEstimation;
 		card.style.marginTop = "0.625rem";
+		card.style.border = "none";
+		card.style.marginRight = "0.5rem";
+		card.style.width= "30%";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
-		cardHeader.innerHTML = '<div>' +
-				'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
-				'<label>Version: '+countEstimation+'</label>'+
-				'</div>'+
-				'<div style="float: right;margin-right: 20px;">' +
-				'<label for="activeEstimation[]"> Activo</label>' +
-				'<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>'+
-				'</div>';
+		cardHeader.innerHTML = buildHeaderCard();
+
 		let cardBody = document.createElement("div");
 		cardBody.className = "card-body text-white bg-secondary mb-3";
 		cardBody.style.maxWidth = "34rem";
@@ -344,6 +325,7 @@
 		card.appendChild(cardHeader);
 		card.appendChild(cardBody);
 
+
 		tablaDiv.appendChild(card);
 
 		createEstimationObj(countEstimation, cardBody);
@@ -351,14 +333,32 @@
 		document.getElementById("longitudEstimaciones").value = $(".horas").length;
 
 	}
+
+	function buildHeaderCard() {
+		let cantEstimaciones = $(".horas").length;
+		let str = '<div>' +
+		'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
+		'<label>Version: '+countEstimation+'</label>'+
+		'</div>'+
+		'<div style="float: right;margin-right: 20px;">' +
+		'<label for="activeEstimation[]"> Activo</label>';
+		if(cantEstimaciones == 0) {
+			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>';
+		} else {
+			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" >'
+		}
+		str += '</div>';
+
+		return str;
+	}
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
-		trFases.id = "row_' + index + '";
+		trFases.id = 'row_' + index;
 		let htmlInputs =
 				'<td>' + fase + '</td>' +
 				'<td>' +
-				  '<div class="col-sm-6">' +
-				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="horas" value="0" min="0" class="form-control text-end" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+				  '<div class="col-xs-2">' +
+				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
 				  '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden" />'+
 				  '</div>' +
 				'</td>'+

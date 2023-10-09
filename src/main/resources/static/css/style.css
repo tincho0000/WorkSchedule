@@ -8346,9 +8346,11 @@ textarea.form-control {
         border: 1px solid transparent;
         background: #fbceb5;
         color: #fff; }
+
       .input-totalizador {
 
       }
+
       .input-totalizador:disabled {
         display: block;
         width: 100%;
@@ -8367,6 +8369,11 @@ textarea.form-control {
         color:#dcd3d3 !important;
         background:#F5F5F5 !important;
       }
+
       .padding-top-1 {
       padding-top: 1rem !important;
+      }
+
+      .input-size-default {
+      width: 4.0625rem!important;
       }
