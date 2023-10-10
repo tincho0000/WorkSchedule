@@ -244,12 +244,12 @@ public class RequerimientoController {
 	}
 
 	@PostMapping(value="/form", produces = "application/json;charset=UTF-8")
-	public String guardar(@Valid  @ModelAttribute(value = "requerimiento") Requerimiento requerimiento, BindingResult result, Model model,
+	public String guardar(@ModelAttribute(value = "requerimiento") @Valid Requerimiento requerimiento, BindingResult result, Model model,
 						  @RequestParam(name="estimacionHidden", required=false) List<String> estimaciones,
 						  @RequestParam(name="longitudEstimaciones", required = false) int longitudEstimaciones)  {
-		System.out.println("entro al endpoint");
-
-		System.out.println("entro al endpoint");
+		if (result.hasErrors()) {
+         return "requerimiento/form";
+		}
 		if(estimaciones != null) {
 			List<EstimationDTO> listEstimaciones = estimaciones.stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
 			requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convert(estimacionDTO, requerimiento)).collect(Collectors.toList()));

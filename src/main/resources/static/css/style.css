@@ -8377,3 +8377,8 @@ textarea.form-control {
       .input-size-default {
       width: 4.0625rem!important;
       }
+
+      .info-modal-span {
+        display: flex;
+        justify-content: center;
+      }

@@ -8,6 +8,8 @@ import com.workschedule.app.enums.Fase;
 import com.workschedule.app.models.entity.Estimacion;
 import com.workschedule.app.models.entity.Requerimiento;
 
+import java.util.Date;
+
 public class EstimacionMapper {
     public Estimacion convert(EstimationDTO source, Requerimiento req) {
 
@@ -17,6 +19,7 @@ public class EstimacionMapper {
         estimacion.setFase(Fase.fromString(source.getFase()));
         estimacion.setCantidadHoras(source.getCantidadHoras());
         estimacion.setUsuarioAlta(source.getUsuarioAlta());
+        estimacion.setFechaAlta(new Date());
         estimacion.setVersion(source.getVersion());
         estimacion.setRequerimiento(req);
         return estimacion;

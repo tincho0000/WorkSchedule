@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org" lang="en">
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
@@ -10,13 +10,13 @@
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
 
-			<form class="row g-3" th:action="@{/requerimientos/form}"
+			<form id="formRequirement" class="row g-3" th:action="@{/requerimientos/form}"
 				  th:object="${requerimiento}" method="post">
 				<h4 class="card-title text-end pb-2">
 					<a class="btn btn-outline-light"
 					   th:href="@{'/requerimientos/listar-requerimientos'}"
 					   th:text="'&laquo; Volver'"></a>
-					<button class="btn btn-success" type="submit"
+					<button id="btnSaveRequirement" class="btn btn-success" type="submit"
 					   th:utext="#{form.requirement.save.button.label}"></button>
 				</h4>
 
@@ -101,7 +101,7 @@
 							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
 									th:text="${motivoReplanifTesting}"
-									th:value="${motivoReplanifTesting.name()}">
+									th:value="${motivoReplanifTesting}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -132,7 +132,7 @@
 							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
 									th:text="${motivoReplanifImplementacion}"
-									th:value="${motivoReplanifImplementacion.name()}">
+									th:value="${motivoReplanifImplementacion}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -200,11 +200,28 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<input type="text" id="namePhase" name="namePhase" placeholder="Nombre de Fase"/>
+				<input type="text" name="namePhase" placeholder="Nombre de Fase"/>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 				<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="alert-modal-info-requirement">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<span class="modal-title info-modal-span"><i class="bi bi-info-circle"></i>Deberás agregar al menos una estimación</span>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
@@ -215,14 +232,22 @@
 	var countEstimation=0;
 	var numEstimaciones = 0;
 	$(document).ready(function() {
-		let buttonAddEstimationDisabled = $('#addEstimationBtn').disabled;
-
-		if(!buttonAddEstimationDisabled) {
-			//
-		}
+		document.getElementById("longitudEstimaciones").value = $(".horas").length;
+		$("#btnSaveRequirement").click((event) => {
+			let cantEstimaciones = $(".horas").length;
+			if(cantEstimaciones === 0) {
+				showModalInfoRequired();
+			} else{
+				$("#formRequirement").submit();
+			}
+	    });
 
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
+
+	function showModalInfoRequired() {
+		$('#alert-modal-info-requirement').modal('show');
+	}
 
 	function createEstimationObj(version, cardBody) {
 		let cantEstimaciones = $(".horas").length
@@ -239,7 +264,7 @@
 					console.log("se crearon tantas estimaciones:", numEstimaciones);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
-					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: valorActivo};
+					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
 					const copiedObject = Object.assign({}, originalObject);
 					let  jsonString = JSON.stringify(copiedObject, null, 2);
 					console.log("elemnto siguiente:", input.nextSibling);
