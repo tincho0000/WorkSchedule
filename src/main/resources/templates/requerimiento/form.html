@@ -200,7 +200,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<input type="text" name="namePhase" placeholder="Nombre de Fase"/>
+				<input type="text" id="namePhase" placeholder="Nombre de Fase"/>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -470,9 +470,6 @@
 	}
 
 	function verifyWhenDisabledInput(that) {
-		console.log("es el checkbox 1 -->" ,that.parentNode.parentNode);
-		console.log("es el checkbox 2 -->" ,that.parentNode.parentNode.parentNode.children.namedItem("cargarFase"));
-		console.log("es el checkbox 3 -->" ,that.parentNode.parentNode.parentNode.parentNode);
 		if(that.checked) {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
