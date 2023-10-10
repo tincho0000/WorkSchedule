@@ -325,7 +325,8 @@
 		card.id = "card_" + countEstimation;
 		card.style.marginTop = "0.625rem";
 		card.style.border = "none";
-		card.style.marginRight = "0.5rem";
+		card.style.marginLeft = "0.625rem"
+		card.style.marginRight = "0.625rem";
 		card.style.width= "30%";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
@@ -340,10 +341,10 @@
 		sectionGeneralAction.className = "row py-3";
 		sectionGeneralAction.innerHTML =
 		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);">Eliminar la estimacíon</button>'+
+		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
 		'</div>'+
 		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal">Agregar fase</button>'+
+		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i class="bi bi-node-plus-fill"></i></button>'+
 		'</div>';
 		cardBody.appendChild(tablaActual);
 		cardBody.appendChild(sectionGeneralAction);
@@ -363,17 +364,16 @@
 		let cantEstimaciones = $(".horas").length;
 		let str = '<div>' +
 		'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
-		'<label>Version: '+countEstimation+'</label>'+
-		'</div>'+
-		'<div style="float: right;margin-right: 20px;">' +
-		'<label for="activeEstimation[]"> Activo</label>';
-		if(cantEstimaciones == 0) {
+		'<div class="inline">'+ '<label>Version: '+countEstimation+'</label>'+
+				'<div style="float: right;margin-right: 20px;">' +
+				'<label for="checkbox1"> Activo</label>';
+		if(cantEstimaciones === 0) {
 			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>';
 		} else {
 			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" >'
 		}
-		str += '</div>';
 
+		str += '</div>'+ '</div>' + '</div>';
 		return str;
 	}
 	function buildFase(fase, index) {
