@@ -340,17 +340,21 @@
 		cardBody.style.maxWidth = "34rem";
 		cardBody.style.marginTop = "-0.9rem";
 
-		let sectionGeneralAction = document.createElement("div");
-		sectionGeneralAction.className = "row py-3";
-		sectionGeneralAction.innerHTML =
+		let sectionActionAddPhase = document.createElement("div");
+		sectionActionAddPhase.className = "row py-3";
+		sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
+				'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i class="bi bi-node-plus-fill"></i></button>'+
+				'</div>';
+
+		let sectionActionDelete = document.createElement("div");
+		sectionActionDelete.className = "row py-3";
+		sectionActionDelete.innerHTML =
 		'<div class="col-sm-2">'+
 		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
-		'</div>'+
-		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i class="bi bi-node-plus-fill"></i></button>'+
 		'</div>';
+		cardBody.appendChild(sectionActionAddPhase);
 		cardBody.appendChild(tablaActual);
-		cardBody.appendChild(sectionGeneralAction);
+		cardBody.appendChild(sectionActionDelete);
 		card.appendChild(cardHeader);
 		card.appendChild(cardBody);
 
