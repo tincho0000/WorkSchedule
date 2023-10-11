@@ -204,7 +204,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
+				<button type="button" class="btn btn-primary" onclick="addNewPhase(this);">Guardar</button>
 			</div>
 		</div>
 	</div>
@@ -227,18 +227,36 @@
 	</div>
 </div>
 
+<div class="modal fade" tabindex="-1" id="alert-modal-info-at-least-one-checked">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<span class="modal-title info-modal-span"><i class="bi bi-info-circle"></i>Debes activar al menos una estimación</span>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <footer th:replace="layout/layout :: footer"></footer>
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
 	var numEstimaciones = 0;
+	const allEqual = arr => arr.every( v => v === arr[0] );
+	var boxesChecked = [];
 	$(document).ready(function() {
 		document.getElementById("longitudEstimaciones").value = $(".horas").length;
 		$("#btnSaveRequirement").click((event) => {
 			let cantEstimaciones = $(".horas").length;
 			if(cantEstimaciones === 0) {
 				showModalInfoRequired();
-			} else{
-				$("#formRequirement").submit();
+			} else {
+					$("#formRequirement").submit();
 			}
 	    });
 
@@ -247,6 +265,10 @@
 
 	function showModalInfoRequired() {
 		$('#alert-modal-info-requirement').modal('show');
+	}
+
+	function showModalInfoAtLeastOneChecked() {
+		$('#alert-modal-info-at-least-one-checked').modal('show');
 	}
 
 	function createEstimationObj(version, cardBody) {
@@ -441,7 +463,12 @@
 		document.getElementById("addEstimationBtn").disabled = false;
 	}
 
-	function addNewPhase() {
+	function addNewPhase(that) {
+		console.log("elemento 1", that);
+		console.log("elemento 2", that.parentNode);
+		console.log("elemento 3 previuos", that.previousSibling);
+		console.log("elemento 4 next", that.nextSibling);
+		console.log("element 5 ", that.parentNode.parentNode);
 		let tBody = document.getElementById("fasesTable");
 		let valNewPhase = document.getElementById('namePhase');
 		let rows = document.getElementById("fasesTable").rows.length;
@@ -483,6 +510,13 @@
 				checkElement.checked = false;
 			});
 			that.checked = true;
+		} else {
+			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+				boxesChecked.push(checkElement.checked);
+			});
+			if(allEqual(boxesChecked)){
+				showModalInfoAtLeastOneChecked();
+			}
 		}
 
 		that.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
