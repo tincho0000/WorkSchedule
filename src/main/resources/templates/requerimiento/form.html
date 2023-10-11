@@ -341,16 +341,16 @@
 		cardBody.style.marginTop = "-0.9rem";
 
 		let sectionActionAddPhase = document.createElement("div");
-		sectionActionAddPhase.className = "row py-3";
+		sectionActionAddPhase.className = "row";
 		sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
-				'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i class="bi bi-node-plus-fill"></i></button>'+
+				'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
 				'</div>';
 
 		let sectionActionDelete = document.createElement("div");
 		sectionActionDelete.className = "row py-3";
 		sectionActionDelete.innerHTML =
 		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
+		'<button type="button" class="btn btn-danger btnDelete" style="margin-top: 20px;margin-left: 15.625rem;" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Elimina toda la estimación" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
 		'</div>';
 		cardBody.appendChild(sectionActionAddPhase);
 		cardBody.appendChild(tablaActual);
@@ -372,8 +372,8 @@
 		let str = '<div>' +
 		'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
 		'<div class="inline">'+ '<label>Version: '+countEstimation+'</label>'+
-				'<div style="float: right;margin-right: 20px;">' +
-				'<label for="checkbox1"> Activo</label>';
+				'<div style="float: right;margin-right: 20px; display:inline-block;">' +
+				'<span>Activo  </span>';
 		if(cantEstimaciones === 0) {
 			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>';
 		} else {
@@ -381,6 +381,7 @@
 		}
 
 		str += '</div>'+ '</div>' + '</div>';
+		return str;
 		return str;
 	}
 	function buildFase(fase, index) {

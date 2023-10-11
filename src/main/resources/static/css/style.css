@@ -8382,3 +8382,7 @@ textarea.form-control {
         display: flex;
         justify-content: center;
       }
+
+      #checkbox1 {
+      margin :2px !important;
+      }
