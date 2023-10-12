@@ -204,7 +204,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="addNewPhase(this);">Guardar</button>
+				<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
 			</div>
 		</div>
 	</div>
@@ -218,7 +218,10 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<span class="modal-title info-modal-span"><i class="bi bi-info-circle"></i>Deberás agregar al menos una estimación</span>
+				<div class="inline">
+					<i class="bi bi-info-circle"></i>
+					<span class="modal-title info-modal-span">Deberás agregar al menos una estimación</span>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -234,7 +237,10 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<span class="modal-title info-modal-span"><i class="bi bi-info-circle"></i>Debes activar al menos una estimación</span>
+				<div class="inline">
+					<i class="bi bi-info-circle"></i>
+					<span class="modal-title info-modal-span">Debes activar al menos una estimación</span>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -283,13 +289,11 @@
 		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
 					numEstimaciones++;
-					console.log("se crearon tantas estimaciones:", numEstimaciones);
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
 					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
 					const copiedObject = Object.assign({}, originalObject);
 					let  jsonString = JSON.stringify(copiedObject, null, 2);
-					console.log("elemnto siguiente:", input.nextSibling);
 					input.nextSibling.value = jsonString;
 				});
 	}
@@ -309,8 +313,6 @@
 		let obj = JSON.parse(that.nextSibling.value);
 		obj.cantidadHoras = that.value;
 		that.nextSibling.value = JSON.stringify(obj, null, 2);
-
-		console.log("el nuevo hidden es:", that.nextSibling.value);
 
 		  document.getElementById("total_fases").value = total;
 	    }
@@ -333,7 +335,7 @@
 				'<th scope="col">Horas</th>' +
 				'<th>Eliminar</th>';
 		let tBody = document.createElement('tbody');
-		tBody.id= "fasesTable";
+		tBody.id= 'fasesTable_' + countEstimation;
 		for (const fase of fases) {
 			tBody.appendChild(buildFase(fase, countEstimation));
 		}
@@ -365,7 +367,7 @@
 		let sectionActionAddPhase = document.createElement("div");
 		sectionActionAddPhase.className = "row";
 		sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
-				'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
+				'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal" onclick="persistDataTable(this)"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
 				'</div>';
 
 		let sectionActionDelete = document.createElement("div");
@@ -387,6 +389,11 @@
 
 		document.getElementById("longitudEstimaciones").value = $(".horas").length;
 
+	}
+
+	function persistDataTable(that) {
+		let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
+		sessionStorage.setItem('tbody', tBodyID);
 	}
 
 	function buildHeaderCard() {
@@ -425,7 +432,6 @@
 		/* Function load fases depends at requirement type selected */
 		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
 		var fases = Object.values(enumFases);
-		console.log("estas son las fases:", fases);
 		var fasesFilter = [];
 		if(this.value != null && this.value != "empty") {
 			removeDisabledButtonAddEstimation();
@@ -463,15 +469,11 @@
 		document.getElementById("addEstimationBtn").disabled = false;
 	}
 
-	function addNewPhase(that) {
-		console.log("elemento 1", that);
-		console.log("elemento 2", that.parentNode);
-		console.log("elemento 3 previuos", that.previousSibling);
-		console.log("elemento 4 next", that.nextSibling);
-		console.log("element 5 ", that.parentNode.parentNode);
-		let tBody = document.getElementById("fasesTable");
+	function addNewPhase() {
+		let tbodyIdInsert = sessionStorage.getItem('tbody');
+		let tBody = document.getElementById(tbodyIdInsert);
 		let valNewPhase = document.getElementById('namePhase');
-		let rows = document.getElementById("fasesTable").rows.length;
+		let rows = document.getElementById(tbodyIdInsert).rows.length;
 		tBody.appendChild(buildFase(valNewPhase.value, rows + 1));
 		let modalEl1 = document.getElementById("new-phase-modal");
 		let modal = bootstrap.Modal.getInstance(modalEl1);
