@@ -251,9 +251,9 @@
 
 <footer th:replace="layout/layout :: footer"></footer>
 <script type="text/javascript" th:inline="javascript">
-	var countEstimation=0;
+	var countEstimation = 0;
 	var numEstimaciones = 0;
-	var total=0;
+	var total = 0;
 	const allEqual = arr => arr.every( v => v === arr[0] );
 	const calculateSum = (arr) => {
 		return arr.reduce((total, current) => {
@@ -299,7 +299,7 @@
 					const versionSplit = versionLabel.split(" ");
 					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
 					const copiedObject = Object.assign({}, originalObject);
-					let  jsonString = JSON.stringify(copiedObject, null, 2);
+					let jsonString = JSON.stringify(copiedObject, null, 2);
 					input.nextSibling.value = jsonString;
 				});
 	}
@@ -345,7 +345,6 @@
 		for (const fase of fases) {
 			tBody.appendChild(buildFase(fase, countEstimation));
 		}
-
 		tHead.appendChild(trHeadColumns);
 		tablaActual.appendChild(tHead);
 		tablaActual.appendChild(tBody);
@@ -387,7 +386,6 @@
 		cardBody.appendChild(sectionActionDelete);
 		card.appendChild(cardHeader);
 		card.appendChild(cardBody);
-
 
 		tablaDiv.appendChild(card);
 
