@@ -294,6 +294,13 @@
 	function buildHiddenInput(cardBody, valorActivo){
 		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
+						if(valorActivo === "0") {
+							console.log("deshabilitando");
+							input.setAttribute("disabled", "disabled");
+						} else {
+							console.log("habilitando");
+							input.removeAttribute("disabled");
+						}
 					numEstimaciones++;
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
@@ -515,11 +522,22 @@
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
 			});
+			document.querySelectorAll("#cantidadHoras").forEach((input) => {
+			 		input.setAttribute("disabled", "disabled");
+			});
+			that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+					(currentInput) => {
+						currentInput.removeAttribute("disabled");
+					});
 			that.checked = true;
 		} else {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				boxesChecked.push(checkElement.checked);
 			});
+			that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+					(currentInput) => {
+						currentInput.setAttribute("disabled","disabled");
+					});
 			if(allEqual(boxesChecked)){
 				showModalInfoAtLeastOneChecked();
 			}
