@@ -253,7 +253,13 @@
 <script type="text/javascript" th:inline="javascript">
 	var countEstimation=0;
 	var numEstimaciones = 0;
+	var total=0;
 	const allEqual = arr => arr.every( v => v === arr[0] );
+	const calculateSum = (arr) => {
+		return arr.reduce((total, current) => {
+			return parseInt(total) + parseInt(current);
+		}, 0);
+	};
 	var boxesChecked = [];
 	$(document).ready(function() {
 		document.getElementById("longitudEstimaciones").value = $(".horas").length;
@@ -298,18 +304,18 @@
 				});
 	}
 	function calculateTotal(that) {
-		var total=0;
-		var elements = document.body.getElementsByTagName('cantidadHoras');
-
+		var elements = $(".horas");
+		var arr = [];
 		for (var i = 0; i < elements.length; i++) {
-			if(isNaN(parseInt(elements[i].value))) {
+			if(isNaN(elements[i].value)) {
 				total += 0;
-			} else if(elements[i].value.trim() !== "" && !elements[i].disabled) { //&& attrDisabled == null
-				total += parseInt(elements[i].value);
+			} else if(elements[i].value.trim() !== "") {
+				arr.push(elements[i].value);
 			} else {
 				total += 0;
 			}
 		}
+		total = calculateSum(arr);
 		let obj = JSON.parse(that.nextSibling.value);
 		obj.cantidadHoras = that.value;
 		that.nextSibling.value = JSON.stringify(obj, null, 2);
