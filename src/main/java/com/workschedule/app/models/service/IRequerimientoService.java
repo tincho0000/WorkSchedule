@@ -25,7 +25,7 @@ public interface IRequerimientoService {
 
 	public void save(Requerimiento requerimiento);
 
-	public void delete(Requerimiento requerimiento);
+	public void deleteByRequirement(Requerimiento requerimiento);
 	
 	public Requerimiento findByRequerimiento(String requerimiento);
 	
@@ -33,7 +33,6 @@ public interface IRequerimientoService {
 	
 	public List<RequerimientoSimple> findByRequerimientoContaining(String requerimiento);
 	public List<RequerimientoSimple> findByRequerimientos();
-	public Requerimiento findByRequerimiento(Long id);
 	public RequerimientoSimple findByRequerimientoSimple(Long id);
 	
 }

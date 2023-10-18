@@ -24,8 +24,8 @@
 							<div class="input-group-text">Aplicación:</div>
 							<select class="form-select" id="appFilter" name="appFilter">
 								<option value="" selected="selected">Seleccionar...</option>
-								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}" th:selected="${aplicacion.id} == ${appFilter}">
+								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
+									th:text="${aplicacion}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
 								</option>
 							</select>
 						</div>
@@ -69,7 +69,6 @@
 								<th class="text-white">APLICACIÓN</th>
 								<th class="text-white">REQUERIMIENTO</th>
 								<th class="text-white">DESCRIPCIÓN</th>
-								<th class="text-white">CANTIDAD HORAS</th>
 								<th class="text-white">ESTADO</th>
 								<th class="text-center text-white">ACCIÓN</th>
 	<!-- 							<th class="text-center">Ver/Editar</th> -->
@@ -85,15 +84,14 @@
 								<td class="text-white" th:text="${requerimiento.aplicacion.aplicacion}"></td>
 								<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
 								<td class="text-white" th:text="${requerimiento.descripcion}"></td>
-								<td class="text-white" th:text="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}"></td>
 								<td class="text-white" th:text="${requerimiento.estado}"></td>
 								<td class="text-center">
-									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" 
+									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.requerimiento}"
 										style="border-radius: 50%;" data-toggle="tooltip" title="Editar">
 										<i class="bi bi-pencil-square"></i>
 									</a>
 									<a class="btn btn-outline-light btn-sm" style="border-radius: 50%;" data-toggle="tooltip" title="Eliminar"
-										th:href="@{/requerimientos/eliminar/} + ${requerimiento.id}"
+										th:href="@{/requerimientos/eliminar/} + ${requerimiento.requerimiento}"
 										onclick="return confirm('Estas seguro que quieres eliminar?')">
 										<i class="bi bi-trash3"></i>
 									</a>

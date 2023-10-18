@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.workschedule.app.models.entity.Requerimiento;
+import org.springframework.data.repository.query.Param;
 
 public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimiento, Long> {
 	
@@ -18,13 +20,6 @@ public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimie
 
 	@Query("select r from Requerimiento r where r.requerimiento like %?1% and r.estado like %?2%")
 	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String estadoFiltro);
-	
-//	public Requerimiento findByRequerimiento(String requerimiento);
-//	@Query(value="select * from requerimiento r,estimacion_requerimiento_fase erf, estimacion e "
-//			+ "where r.requerimiento like %?1% "
-//			+ "and r.id = erf.requerimiento_id "
-//			+ "and erf.estimacion_id = e.id "
-//			+ "and e.activo = 1" , nativeQuery=true)
 	
 	
 //	@Query("select erf from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "
@@ -40,8 +35,9 @@ public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimie
 //			+ "and erf.estimacion = e.id "
 //			+ "and e.activo = 1")
 //	public Optional<Requerimiento> findById(Long id);
-	
-	public Requerimiento findByRequerimiento(String requerimiento);
+
+	@Query("SELECT r FROM Requerimiento r WHERE r.requerimiento = :requerimiento")
+	public Requerimiento findByRequerimiento(@Param("requerimiento") String requerimiento);
 	
 	
 }

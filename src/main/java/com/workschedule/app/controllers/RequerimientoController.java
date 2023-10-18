@@ -31,9 +31,11 @@ import com.workschedule.app.models.service.IPlanificacionService;
 import com.workschedule.app.models.service.IRequerimientoService;
 import com.workschedule.app.models.service.IUsuarioService;
 import com.workschedule.app.util.paginator.PageRender;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.swing.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Secured("ROLE_GESTION")
 @Controller
@@ -213,18 +215,18 @@ public class RequerimientoController {
 		return "requerimiento/listar-requerimientos";
 	}
 
-//	@GetMapping("/eliminar/{id}")
-//	public String eliminarRequerimiento(@PathVariable(value="id") Long id, RedirectAttributes flash) {
-//		Requerimiento requerimiento = requerimientoService.findOne(id);
-//		if (requerimiento != null) {
-//			requerimientoService.delete(id);
-//			flash.addFlashAttribute("success", "Rquerimiento eliminado con exito! El ID es: " + requerimiento.getRequerimiento());
-//			return "redirect:/requerimientos/listar-requerimientos";
-//		}
-//
-//		flash.addFlashAttribute("error", "El rquerimiento no existe en la BD!");
-//		return "redirect:/requerimientos/listar-requerimientos";
-//	}
+	@GetMapping("/eliminar/{requerimiento}")
+	public String eliminarRequerimiento(@PathVariable("requerimiento") @NotBlank String theId, RedirectAttributes flash) {
+		Requerimiento requerimiento = requerimientoService.findByRequerimiento(theId);
+		if (requerimiento != null) {
+			requerimientoService.deleteByRequirement(requerimiento);
+			flash.addFlashAttribute("success", "Requerimiento eliminado con exito! El ID es: " + requerimiento.getRequerimiento());
+			return "redirect:/requerimientos/listar-requerimientos";
+		}
+
+		flash.addFlashAttribute("error", "El rquerimiento no existe en la BD!");
+		return "redirect:/requerimientos/listar-requerimientos";
+	}
 
 	@GetMapping("/form")
 	public String crear(Model model) {
