@@ -24,7 +24,7 @@
 					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
 					<div class="col-sm-2">
 						<input type="text" th:field="*{requerimiento}"
-							   class="form-control" th:errorclass="'form-control is-invalid'" />
+							   class="form-control" th:errorclass="'form-control is-invalid'" disabled />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('requerimiento')}"
 							 th:errors="*{requerimiento}"></div>
@@ -275,10 +275,18 @@
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
+	/** *
+	 Esta función muestra el modal de advertencia de que tiene que haber al menos una estimacion cargada
+	 * @returns {void} - Devuelve void.
+	 */
 	function showModalInfoRequired() {
 		$('#alert-modal-info-requirement').modal('show');
 	}
 
+	/** *
+	 Esta función muestra el modal de advertencia de que tiene que haber al menos una estimacion activa.
+	 * @returns {void} - Devuelve void.
+	 */
 	function showModalInfoAtLeastOneChecked() {
 		$('#alert-modal-info-at-least-one-checked').modal('show');
 	}
@@ -580,6 +588,10 @@
 		}
 	}
 
+	/** *
+	 Esta función crea deshabilita todos los input donde se ingresan la cantidad de horas
+	 * @returns {void} - Devuelve void.
+	 */
 	function disabledAllInput() {
 	document.querySelectorAll("#cantidadHoras").forEach(
 				(currentInput) => {
@@ -587,6 +599,11 @@
 	         });
 	}
 
+	/** *
+	 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo, ademas desabilita los input de cantidad de horas que no tengan este checkbox checkeado
+	 * @param {HTMLElement} that - Este param se corresponde al checkbox correspondiente a una card especifica
+	 * @returns {void} - Devuelve void.
+	 */
 	function verifyWhenDisabledInput(that) {
 		if(that.checked) {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
