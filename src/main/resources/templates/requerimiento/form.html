@@ -283,6 +283,12 @@
 		$('#alert-modal-info-at-least-one-checked').modal('show');
 	}
 
+	/** *
+	 Esta función crea una estimación activa si se trata de la primera estimacion sino la crea como una estimacion inactiva.
+	 * @param {string} version - La version se corresponde al numero de estimacion
+	 * @param {HTMLElement} cardBody - Este param se corresponde al body de la card que se creo
+	 * @returns {void} - Devuelve void.
+	 */
 	function createEstimationObj(version, cardBody) {
 		let cantEstimaciones = $(".horas").length
 		if(cantEstimaciones === 1) {
@@ -291,14 +297,19 @@
 			buildHiddenInput(cardBody, "0");
 		}
 	}
+
+	/** *
+	 Esta función crea pasa todos los datos de la estimacion a un json string; ademas deshabilita todos los input que tengan el valor activo en "0"
+	 * @param {HTMLElement} cardBody - Este param corresponde a la card donde se insertan las estimaciones
+	 * @param {string} valorActivo - Este param se corresponde si la estimacion esta activa o no
+	 * @returns {void} - Devuelve void.
+	 */
 	function buildHiddenInput(cardBody, valorActivo){
 		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
 						if(valorActivo === "0") {
-							console.log("deshabilitando");
 							input.setAttribute("disabled", "disabled");
 						} else {
-							console.log("habilitando");
 							input.removeAttribute("disabled");
 						}
 					numEstimaciones++;
@@ -310,6 +321,13 @@
 					input.nextSibling.value = jsonString;
 				});
 	}
+
+	/** *
+	 Esta función se encarga de sumar los valores de los input donde se ingresan las horas y los setea en otro input de totalizador de horas
+	 Ademas para cada input de cantidad de horas que se haya modificado le cambia el valor en el campo cantidadHoras por el nuevo valor a la estimacion que se guarda en un json string dentro de un input hidden a continuacion
+	 * @param {HTMLElement} that - Este param corresponde al input donde se esta cambiando el valor de la cantidad de horas
+	 * @returns {void} - Devuelve void.
+	 */
 	function calculateTotal(that) {
 		var elements = $(".horas");
 		var arr = [];
@@ -330,6 +348,10 @@
 		  document.getElementById("total_fases").value = total;
 	    }
 
+	/** *
+	 Esta función se encarga de agregar una nueva estimacion(una nueva card donde se agregan todos los valores correspondientes a 1 o varias estimaciones por tipo de requerimiento)
+	 * @returns {void} - Devuelve void.
+	 */
 	function addEstimation() {
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
@@ -402,11 +424,20 @@
 
 	}
 
+	/** *
+	 Esta función se encarga de persistir el valor del tbody para luego poder insertar un nuevo valor en la tabla
+	 * @param {HTMLElement} that - Este param corresponde al boton que se utiliza para guardar una fase
+	 * @returns {void} - Devuelve void.
+	 */
 	function persistDataTable(that) {
 		let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
 		sessionStorage.setItem('tbody', tBodyID);
 	}
 
+	/** *
+	 Esta función crea el header de la card de la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function buildHeaderCard() {
 		let cantEstimaciones = $(".horas").length;
 		let str = '<div>' +
@@ -422,8 +453,14 @@
 
 		str += '</div>'+ '</div>' + '</div>';
 		return str;
-		return str;
 	}
+
+	/** *
+	 Esta función construye una nueva fase con el input de cantidad de horas y el input de tipo hidden donde guarda va a guardar todos los datos de la estimacion
+	 * @param {string} fase - Este param corresponde al nombre de la fase
+	 * @param {number} index - Este param al numero de estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
 		trFases.id = 'row_' + index;
@@ -439,6 +476,12 @@
 			trFases.innerHTML = htmlInputs;
 		return trFases;
 	}
+
+	/** *
+	 Esta función carga las fases dependiendo el tipo de requerimiento que haya seleccionado el usuario y lo persiste en la sesion
+	 Ademas deshabilita el boton de agregar estimacion en el caso de que el tipo de requerimiento ingresado no coincida con los valores esperados
+	 * @returns {void} - Devuelve void.
+	 */
 	function loadFases() {
 		/* Function load fases depends at requirement type selected */
 		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
@@ -471,15 +514,27 @@
 		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
 
+	/** *
+	 Esta función deshabilita el boton de agregar estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function disabledButtonAddEstimation() {
 		let button = document.getElementById("addEstimationBtn");
 		button.setAttribute("disabled", "disabled");
 	}
 
+	/** *
+	 Esta función habilita el boton de agregar estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function removeDisabledButtonAddEstimation() {
 		document.getElementById("addEstimationBtn").disabled = false;
 	}
 
+	/** *
+	 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal
+	 * @returns {void} - Devuelve void.
+	 */
 	function addNewPhase() {
 		let tbodyIdInsert = sessionStorage.getItem('tbody');
 		let tBody = document.getElementById(tbodyIdInsert);
@@ -491,6 +546,11 @@
 		modal.hide();
 	}
 
+	/** *
+	 Esta función es llamada para borrar una fase de la tabla seleccionada
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar fases(item) de la tabla
+	 * @returns {void} - Devuelve void.
+	 */
 	function deletePhase(that) {
 		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
 			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
@@ -499,10 +559,20 @@
 		calculateTotal(that);
 	}
 
+	/** *
+	 Esta función es llamada para borrar toda la tabla de estimacion
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function deleteAllEstimation(that) {
 		that.parentNode.parentNode.parentNode.parentNode.remove();
 	}
 
+	/** *
+	 Esta función elimina todos los div que se creen dentro del elemen
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function removeAllElementTable() {
 		let fasesRow = document.getElementById('fasesTable');
 		while (fasesRow.firstChild) {

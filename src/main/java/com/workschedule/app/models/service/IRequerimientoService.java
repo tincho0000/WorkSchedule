@@ -28,6 +28,8 @@ public interface IRequerimientoService {
 	public void deleteByRequirement(Requerimiento requerimiento);
 	
 	public Requerimiento findByRequerimiento(String requerimiento);
+
+	public void update(Requerimiento requerimiento, String nombreRequerimiento);
 	
 //	public List<EstimacionRequerimientoFase> findByRequerimiento(String requerimiento);
 	

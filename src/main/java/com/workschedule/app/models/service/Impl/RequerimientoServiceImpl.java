@@ -110,5 +110,16 @@ public class RequerimientoServiceImpl implements IRequerimientoService {
 		return requerimientoDao.findByRequerimiento(requerimiento);
 	}
 
+	@Override
+	public void update(Requerimiento requerimiento, String nombreRequerimiento) {
+		Requerimiento requirement = requerimientoDao.findByRequerimiento(nombreRequerimiento);
+		requirement.setRequerimiento(requerimiento.getRequerimiento());
+		requirement.setDescripcion(requerimiento.getDescripcion());
+		requirement.setAplicacion(requerimiento.getAplicacion());
+		requirement.setObservacion(requerimiento.getObservacion());
+		requirement.setEstado(requerimiento.getEstado());
+		requerimientoDao.save(requirement);
+	}
+
 
 }

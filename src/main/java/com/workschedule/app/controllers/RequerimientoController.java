@@ -2,6 +2,7 @@ package com.workschedule.app.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -420,21 +421,29 @@ public class RequerimientoController {
 //		return "redirect:listar-requerimientos";
 //	}
 //
-//	@GetMapping("/editar/{id}")
-//	public String editarRequerimiento( @PathVariable(value="id") Long id, RedirectAttributes flash, Model model) {
-//
-//		Requerimiento requerimiento = requerimientoService.findOne(id);
-//		List<Aplicacion> aplicaciones = aplicacionService.findAll();
-//		List<Fase> fases = faseService.findAll();
-//
-//		model.addAttribute("titulo", "Editar Requerimiento");
-//		model.addAttribute("requerimiento", requerimiento);
-//		model.addAttribute("aplicaciones", aplicaciones);
-//		model.addAttribute("fases", fases);
-//		return "/requerimiento/editar";
-//	}
-//
-//
+	@GetMapping("/editar/{requerimiento}")
+    public String irAEditarRequerimiento( @PathVariable(value="requerimiento") String nombreRequerimiento, RedirectAttributes flash, Model model) {
+
+		Requerimiento requerimiento = requerimientoService.findByRequerimiento(nombreRequerimiento);
+		List<Aplicacion> aplicaciones = Arrays.asList(Aplicacion.values());
+		List<Fase> fases = Arrays.asList(Fase.values());
+
+		model.addAttribute("titulo", "Editar Requerimiento");
+		model.addAttribute("requerimiento", requerimiento);
+		model.addAttribute("aplicaciones", aplicaciones);
+		model.addAttribute("fases", fases);
+		return "requerimiento/editar";
+	}
+
+	@PostMapping("/editar/{requerimiento}")
+	public String editarRequerimiento( @PathVariable(value="requerimiento") String nombreRequerimiento, RedirectAttributes flash, @ModelAttribute("requerimiento") Requerimiento requerimiento) {
+
+		requerimientoService.update(requerimiento, nombreRequerimiento);
+
+		return "redirect:/requerimientos/listar-requerimientos";
+	}
+
+
 //	/****************************************/
 //	/************* Utilidades ***************/
 //	/****************************************/

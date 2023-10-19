@@ -15,7 +15,7 @@
 						th:text="'&laquo; Volver'"></a>
 				</h4>
 
-				<form class="row g-3" th:action="@{/requerimientos/form}"
+				<form class="row g-3" th:action="@{/requerimientos/editar/{path}(path=${requerimiento.requerimiento})}"
 					th:object="${requerimiento}" method="post">
 
 					<div class="form-group row py-3">
@@ -37,17 +37,11 @@
 						</div>
 					</div>
 					<div class="form-group row py-1">
-						<label class="col-sm-2 col-form-label"
-							th:text="'Cantidad' + ' Horas'"></label>
-						<div class="col-sm-2">
-							<input id="horasRequerimiento" type="number"
-								th:value="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}" class="form-control" />
-						</div>
 						<label class="col-sm-2 col-form-label text-end" th:text="Aplicación"></label>
 						<div class="col-sm-6">
 							<select class="form-select" th:field="*{aplicacion}">
 								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}">
+									th:text="${aplicacion}" th:value="${aplicacion}">
 								</option>
 							</select>
 						</div>
@@ -71,8 +65,9 @@
 						<div class="col-sm-4">
 							<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 								<option value="">Seleccionar...</option>
-								<option th:each="estado: ${fases}"
-									th:text="${estado.fase}" th:value="${estado.fase}">
+								<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
+										th:text="${estado}"
+										th:value="${estado.name()}">
 								</option>
 							</select>
 							<div class="invalid-feedback"
@@ -100,22 +95,22 @@
 								</thead>
 								<tbody>
 
-									<div th:each="estimacionRequerimientoFase: ${requerimiento.estimacionRequerimientoFases}" >
-									<tr th:id="'row_' + ${estimacionRequerimientoFase.fase.id}">
+									<div th:each="estimacionRequerimiento: ${requerimiento.estimacion}" >
+									<tr th:id="'row_' + ${estimacionRequerimiento.id}">
 <!-- 										th:each="requerimientoFase: ${requerimiento.requerimientoFases}"> -->
-										<td class="d-none"><input type="hidden" th:value="${estimacionRequerimientoFase.fase.id}"
+										<td class="d-none"><input type="hidden" th:value="${estimacionRequerimiento.id}"
 											name="fase_id[]" /></td>
-										<td class="text-white" th:text="${estimacionRequerimientoFase.fase.fase}"></td>
+										<td class="text-white" th:text="${estimacionRequerimiento.fase}"></td>
 										<td>
 											<div class="col-sm-6 ">
 												<input type="number"
-													th:value="${estimacionRequerimientoFase.cantidadHoras}"
+													th:value="${estimacionRequerimiento.cantidadHoras}"
 													name="cantidad[]" class="form-control text-end"
 													onchange="itemsHelper.calcularTotalFases();" />
 											</div>
 										</td>
 										<td><a class="btn btn-danger" href="#"
-											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${estimacionRequerimientoFase.requerimiento.id}', '${estimacionRequerimientoFase.fase.id}')|"
+											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${estimacionRequerimiento.id}', '${estimacionRequerimiento.id}')|"
 											onchange="itemsHelper.calcularTotalFases(this.value);">X</a></td>
 									</tr>
 									</div>
