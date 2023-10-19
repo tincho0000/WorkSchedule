@@ -22,7 +22,7 @@
 						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
 						<div class="col-sm-2">
 							<input type="text" th:field="*{requerimiento}"
-								class="form-control" th:errorclass="'form-control is-invalid'" />
+								class="form-control" th:errorclass="'form-control is-invalid'" disabled />
 							<div class="invalid-feedback"
 								th:if="${#fields.hasErrors('requerimiento')}"
 								th:errors="*{requerimiento}"></div>
