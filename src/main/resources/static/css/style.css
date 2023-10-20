@@ -8386,3 +8386,7 @@ textarea.form-control {
       #checkbox1 {
       margin :2px !important;
       }
+
+      .font-size-15 {
+        font-size: 15px !important;
+      }

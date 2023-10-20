@@ -95,7 +95,7 @@
 							 th:if="${#fields.hasErrors('fechaRealTesting')}"
 							 th:errors="*{fechaRealTesting}"></div>
 					</div>
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.reason.replanning.testing}"></label>
+					<label class="col-sm-2 font-size-15" th:utext="#{form.requirement.reason.replanning.testing}"></label>
 					<div class="col-sm-2">
 						<select class="form-select" name="motivoReplanifTesting" id="motivoReplanifTesting" th:field="*{motivoReplanifTesting}" >
 							<option value="empty">Seleccionar...</option>
@@ -112,7 +112,7 @@
 				</div>
 
 				<div class="form-group row py-3">
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
+					<label class="col-sm-2 font-size-15" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
 						<input id="fechaPlanifImplementacion" name="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
 						<div class="invalid-feedback"
