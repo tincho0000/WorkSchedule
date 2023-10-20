@@ -10,7 +10,7 @@
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
 
-			<form id="formRequirement" class="row g-3" th:action="@{/requerimientos/form}"
+			<form name="formRequirement" id="formRequirement" class="row g-3" th:action="@{/requerimientos/form}"
 				  th:object="${requerimiento}" method="post">
 				<h4 class="card-title text-end pb-2">
 					<a class="btn btn-outline-light"
@@ -24,7 +24,7 @@
 					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
 					<div class="col-sm-2">
 						<input type="text" th:field="*{requerimiento}"
-							   class="form-control" th:errorclass="'form-control is-invalid'" disabled />
+							   class="form-control" th:errorclass="'form-control is-invalid'" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('requerimiento')}"
 							 th:errors="*{requerimiento}"></div>
@@ -114,14 +114,14 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
+						<input id="fechaPlanifImplementacion" name="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
 							 th:errors="*{fechaPlanifImplementacion}"></div>
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
+						<input id="fechaRealImplementacion" name="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealImplementacion')}"
 							 th:errors="*{fechaRealImplementacion}"></div>
@@ -272,6 +272,10 @@
 			}
 	    });
 
+		document.formRequirement.fechaPlanifImplementacion.addEventListener('change', validDateRequirement);
+
+		document.formRequirement.fechaRealImplementacion.addEventListener('change', validDateRequirement);
+
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
@@ -289,6 +293,18 @@
 	 */
 	function showModalInfoAtLeastOneChecked() {
 		$('#alert-modal-info-at-least-one-checked').modal('show');
+	}
+
+	/** *
+	 Esta función compara dos fechas del formulario y arroja una alerta si una de las fechas es menor que la otra.
+	 * @returns {void} - Devuelve void.
+	 */
+	function validDateRequirement() {
+		let fechaPlanificadaTesting = document.formRequirement.fechaPlanifImplementacion.value;
+		let fechaRealTesting = document.formRequirement.fechaRealImplementacion.value;
+		if(fechaPlanificadaTesting > fechaRealTesting) {
+			alert("La fecha planificada debe ser menor a la fecha real de testing");
+		}
 	}
 
 	/** *
