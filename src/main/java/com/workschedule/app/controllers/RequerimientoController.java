@@ -3,6 +3,8 @@ package com.workschedule.app.controllers;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.swing.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Secured("ROLE_GESTION")
 @Controller
@@ -437,7 +441,14 @@ public class RequerimientoController {
 
 	@PostMapping("/editar/{requerimiento}")
 	public String editarRequerimiento( @PathVariable(value="requerimiento") String nombreRequerimiento, RedirectAttributes flash, @ModelAttribute("requerimiento") Requerimiento requerimiento) {
-
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(!requerimiento.getEstimacion().isEmpty()){
+			requerimiento.setEstimacion(requerimiento.getEstimacion().stream().map( est -> {
+				est.setFechaUpdate(new Date());
+				est.setUsuarioUpdate(auth.getName());
+				return est;
+			}).collect(Collectors.toList()) );
+		}
 		requerimientoService.update(requerimiento, nombreRequerimiento);
 
 		return "redirect:/requerimientos/listar-requerimientos";
