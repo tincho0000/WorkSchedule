@@ -431,11 +431,13 @@ public class RequerimientoController {
 		Requerimiento requerimiento = requerimientoService.findByRequerimiento(nombreRequerimiento);
 		List<Aplicacion> aplicaciones = Arrays.asList(Aplicacion.values());
 		List<Fase> fases = Arrays.asList(Fase.values());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		model.addAttribute("titulo", "Editar Requerimiento");
 		model.addAttribute("requerimiento", requerimiento);
 		model.addAttribute("aplicaciones", aplicaciones);
 		model.addAttribute("fases", fases);
+		model.addAttribute("username", auth.getName());
 		return "requerimiento/editar";
 	}
 
