@@ -646,15 +646,27 @@
 			}
 		}
 
-		that.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+		document.querySelectorAll("#cantidadHoras").forEach(
+				(currentInput) => {
+					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+					console.log("aca se esta cambiando el valor a cero");
+					currentInput.setAttribute("disabled", "");
+					objEstimacion.activo = "0";
+					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
+				}
+		);
+
+		that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
 				(currentInput) => {
 					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
 					if(that.checked === true ) {
+						console.log("aca se esta cambiando el valor a 1");
 						currentInput.removeAttribute("disabled");
-						objEstimacion.activo = 1 ;
+						objEstimacion.activo = "1";
 					} else {
+						console.log("aca se esta cambiando el valor a cero");
 						currentInput.setAttribute("disabled", "");
-						objEstimacion.activo = 0;
+						objEstimacion.activo = "0";
 					}
 					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 				}

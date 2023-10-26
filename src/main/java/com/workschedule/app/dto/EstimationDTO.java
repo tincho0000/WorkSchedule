@@ -10,8 +10,9 @@ public class EstimationDTO {
     private int cantidadHoras;
     private String usuarioAlta;
     private int activo;
+
     //private Date fechaAlta;
-    //private Date fechaUpdate;
+    private Date fechaUpdate;
     //private String usuarioAlta;
     //private String usuarioUpdate;
     //private Requerimiento requerimiento;
@@ -54,5 +55,13 @@ public class EstimationDTO {
 
     public void setActivo(int activo) {
         this.activo = activo;
+    }
+
+    public Date getFechaUpdate() {
+        return fechaUpdate;
+    }
+
+    public void setFechaUpdate(Date fechaUpdate) {
+        this.fechaUpdate = fechaUpdate;
     }
 }

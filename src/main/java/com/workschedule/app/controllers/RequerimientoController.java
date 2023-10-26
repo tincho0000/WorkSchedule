@@ -2,15 +2,13 @@ package com.workschedule.app.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.workschedule.app.dto.EstimationDTO;
 import com.workschedule.app.mapper.EstimacionMapper;
 import com.workschedule.app.mapper.EstimationDTOMapper;
+import com.workschedule.app.models.entity.Estimacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +54,11 @@ public class RequerimientoController {
 //	IRequerimientoFaseDao requerimientoFaseDao;
 	@Autowired
 	IUsuarioService usuarioService;
-	@Autowired
-	IPlanificacionService planificacionService;
+
 	@Autowired
 	IEstimacionService estimacionService;
+	@Autowired
+	IPlanificacionService planificacionService;
 
 	public RequerimientoController() {
 	}
@@ -442,16 +441,14 @@ public class RequerimientoController {
 	}
 
 	@PostMapping("/editar/{requerimiento}")
-	public String editarRequerimiento( @PathVariable(value="requerimiento") String nombreRequerimiento, RedirectAttributes flash, @ModelAttribute("requerimiento") Requerimiento requerimiento) {
+	public String editarRequerimiento( @PathVariable(value="requerimiento") String nombreRequerimiento, RedirectAttributes flash,
+									   @ModelAttribute("requerimiento") Requerimiento requerimiento,
+									   @RequestParam(name="estimacionHidden", required=false) List<String> listEstimacionesString) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if(!requerimiento.getEstimacion().isEmpty()){
-			requerimiento.setEstimacion(requerimiento.getEstimacion().stream().map( est -> {
-				est.setFechaUpdate(new Date());
-				est.setUsuarioUpdate(auth.getName());
-				return est;
-			}).collect(Collectors.toList()) );
-		}
-		requerimientoService.update(requerimiento, nombreRequerimiento);
+				List<EstimationDTO> listEstimaciones = listEstimacionesString.stream().map( estimacionDTO -> new EstimationDTOMapper().convert(estimacionDTO)).collect(Collectors.toList());
+		Requerimiento requerimientoOrig = requerimientoService.findByRequerimiento(nombreRequerimiento);
+				requerimiento.setEstimacion(listEstimaciones.stream().map( estimacionDTO -> new EstimacionMapper().convertUpdate(estimacionDTO, requerimiento, auth.getName(), requerimientoOrig)).collect(Collectors.toList()));
+				requerimientoService.save(requerimiento);
 
 		return "redirect:/requerimientos/listar-requerimientos";
 	}

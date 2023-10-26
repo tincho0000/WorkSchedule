@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.workschedule.app.enums.Aplicacion;
 import com.workschedule.app.enums.EstadoRequerimiento;
 import com.workschedule.app.enums.MotivoReplanificacion;
@@ -83,6 +84,7 @@ public class Requerimiento implements Serializable {
 	private Aplicacion aplicacion;
 
 	@OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private List<Estimacion> estimacion;
 	
 	

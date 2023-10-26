@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
@@ -63,9 +63,9 @@
 						<div class="col-sm-6">
 							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
-							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
-								<p th:errors="*{descripcion}"></p>
-							</div>
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('descripcion')}"
+								 th:errors="*{descripcion}"></div>
 						</div>
 					</div>
 
@@ -162,69 +162,289 @@
 			</div>
 
 					<div class="form-group row py-3">
-
-						<!-- 					Plantilla para agregar fases -->
-						<table th:replace="requerimiento/plantilla-fases :: agregarFase"></table>
-
-						<div class="col-sm-6">
-							<table id="cargarFase"
-								class="table table-sm table-striped table-hover">
-								<thead class="text-white">
-									<tr>
-										<th>Fase</th>
-										<th>Horas</th>
-										<th>Eliminar</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<div th:each="estimacionRequerimiento: ${requerimiento.estimacion}" >
-									<tr th:id="'row_' + ${estimacionRequerimiento.id}">
-<!-- 										th:each="requerimientoFase: ${requerimiento.requerimientoFases}"> -->
-										<td class="d-none"><input type="hidden" th:value="${estimacionRequerimiento.id}"
-											name="fase_id[]" /></td>
-										<td class="text-white" th:text="${estimacionRequerimiento.fase}"></td>
-										<td>
-											<div class="col-sm-6 ">
-												<input type="number"
-													th:value="${estimacionRequerimiento.cantidadHoras}"
-													name="cantidad[]" class="form-control text-end"
-													onchange="itemsHelper.calcularTotalFases();" />
-											</div>
-										</td>
-										<td><a class="btn btn-danger" href="#"
-											th:attr="onclick=|itemsHelper.eliminarLineaFaseBD('${estimacionRequerimiento.id}', '${estimacionRequerimiento.id}')|"
-											onchange="itemsHelper.calcularTotalFases(this.value);">X</a></td>
-									</tr>
-									</div>
-
-
-								</tbody>
-							</table>
-						</div>
-
-						<div class="col-sm-3">
-							<h5 class="text-center">
-								<span class="">Total Fases</span>
-							</h5>
-							<h5 class="text-center">
-								<span class="" id="total_fases">0</span>
-							</h5>
-
-						</div>
-
+						    <div id="tablaEstimaciones" class="row col-12">
+							</div>
+					</div>
 						<div class="col-sm-3">
 							<input type="submit" th:value="${titulo}" class="btn btn-success" />
 						</div>
-					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 
+	<div class="modal fade" tabindex="-1" id="alert-modal-info-at-least-one-checked">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="inline">
+						<i class="bi bi-info-circle"></i>
+						<span class="modal-title info-modal-span">Debes activar al menos una estimación</span>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<footer th:replace="layout/layout :: footer"></footer>
-	<script
-		th:replace="requerimiento/js/autocomplete-fases-editar :: javascript"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var estimaciones = [];
+		var listVersiones = [];
+		var total = 0;
+		var boxesChecked = [];
+		const allEqual = arr => arr.every( v => v === arr[0] );
+		estimaciones = [[${requerimiento.estimacion}]];
+		estimaciones.forEach((estimacion)=> {
+			listVersiones.push(estimacion.version);
+			listVersiones = removeDuplicates(listVersiones);
+		});
+		listVersiones.forEach((version) => {
+			let listEstimacion = estimaciones.filter(function(item){
+				return item.version == version;
+			});
+			addListEstimation(listEstimacion);
+		});
+		var numEstimaciones = listVersiones[-1];
+		const calculateSum = (arr) => {
+			return arr.reduce((total, current) => {
+				return parseInt(total) + parseInt(current);
+			}, 0);
+		};
+
+		function removeDuplicates(arr) {
+			return arr.filter((item,
+							   index) => arr.indexOf(item) === index);
+		}
+
+		/** *
+		 Esta función es llamada para borrar toda la tabla de estimacion
+		 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+		 * @returns {void} - Devuelve void.
+		 */
+		function deleteAllEstimation(that) {
+			that.parentNode.parentNode.parentNode.parentNode.remove();
+		}
+
+		function addListEstimation(listEstimaciones) {
+			let tablaDiv = document.getElementById('tablaEstimaciones');
+			let tablaActual = document.createElement('table');
+			tablaActual.id= "cargarFase";
+			tablaActual.tagName="cargarFase";
+			tablaActual.title = "Estimacion Tabla";
+			tablaActual.className = "table table-sm table-striped table-hover";
+			let tHead = document.createElement('thead');
+			tHead.className= "text-white";
+			let trHeadColumns = document.createElement('tr');
+
+			trHeadColumns.innerHTML = '<th scope="col">Fase</th>' +
+					'<th scope="col">Horas</th>' +
+					'<th>Eliminar</th>';
+			let tBody = document.createElement('tbody');
+			tBody.id= 'fasesTable_' + listEstimaciones[0].version;
+			listEstimaciones.forEach((estimacion) => {
+				tBody.appendChild(buildFase(estimacion.activo, estimacion.fase, estimacion.version, estimacion.cantidadHoras));
+			})
+			tHead.appendChild(trHeadColumns);
+			tablaActual.appendChild(tHead);
+			tablaActual.appendChild(tBody);
+
+			let card = document.createElement("div");
+			card.className = "card col-6";
+			card.id = "card_" + listEstimaciones[0].version;
+			card.style.marginTop = "0.625rem";
+			card.style.border = "none";
+			card.style.paddingLeft= "0";
+			card.style.paddingRight = "0";
+			card.style.paddingBottom = "0";
+			card.style.marginLeft = "0.625rem"
+			card.style.marginRight = "0.625rem";
+			card.style.width= "30%";
+			let cardHeader = document.createElement("div")
+			cardHeader.className = "card-header text-white bg-primary mb-3";
+			cardHeader.innerHTML = buildHeaderCard(listEstimaciones[0].activo, listEstimaciones[0].version);
+
+			let cardBody = document.createElement("div");
+			cardBody.className = "card-body text-white bg-secondary mb-3";
+			cardBody.style.maxWidth = "34rem";
+			cardBody.style.marginTop = "-0.9rem";
+
+			let sectionActionAddPhase = document.createElement("div");
+			sectionActionAddPhase.className = "row";
+			sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
+					'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal" onclick="persistDataTable(this)"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
+					'</div>';
+
+			let sectionActionDelete = document.createElement("div");
+			sectionActionDelete.className = "row py-3";
+			sectionActionDelete.innerHTML =
+					'<div class="col-sm-2">'+
+					'<button type="button" class="btn btn-danger btnDelete" style="margin-top: 20px;margin-left: 15.625rem;" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Elimina toda la estimación" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
+					'</div>';
+			cardBody.appendChild(sectionActionAddPhase);
+			cardBody.appendChild(tablaActual);
+			cardBody.appendChild(sectionActionDelete);
+			card.appendChild(cardHeader);
+			card.appendChild(cardBody);
+
+			tablaDiv.appendChild(card);
+
+			buildHiddenInput(cardBody,listEstimaciones[0].activo);
+
+			//document.getElementById("longitudEstimaciones").value = $(".horas").length;
+
+		}
+
+		function buildHiddenInput(cardBody, valorActivo){
+			cardBody.querySelectorAll('#cantidadHoras')
+					.forEach((input) => {
+						if(valorActivo === "0") {
+							input.setAttribute("disabled", "disabled");
+						} else {
+							input.removeAttribute("disabled");
+						}
+						numEstimaciones++;
+						let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+						const versionSplit = versionLabel.split(" ");
+						const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
+						const copiedObject = Object.assign({}, originalObject);
+						let jsonString = JSON.stringify(copiedObject, null, 2);
+						input.nextSibling.value = jsonString;
+					});
+		}
+
+		function buildHeaderCard(activo, version) {
+			let str = '<div>' +
+					'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
+					'<div class="inline">'+ '<label>Version: '+version+'</label>'+
+					'<div style="float: right;margin-right: 20px; display:inline-block;">' +
+					'<span>Activo  </span>';
+			if(activo === 1) {
+				str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>';
+			} else {
+				str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" >'
+			}
+
+			str += '</div>'+ '</div>' + '</div>';
+			return str;
+		}
+		function buildFase(activo, fase, version, cantHoras) {
+			const horas = cantHoras;
+			const trFases = document.createElement('tr');
+			trFases.id = 'row_' + version;
+			let htmlInputs =
+					'<td>' + fase + '</td>' +
+					'<td>' +
+					'<div class="col-xs-2">';
+			if(activo == 1) {
+				htmlInputs += '<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>';
+			} else {
+					htmlInputs +=	'<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}" disabled/>';
+			 }
+
+			htmlInputs += '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden"/>'+
+					      '</div>' +
+					      '</td>'+
+					      '<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
+			trFases.innerHTML = htmlInputs;
+			return trFases;
+		}
+
+		function deletePhase(that) {
+			if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
+				that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+			}
+			that.parentNode.parentNode.remove();
+		}
+
+		function calculateTotal(that) {
+			var elements = $(".horas");
+			var arr = [];
+			for (var i = 0; i < elements.length; i++) {
+				if(isNaN(elements[i].value)) {
+					total += 0;
+				} else if(elements[i].value.trim() !== "") {
+					arr.push(elements[i].value);
+				} else {
+					total += 0;
+				}
+			}
+			total = calculateSum(arr);
+			let obj = JSON.parse(that.nextSibling.value);
+			obj.cantidadHoras = that.value;
+			that.nextSibling.value = JSON.stringify(obj, null, 2);
+
+		}
+
+		function showModalInfoAtLeastOneChecked() {
+			$('#alert-modal-info-at-least-one-checked').modal('show');
+		}
+
+		/** *
+		 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo, ademas desabilita los input de cantidad de horas que no tengan este checkbox checkeado
+		 * @param {HTMLElement} that - Este param se corresponde al checkbox correspondiente a una card especifica
+		 * @returns {void} - Devuelve void.
+		 */
+		function verifyWhenDisabledInput(that) {
+			if(that.checked) {
+				document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+					checkElement.checked = false;
+				});
+				document.querySelectorAll("#cantidadHoras").forEach((input) => {
+					input.setAttribute("disabled", "disabled");
+				});
+				that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+						(currentInput) => {
+							currentInput.removeAttribute("disabled");
+						});
+				that.checked = true;
+			} else {
+				document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+					boxesChecked.push(checkElement.checked);
+				});
+				that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+						(currentInput) => {
+							currentInput.setAttribute("disabled","disabled");
+						});
+				if(allEqual(boxesChecked)){
+					showModalInfoAtLeastOneChecked();
+				}
+			}
+
+			document.querySelectorAll("#cantidadHoras").forEach(
+					(currentInput) => {
+						let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+						console.log("aca se esta cambiando el valor a cero");
+						currentInput.setAttribute("disabled", "");
+						objEstimacion.activo = "0";
+						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
+					}
+			);
+
+			that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+					(currentInput) => {
+						let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+						if(that.checked === true ) {
+							console.log("aca se esta cambiando el valor a 1");
+							currentInput.removeAttribute("disabled");
+							objEstimacion.activo = "1";
+						} else {
+							console.log("aca se esta cambiando el valor a cero");
+							currentInput.setAttribute("disabled", "");
+							objEstimacion.activo = "0";
+						}
+						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
+					}
+			);
+
+		}
+
+	</script>
 
 </body>
 </html>
