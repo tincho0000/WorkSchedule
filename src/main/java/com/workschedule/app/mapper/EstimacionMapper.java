@@ -28,6 +28,7 @@ public class EstimacionMapper {
         requerimientoOriginal.getEstimacion().stream().forEach(estimation -> {
         if(estimation.getVersion() == source.getVersion() && estimation.getFase().name().equals(source.getFase())  ){
             estimacion.setId(estimation.getId());
+            estimacion.setFechaAlta(estimacion.getFechaAlta());
         }
         });
         estimacion.setActivo(source.getActivo());
