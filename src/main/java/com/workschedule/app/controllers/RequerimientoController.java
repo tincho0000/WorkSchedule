@@ -262,7 +262,7 @@ public class RequerimientoController {
 			requerimientoService.save(requerimiento);
 		}
 
-		return "requerimiento/form";
+		return "redirect:listar-requerimientos";
     }
 
 

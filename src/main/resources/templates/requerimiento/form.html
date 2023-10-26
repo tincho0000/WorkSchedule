@@ -90,7 +90,7 @@
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaRealTesting}" />
+						<input id="fechaRealTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" class="form-control" th:field="*{fechaRealTesting}" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealTesting')}"
 							 th:errors="*{fechaRealTesting}"></div>
@@ -114,14 +114,14 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifImplementacion" name="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
+						<input id="fechaPlanifImplementacion" name="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}" class="form-control">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
 							 th:errors="*{fechaPlanifImplementacion}"></div>
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealImplementacion" name="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
+						<input id="fechaRealImplementacion" name="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}" class="form-control">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealImplementacion')}"
 							 th:errors="*{fechaRealImplementacion}"></div>
@@ -520,7 +520,7 @@
 				case 'CORRECTIVO':
 				case 'REWORK':
 				case 'EMERGENCIA':
-					fasesFilter = fases.filter(fase => fase !== "SOPORTE_PRUEBAS_PI" && fase !== "SOPORTE_PRUEBAS_PAU");
+					fasesFilter = fases.filter(fase => fase !== "PI" && fase !== "PAU");
 					break;
 				case 'ANALISIS':
 					fasesFilter = fases.filter(fase => fase === "ANALISIS");

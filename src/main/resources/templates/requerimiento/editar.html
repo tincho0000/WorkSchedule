@@ -173,6 +173,24 @@
 		</div>
 	</div>
 
+	<div class="modal fade" tabindex="-1" id="new-phase-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Agrega una nueva fase</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<input type="text" id="namePhase" placeholder="Nombre de Fase"/>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade" tabindex="-1" id="alert-modal-info-at-least-one-checked">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -220,6 +238,17 @@
 		function removeDuplicates(arr) {
 			return arr.filter((item,
 							   index) => arr.indexOf(item) === index);
+		}
+
+		function addNewPhase() {
+			let tbodyIdInsert = sessionStorage.getItem('tbody');
+			let tBody = document.getElementById(tbodyIdInsert);
+			let valNewPhase = document.getElementById('namePhase');
+			let rows = document.getElementById(tbodyIdInsert).rows.length;
+			tBody.appendChild(buildFaseNueva(valNewPhase.value, rows + 1));
+			let modalEl1 = document.getElementById("new-phase-modal");
+			let modal = bootstrap.Modal.getInstance(modalEl1);
+			modal.hide();
 		}
 
 		/** *
@@ -333,6 +362,27 @@
 			str += '</div>'+ '</div>' + '</div>';
 			return str;
 		}
+		function buildFaseNueva(fase, index) {
+			const trFases = document.createElement('tr');
+			trFases.id = 'row_' + index;
+			let htmlInputs =
+					'<td>' + fase + '</td>' +
+					'<td>' +
+					'<div class="col-xs-2">' +
+					'<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+					'<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden" />'+
+					'</div>' +
+					'</td>'+
+					'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
+			trFases.innerHTML = htmlInputs;
+			trFases.querySelectorAll("#cantidadHoras").forEach((currentInput) => {
+				const originalObject = { fase: currentInput.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt("1"), cantidadHoras: parseInt(currentInput.value), usuarioAlta: [[${username}]], activo: parseInt("0")};
+				const copiedObject = Object.assign({}, originalObject);
+				let jsonString = JSON.stringify(copiedObject, null, 2);
+				currentInput.nextSibling.value = jsonString;
+			});
+			return trFases;
+		}
 		function buildFase(activo, fase, version, cantHoras) {
 			const horas = cantHoras;
 			const trFases = document.createElement('tr');
@@ -383,6 +433,11 @@
 
 		function showModalInfoAtLeastOneChecked() {
 			$('#alert-modal-info-at-least-one-checked').modal('show');
+		}
+
+		function persistDataTable(that) {
+			let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
+			sessionStorage.setItem('tbody', tBodyID);
 		}
 
 		/** *
