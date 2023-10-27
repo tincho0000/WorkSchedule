@@ -45,12 +45,12 @@
 
 					</div>
 					<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
-					<div class="col-sm-2">
-						<select class="form-select margin-estado" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+					<div class="col-sm-2 margin-estado">
+						<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
 									th:text="${estado}"
-									th:value="${estado.name()}">
+									th:value="${estado}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -62,7 +62,7 @@
 
 					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
-						<div class="col-sm-6">
+						<div class="col-sm-6" style="margin-right: 3px;">
 							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
 							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
