@@ -8386,3 +8386,8 @@ textarea.form-control {
       #checkbox1 {
       margin :2px !important;
       }
+
+      .margin-estado {
+        width: 195px !important;
+        margin-left: -18px !important;
+      }

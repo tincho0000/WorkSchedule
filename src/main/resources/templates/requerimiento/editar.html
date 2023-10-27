@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org" lang="en">
 <head th:replace="layout/layout :: head"></head>
 <body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
 
-	<header th:replace="layout/layout :: header"></header>
+<header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4 text-white">
 		<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
-				<h4 class="card-title text-end pb-2">
-					<a class="btn btn-outline-light"
-						th:href="@{'/requerimientos/listar-requerimientos'}"
-						th:text="'&laquo; Volver'"></a>
-				</h4>
 
 				<form class="row g-3" th:action="@{/requerimientos/editar/{path}(path=${requerimiento.requerimiento})}"
 					th:object="${requerimiento}" method="post">
+					<h4 class="card-title text-end pb-2">
+						<a class="btn btn-outline-light"
+						   th:href="@{'/requerimientos/listar-requerimientos'}"
+						   th:text="'&laquo; Volver'"></a>
+						<button id="btnSaveRequirement" class="btn btn-success" type="submit"
+								th:utext="#{form.requirement.save.button.label}"></button>
+					</h4>
 
 					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
@@ -32,7 +34,7 @@
 							<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 								<option value="">Seleccionar...</option>
 								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-										th:text="${aplicacion}"
+										th:text="${aplicacion.name()}"
 										th:value="${aplicacion}">
 								</option>
 							</select>
@@ -165,9 +167,6 @@
 						    <div id="tablaEstimaciones" class="row col-12">
 							</div>
 					</div>
-						<div class="col-sm-3">
-							<input type="submit" th:value="${titulo}" class="btn btn-success" />
-						</div>
 				</form>
 			</div>
 		</div>

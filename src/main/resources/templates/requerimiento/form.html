@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org" lang="en">
 <head th:replace="layout/layout :: head"></head>
-<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+<body style="background: #2c3e50;">
 
 <header th:replace="layout/layout :: header"></header>
 
 <div class="container py-4 text-white">
-	<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+	<div class="card border-white" style="background: #2c3e50;">
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
 
@@ -34,7 +34,7 @@
 						<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-									th:text="${aplicacion}"
+									th:text="${aplicacion.name()}"
 									th:value="${aplicacion}">
 							</option>
 						</select>
@@ -46,7 +46,7 @@
 					</div>
 					<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
 					<div class="col-sm-2">
-						<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+						<select class="form-select margin-estado" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
 									th:text="${estado}"
