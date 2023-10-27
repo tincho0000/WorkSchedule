@@ -147,20 +147,7 @@
 					<div class="col-sm-2">
 						<input id="user" type="text" th:value="${username}" class="form-control" readonly>
 					</div>
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
-					<div class="col-sm-2">
-						<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
-							<option value="empty">Seleccionar...</option>
-							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
-									th:text="${tipoRequerimiento}"
-									th:value="${tipoRequerimiento}">
-							</option>
-						</select>
-						<div class="invalid-feedback"
-							 th:if="${#fields.hasErrors('tipoRequerimiento')}"
-							 th:errors="*{tipoRequerimiento}">
-						</div>
-					</div>
+
 
 				</div>
 
@@ -174,11 +161,25 @@
 				</div>
 
 				<div class="form-group row py-3">
-					<div class="col-sm-2">
-						<button id="addEstimationBtn" type="button" onclick="addEstimation()" disabled class="btn btn-primary">
-							<span th:utext="#{form.requirement.button.add.estimated}"></span>
-						</button>
-					</div>
+						<label class="col-sm-2 col-form-label" th:utext="#{form.estimation.type}"></label>
+						<div class="col-sm-2">
+							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
+								<option value="empty">Seleccionar...</option>
+								<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
+										th:text="${tipoRequerimiento}"
+										th:value="${tipoRequerimiento}">
+								</option>
+							</select>
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('tipoRequerimiento')}"
+								 th:errors="*{tipoRequerimiento}">
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<button id="addEstimationBtn" type="button" onclick="addEstimation()" disabled class="btn btn-primary">
+								<span th:utext="#{form.requirement.button.add.estimated}"></span>
+							</button>
+						</div>
 				</div>
 
 

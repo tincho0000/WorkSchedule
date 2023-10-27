@@ -8391,3 +8391,5 @@ textarea.form-control {
         width: 195px !important;
         margin-left: -18px !important;
       }
+.container-estimation {width: 100%;}
+.container-estimation * {display: inline-block; vertical-align: top; padding: 0px; margin: 0px;}

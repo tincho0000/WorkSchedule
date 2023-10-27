@@ -6,7 +6,7 @@
 <header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4 text-white">
-		<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+		<div class="card border-white" style="background: #2c3e50;">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
 
@@ -141,13 +141,13 @@
 				</div>
 			</div>
 
-			<div class="form-group row py-3">
+			<div class="form-group container-flex">
 				<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.user}"></label>
 				<div class="col-sm-2">
 					<input id="user" type="text" th:value="${username}" class="form-control" readonly>
 				</div>
-				<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
-				<div class="col-sm-2">
+				<label class="col-sm-10 col-form-label" th:utext="#{form.estimation.type}"></label>
+				<div class="col-sm-10">
 					<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
 						<option value="empty">Seleccionar...</option>
 						<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
