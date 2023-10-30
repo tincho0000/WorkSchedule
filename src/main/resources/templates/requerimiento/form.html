@@ -349,24 +349,31 @@
 	 * @returns {void} - Devuelve void.
 	 */
 	function calculateTotal(that) {
-		var elements = $(".horas");
-		var arr = [];
-		for (var i = 0; i < elements.length; i++) {
-			if(isNaN(elements[i].value)) {
-				total += 0;
-			} else if(elements[i].value.trim() !== "") {
-				arr.push(elements[i].value);
-			} else {
-				total += 0;
-			}
-		}
-		total = calculateSum(arr);
+		addActiveHours();
 		let obj = JSON.parse(that.nextSibling.value);
 		obj.cantidadHoras = that.value;
 		that.nextSibling.value = JSON.stringify(obj, null, 2);
 
 		  document.getElementById("total_fases").value = total;
 	    }
+
+	function addActiveHours(){
+		var elements = $(".horas");
+		var arr = [];
+		for (var i = 0; i < elements.length; i++) {
+			if(isNaN(elements[i].value)) {
+				total += 0;
+			} else if(elements[i].value.trim() !== "") {
+				let obj = JSON.parse(elements[i].nextSibling.value)
+				if(obj.activo == 1) {
+					arr.push(elements[i].value);
+				}
+			} else {
+				total += 0;
+			}
+		}
+		total = calculateSum(arr);
+	}
 
 	/** *
 	 Esta función se encarga de agregar una nueva estimacion(una nueva card donde se agregan todos los valores correspondientes a 1 o varias estimaciones por tipo de requerimiento)
@@ -610,6 +617,7 @@
 	 */
 	function verifyWhenDisabledInput(that) {
 		if(that.checked) {
+			addActiveHours();
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
 			});
