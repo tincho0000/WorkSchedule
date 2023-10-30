@@ -332,11 +332,6 @@
 	function buildHiddenInput(cardBody, valorActivo){
 		cardBody.querySelectorAll('#cantidadHoras')
 				.forEach((input) => {
-						if(valorActivo === "0") {
-							input.setAttribute("disabled", "disabled");
-						} else {
-							input.removeAttribute("disabled");
-						}
 					numEstimaciones++;
 					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 					const versionSplit = versionLabel.split(" ");
@@ -609,17 +604,6 @@
 	}
 
 	/** *
-	 Esta función crea deshabilita todos los input donde se ingresan la cantidad de horas
-	 * @returns {void} - Devuelve void.
-	 */
-	function disabledAllInput() {
-	document.querySelectorAll("#cantidadHoras").forEach(
-				(currentInput) => {
-					currentInput.setAttribute("disabled", "");
-	         });
-	}
-
-	/** *
 	 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo, ademas desabilita los input de cantidad de horas que no tengan este checkbox checkeado
 	 * @param {HTMLElement} that - Este param se corresponde al checkbox correspondiente a una card especifica
 	 * @returns {void} - Devuelve void.
@@ -629,22 +613,11 @@
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
 			});
-			document.querySelectorAll("#cantidadHoras").forEach((input) => {
-			 		input.setAttribute("disabled", "disabled");
-			});
-			that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
-					(currentInput) => {
-						currentInput.removeAttribute("disabled");
-					});
 			that.checked = true;
 		} else {
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				boxesChecked.push(checkElement.checked);
 			});
-			that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
-					(currentInput) => {
-						currentInput.setAttribute("disabled","disabled");
-					});
 			if(allEqual(boxesChecked)){
 				showModalInfoAtLeastOneChecked();
 			}
@@ -653,8 +626,6 @@
 		document.querySelectorAll("#cantidadHoras").forEach(
 				(currentInput) => {
 					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
-					console.log("aca se esta cambiando el valor a cero");
-					currentInput.setAttribute("disabled", "");
 					objEstimacion.activo = "0";
 					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 				}
@@ -664,12 +635,8 @@
 				(currentInput) => {
 					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
 					if(that.checked === true ) {
-						console.log("aca se esta cambiando el valor a 1");
-						currentInput.removeAttribute("disabled");
 						objEstimacion.activo = "1";
 					} else {
-						console.log("aca se esta cambiando el valor a cero");
-						currentInput.setAttribute("disabled", "");
 						objEstimacion.activo = "0";
 					}
 					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
