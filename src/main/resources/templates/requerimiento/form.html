@@ -34,8 +34,8 @@
 						<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-									th:text="${aplicacion.name()}"
-									th:value="${aplicacion}">
+									th:text="${aplicacion.getAplicacion()}"
+									th:value="${aplicacion.name()}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -46,7 +46,7 @@
 					</div>
 					<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
 					<div class="col-sm-2 margin-estado">
-						<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+						<select class="form-select" style="width: 168px;" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
 									th:text="${estado}"
@@ -62,8 +62,8 @@
 
 					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
-						<div class="col-sm-6" style="margin-right: 3px;">
-							<input type="text" th:field="*{descripcion}" class="form-control"
+						<div class="col-sm-6">
+							<input class="form-control margin_left_2" type="text" th:field="*{descripcion}"
 								   th:errorclass="'form-control is-invalid'" />
 							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
 								<p th:errors="*{descripcion}"></p>
@@ -382,6 +382,9 @@
 		let fases = JSON.parse(objectoFases);
 		let tablaDiv = document.getElementById('tablaEstimaciones');
 		let tablaActual = document.createElement('table');
+		$('#tipoRequerimiento option').prop('selected', function() {
+			$("#tipoRequerimiento").val('empty');
+		});
 		countEstimation++;
 		tablaActual.id= "cargarFase";
 		tablaActual.tagName="cargarFase";
