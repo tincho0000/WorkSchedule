@@ -62,8 +62,8 @@
 
 					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
-						<div class="col-sm-6">
-							<input class="form-control margin_left_2" type="text" th:field="*{descripcion}"
+						<div class="col-sm-6" style="margin-left: 3px;">
+							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
 							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
 								<p th:errors="*{descripcion}"></p>
@@ -357,6 +357,10 @@
 		  document.getElementById("total_fases").value = total;
 	    }
 
+	/** *
+	 Esta función se encarga de sumar las horas activas de las estimaciones
+	 * @returns {void} - Devuelve void.
+	 */
 	function addActiveHours(){
 		var elements = $(".horas");
 		var arr = [];
