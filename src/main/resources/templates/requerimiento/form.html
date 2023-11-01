@@ -421,7 +421,7 @@
 		card.style.width= "30%";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
-		cardHeader.id = numEstimaciones;
+		cardHeader.id = "card-header_"  + numEstimaciones;
 		cardHeader.innerHTML = buildHeaderCard();
 
 		let cardBody = document.createElement("div");
@@ -462,10 +462,15 @@
 	 * @returns {void} - Devuelve void.
 	 */
 	function persistDataTable(that) {
+		let valorActivo = "0";
+		if(that.parentNode.parentNode.parentNode.parentNode.querySelector("#checkbox1").checked){
+			valorActivo = "1";
+		}
 		let cardBodyId = that.parentNode.parentNode.parentNode.getAttribute("id");
 		let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
 		sessionStorage.setItem('tbody', tBodyID);
 		sessionStorage.setItem('cardBodyId', cardBodyId);
+		sessionStorage.setItem("valorActivo", valorActivo)
 	}
 
 	/** *
@@ -574,6 +579,7 @@
 		let listFasesInTable = [];
 		let tbodyIdInsert = sessionStorage.getItem('tbody');
 		let cardBodyId = sessionStorage.getItem('cardBodyId');
+		let valorActivo = sessionStorage.getItem('valorActivo');
 		let tBody = document.getElementById(tbodyIdInsert);
 		let cardBody = document.getElementById(cardBodyId);
 		let valNewPhase = document.getElementById('namePhase');
@@ -591,7 +597,8 @@
 			alert("La fase ingresada ya esta cargada en la tabla");
 		} else if(!foundSamePhase && foundPhaseValid){
 			tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
-			buildHiddenInput(cardBody, "0");
+			buildHiddenInput(cardBody, valorActivo);
+			console.log("cardBody", cardBody);
 		}
 		let modalEl1 = document.getElementById("new-phase-modal");
 		let modal = bootstrap.Modal.getInstance(modalEl1);
