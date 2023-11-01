@@ -98,9 +98,8 @@
 					<label class="col-sm-2" style="font-size:15px;" th:utext="#{form.requirement.reason.replanning.testing}"></label>
 					<div class="col-sm-2">
 						<select class="form-select" name="motivoReplanifTesting" id="motivoReplanifTesting" th:field="*{motivoReplanifTesting}" >
-							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-									th:text="${motivoReplanifTesting}"
+									th:text="${motivoReplanifTesting.getMotivo()}"
 									th:value="${motivoReplanifTesting}">
 							</option>
 						</select>
@@ -129,9 +128,8 @@
 					<label class="col-sm-2" style="font-size:15px;" th:utext="#{form.requirement.reason.replanning.imple}"></label>
 					<div class="col-sm-2">
 						<select class="form-select" name="motivoReplanifImplementacion" id="motivoReplanifImplementacion" th:field="*{motivoReplanifImplementacion}" >
-							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-									th:text="${motivoReplanifImplementacion}"
+									th:text="${motivoReplanifImplementacion.getMotivo()}"
 									th:value="${motivoReplanifImplementacion}">
 							</option>
 						</select>
@@ -147,8 +145,6 @@
 					<div class="col-sm-2">
 						<input id="user" type="text" th:value="${username}" class="form-control" readonly>
 					</div>
-
-
 				</div>
 
 				<div class="form-group row py-3">
@@ -163,10 +159,9 @@
 				<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label" th:utext="#{form.estimation.type}"></label>
 						<div class="col-sm-2">
-							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
-								<option value="empty">Seleccionar...</option>
+							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
 								<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
-										th:text="${tipoRequerimiento}"
+										th:text="${tipoRequerimiento.getNombreRequerimiento()}"
 										th:value="${tipoRequerimiento}">
 								</option>
 							</select>
@@ -255,6 +250,7 @@
 	var countEstimation = 0;
 	var numEstimaciones = 0;
 	var total = 0;
+	var req_default = [[${T(com.workschedule.app.enums.TipoRequerimiento).fromString("Seleccionar...")}]];
 	const allEqual = arr => arr.every( v => v === arr[0] );
 	const calculateSum = (arr) => {
 		return arr.reduce((total, current) => {
@@ -389,7 +385,7 @@
 		let tablaDiv = document.getElementById('tablaEstimaciones');
 		let tablaActual = document.createElement('table');
 		$('#tipoRequerimiento option').prop('selected', function() {
-			$("#tipoRequerimiento").val('empty');
+			$("#tipoRequerimiento").val(req_default);
 		});
 		countEstimation++;
 		tablaActual.id= "cargarFase";
@@ -425,12 +421,14 @@
 		card.style.width= "30%";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
+		cardHeader.id = numEstimaciones;
 		cardHeader.innerHTML = buildHeaderCard();
 
 		let cardBody = document.createElement("div");
 		cardBody.className = "card-body text-white bg-secondary mb-3";
 		cardBody.style.maxWidth = "34rem";
 		cardBody.style.marginTop = "-0.9rem";
+		cardBody.id = "card-body_" + numEstimaciones.toString();
 
 		let sectionActionAddPhase = document.createElement("div");
 		sectionActionAddPhase.className = "row";
@@ -464,8 +462,10 @@
 	 * @returns {void} - Devuelve void.
 	 */
 	function persistDataTable(that) {
+		let cardBodyId = that.parentNode.parentNode.parentNode.getAttribute("id");
 		let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
 		sessionStorage.setItem('tbody', tBodyID);
+		sessionStorage.setItem('cardBodyId', cardBodyId);
 	}
 
 	/** *
@@ -499,7 +499,7 @@
 		const trFases = document.createElement('tr');
 		trFases.id = 'row_' + index;
 		let htmlInputs =
-				'<td>' + fase + '</td>' +
+				'<td id="nombreFase">' + fase + '</td>' +
 				'<td>' +
 				  '<div class="col-xs-2">' +
 				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
@@ -567,14 +567,32 @@
 
 	/** *
 	 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal
+	 Ademas se valida si la fase es valida o ya fue cargada en la tabla
 	 * @returns {void} - Devuelve void.
 	 */
 	function addNewPhase() {
+		let listFasesInTable = [];
 		let tbodyIdInsert = sessionStorage.getItem('tbody');
+		let cardBodyId = sessionStorage.getItem('cardBodyId');
 		let tBody = document.getElementById(tbodyIdInsert);
+		let cardBody = document.getElementById(cardBodyId);
 		let valNewPhase = document.getElementById('namePhase');
 		let rows = document.getElementById(tbodyIdInsert).rows.length;
-		tBody.appendChild(buildFase(valNewPhase.value, rows + 1));
+		let enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		tBody.querySelectorAll("#nombreFase").forEach((fase)=> {
+			listFasesInTable.push(fase.textContent);
+		});
+		let foundSamePhase = listFasesInTable.find(item => { return item === valNewPhase.value.toUpperCase() } );
+		let foundPhaseValid = enumFases.find(item => { return item == valNewPhase.value.toUpperCase() });
+		if(!foundPhaseValid){
+			alert("Ingrese una fase válida");
+		}
+		if(foundSamePhase){
+			alert("La fase ingresada ya esta cargada en la tabla");
+		} else if(!foundSamePhase && foundPhaseValid){
+			tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
+			buildHiddenInput(cardBody, "0");
+		}
 		let modalEl1 = document.getElementById("new-phase-modal");
 		let modal = bootstrap.Modal.getInstance(modalEl1);
 		modal.hide();
@@ -590,7 +608,7 @@
 			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
 		}
 		that.parentNode.parentNode.remove();
-		calculateTotal(that);
+		addActiveHours();
 	}
 
 	/** *

@@ -99,7 +99,7 @@
 					<select class="form-select" name="motivoReplanifTesting" id="motivoReplanifTesting" th:field="*{motivoReplanifTesting}" >
 						<option value="empty">Seleccionar...</option>
 						<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-								th:text="${motivoReplanifTesting}"
+								th:text="${motivoReplanifTesting.getMotivo()}"
 								th:value="${motivoReplanifTesting}">
 						</option>
 					</select>
@@ -130,7 +130,7 @@
 					<select class="form-select" name="motivoReplanifImplementacion" id="motivoReplanifImplementacion" th:field="*{motivoReplanifImplementacion}" >
 						<option value="empty">Seleccionar...</option>
 						<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-								th:text="${motivoReplanifImplementacion}"
+								th:text="${motivoReplanifImplementacion.getMotivo()}"
 								th:value="${motivoReplanifImplementacion}">
 						</option>
 					</select>
@@ -151,7 +151,7 @@
 			<div class="form-group row py-3">
 				<label class="col-form-label" th:utext="#{form.estimation.type}"></label>
 				<div class="col-sm-5">
-					<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
+					<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
 						<option value="empty">Seleccionar...</option>
 						<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
 								th:text="${tipoRequerimiento}"
@@ -242,12 +242,31 @@
 							   index) => arr.indexOf(item) === index);
 		}
 
+		/** *
+		 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal.
+		 Ademas se valida si la fase es valida o ya fue cargada en la tabla
+		 * @returns {void} - Devuelve void.
+		 */
 		function addNewPhase() {
+			let listFasesInTable = [];
 			let tbodyIdInsert = sessionStorage.getItem('tbody');
 			let tBody = document.getElementById(tbodyIdInsert);
 			let valNewPhase = document.getElementById('namePhase');
 			let rows = document.getElementById(tbodyIdInsert).rows.length;
-			tBody.appendChild(buildFaseNueva(valNewPhase.value, rows + 1));
+			let enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+			tBody.querySelectorAll("#nombreFase").forEach((fase)=> {
+				listFasesInTable.push(fase.textContent);
+			});
+			let foundSamePhase = listFasesInTable.find(item => { return item === valNewPhase.value.toUpperCase() } );
+			let foundPhaseValid = enumFases.find(item => { return item == valNewPhase.value.toUpperCase() });
+			if(!foundPhaseValid){
+				alert("Ingrese una fase válida");
+			}
+			if(foundSamePhase){
+				alert("La fase ingresada ya esta cargada en la tabla");
+			} else if(!foundSamePhase && foundPhaseValid){
+				tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
+			}
 			let modalEl1 = document.getElementById("new-phase-modal");
 			let modal = bootstrap.Modal.getInstance(modalEl1);
 			modal.hide();
@@ -334,11 +353,6 @@
 		function buildHiddenInput(cardBody, valorActivo){
 			cardBody.querySelectorAll('#cantidadHoras')
 					.forEach((input) => {
-						if(valorActivo === "0") {
-							input.setAttribute("disabled", "disabled");
-						} else {
-							input.removeAttribute("disabled");
-						}
 						numEstimaciones++;
 						let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
 						const versionSplit = versionLabel.split(" ");
