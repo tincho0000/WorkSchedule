@@ -15,7 +15,7 @@ public interface IRequerimientoService {
 	
 	public Page<Requerimiento> findAll(Pageable pageable);
 	
-	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estado);
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String aplicacion, String estado);
 	
 	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String estado);
 	

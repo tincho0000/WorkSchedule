@@ -15,11 +15,12 @@ import org.springframework.data.repository.query.Param;
 public interface IRequerimientoDao extends PagingAndSortingRepository<Requerimiento, Long> {
 	
 //	@Query("select r from Requerimiento r fetch r.aplicacion a  where r.requerimiento like %?1%  ")
-	@Query(value="select * from requerimiento where requerimiento like %?1% and aplicacion_id = ?2 and estado like %?3%", nativeQuery=true)
-	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estadoFiltro);
 
-	@Query("select r from Requerimiento r where r.requerimiento like %?1% and r.estado like %?2%")
-	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String estadoFiltro);
+	@Query(value = "select * from Requerimiento r where r.requerimiento like %:requerimiento% and r.aplicacion like %:aplicacion% and (:estado is null or r.estado like %:estado%) ", nativeQuery = true)
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, @Param("requerimiento") String requerimiento, @Param("aplicacion") String aplicacion, @Param("estado") Optional<String> estadoFiltro);
+
+	@Query(value = "select r from Requerimiento r where r.requerimiento like %:requerimiento% and r.estado like %:estado%", nativeQuery = true)
+	public Page<Requerimiento> findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(Pageable pageable, @Param("requerimiento") String requerimiento,@Param("estado") String estadoFiltro);
 	
 	
 //	@Query("select erf from Requerimiento r, EstimacionRequerimientoFase erf, Estimacion e "

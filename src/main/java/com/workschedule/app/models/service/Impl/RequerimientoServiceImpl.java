@@ -1,6 +1,7 @@
 package com.workschedule.app.models.service.Impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.workschedule.app.models.service.IRequerimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,8 @@ public class RequerimientoServiceImpl implements IRequerimientoService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estado) {
-		return requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageable, requerimiento, aplicacion, estado);
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String aplicacion, String estado) {
+		return requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageable, requerimiento, aplicacion, Optional.of(estado));
 	}
 
 	@Transactional(readOnly = true)
@@ -78,7 +79,7 @@ public class RequerimientoServiceImpl implements IRequerimientoService {
 		} else if ((!requerimiento.equals("") || !estado.equals("")) && ("").equals(aplicacion)) {
 			requerimientos = requerimientoDao.findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(pageRequest, requerimiento, estado);
 		} else {
-			requerimientos = requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageRequest, requerimiento, Long.parseLong(aplicacion), estado);
+			requerimientos = requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageRequest, requerimiento, aplicacion, Optional.of(estado));
 		}
 		
 		return requerimientos;
