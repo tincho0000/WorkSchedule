@@ -457,7 +457,7 @@
 	}
 
 	/** *
-	 Esta función se encarga de persistir el valor del tbody para luego poder insertar un nuevo valor en la tabla
+	 Esta función se encarga de persistir el valor del tbody, el id del cardBody y si esta activo o no la estimación para luego poder insertar un nuevo valor en la tabla
 	 * @param {HTMLElement} that - Este param corresponde al boton que se utiliza para guardar una fase
 	 * @returns {void} - Devuelve void.
 	 */
@@ -598,7 +598,6 @@
 		} else if(!foundSamePhase && foundPhaseValid){
 			tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
 			buildHiddenInput(cardBody, valorActivo);
-			console.log("cardBody", cardBody);
 		}
 		let modalEl1 = document.getElementById("new-phase-modal");
 		let modal = bootstrap.Modal.getInstance(modalEl1);
@@ -612,9 +611,13 @@
 	 */
 	function deletePhase(that) {
 		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
-			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+			let valueConfirm = confirm("Estas por eliminar una estimación");
+			if(valueConfirm){
+				that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+			}
+		} else {
+			that.parentNode.parentNode.remove();
 		}
-		that.parentNode.parentNode.remove();
 		addActiveHours();
 	}
 
@@ -624,7 +627,10 @@
 	 * @returns {void} - Devuelve void.
 	 */
 	function deleteAllEstimation(that) {
-		that.parentNode.parentNode.parentNode.parentNode.remove();
+		let valueConfirm = confirm("Estas seguro de eliminar la estimación");
+		if(valueConfirm) {
+			that.parentNode.parentNode.parentNode.parentNode.remove();
+		}
 	}
 
 	/** *

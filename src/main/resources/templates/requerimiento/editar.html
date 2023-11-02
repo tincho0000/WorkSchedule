@@ -243,14 +243,20 @@
 		}
 
 		/** *
-		 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal.
+		 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal
 		 Ademas se valida si la fase es valida o ya fue cargada en la tabla
 		 * @returns {void} - Devuelve void.
 		 */
 		function addNewPhase() {
 			let listFasesInTable = [];
 			let tbodyIdInsert = sessionStorage.getItem('tbody');
+			let cardBodyId = sessionStorage.getItem('cardBodyId');
+			console.log("cardBody:", cardBodyId);
+			let version = sessionStorage.getItem('version');
+			console.log("version:", version);
+			let valorActivo = sessionStorage.getItem('valorActivo');
 			let tBody = document.getElementById(tbodyIdInsert);
+			let cardBody = document.getElementById(cardBodyId);
 			let valNewPhase = document.getElementById('namePhase');
 			let rows = document.getElementById(tbodyIdInsert).rows.length;
 			let enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
@@ -265,7 +271,8 @@
 			if(foundSamePhase){
 				alert("La fase ingresada ya esta cargada en la tabla");
 			} else if(!foundSamePhase && foundPhaseValid){
-				tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
+				tBody.appendChild(buildFaseNueva(valNewPhase.value.toUpperCase(),version, valorActivo, rows + 1));
+				buildHiddenInput(cardBody, valorActivo);
 			}
 			let modalEl1 = document.getElementById("new-phase-modal");
 			let modal = bootstrap.Modal.getInstance(modalEl1);
@@ -278,7 +285,10 @@
 		 * @returns {void} - Devuelve void.
 		 */
 		function deleteAllEstimation(that) {
-			that.parentNode.parentNode.parentNode.parentNode.remove();
+			let valueConfirm = confirm("Estas seguro de eliminar la estimación");
+			if(valueConfirm) {
+				that.parentNode.parentNode.parentNode.parentNode.remove();
+			}
 		}
 
 		function addListEstimation(listEstimaciones) {
@@ -323,6 +333,7 @@
 			cardBody.className = "card-body text-white bg-secondary mb-3";
 			cardBody.style.maxWidth = "34rem";
 			cardBody.style.marginTop = "-0.9rem";
+			cardBody.id = "card-body_" + listEstimaciones[0].version;
 
 			let sectionActionAddPhase = document.createElement("div");
 			sectionActionAddPhase.className = "row";
@@ -366,7 +377,7 @@
 		function buildHeaderCard(activo, version) {
 			let str = '<div>' +
 					'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
-					'<div class="inline">'+ '<label>Version: '+version+'</label>'+
+					'<div class="inline">'+ '<label id="versionLabel">Version: '+version+'</label>'+
 					'<div style="float: right;margin-right: 20px; display:inline-block;">' +
 					'<span>Activo  </span>';
 			if(activo === 1) {
@@ -378,7 +389,7 @@
 			str += '</div>'+ '</div>' + '</div>';
 			return str;
 		}
-		function buildFaseNueva(fase, index) {
+		function buildFaseNueva(fase, version, valorActivo, index) {
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + index;
 			let htmlInputs =
@@ -392,7 +403,7 @@
 					'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
 			trFases.innerHTML = htmlInputs;
 			trFases.querySelectorAll("#cantidadHoras").forEach((currentInput) => {
-				const originalObject = { fase: currentInput.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt("1"), cantidadHoras: parseInt(currentInput.value), usuarioAlta: [[${username}]], activo: parseInt("0")};
+				const originalObject = { fase: currentInput.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(version), cantidadHoras: parseInt(currentInput.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
 				const copiedObject = Object.assign({}, originalObject);
 				let jsonString = JSON.stringify(copiedObject, null, 2);
 				currentInput.nextSibling.value = jsonString;
@@ -407,25 +418,30 @@
 					'<td>' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">';
-			if(activo == 1) {
-				htmlInputs += '<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>';
-			} else {
-					htmlInputs +=	'<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}" disabled/>';
-			 }
-
-			htmlInputs += '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden"/>'+
-					      '</div>' +
-					      '</td>'+
-					      '<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
+				htmlInputs += '<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>'+
+						      '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden"/>'+
+					          '</div>' +
+					          '</td>'+
+					          '<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
 			trFases.innerHTML = htmlInputs;
 			return trFases;
 		}
 
+		/** *
+		 Esta función es llamada para borrar una fase de la tabla seleccionada
+		 @param {HTMLElement} that - Este param corresponde al boton de eliminar fases(item) de la tabla
+		 * @returns {void} - Devuelve void.
+		 */
 		function deletePhase(that) {
 			if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
-				that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+				let valueConfirm = confirm("Estas por eliminar una estimación");
+				if(valueConfirm){
+					that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+				}
+			} else {
+				that.parentNode.parentNode.remove();
 			}
-			that.parentNode.parentNode.remove();
+			addActiveHours();
 		}
 
 		function calculateTotal(that) {
@@ -447,13 +463,46 @@
 
 		}
 
+		function addActiveHours(){
+			var elements = $(".horas");
+			var arr = [];
+			for (var i = 0; i < elements.length; i++) {
+				if(isNaN(elements[i].value)) {
+					total += 0;
+				} else if(elements[i].value.trim() !== "") {
+					let obj = JSON.parse(elements[i].nextSibling.value)
+					if(obj.activo == 1) {
+						arr.push(elements[i].value);
+					}
+				} else {
+					total += 0;
+				}
+			}
+			total = calculateSum(arr);
+		}
+
 		function showModalInfoAtLeastOneChecked() {
 			$('#alert-modal-info-at-least-one-checked').modal('show');
 		}
 
+		/** *
+		 Esta función se encarga de persistir el valor del tbody, el id del cardBody y si esta activo o no la estimación para luego poder insertar un nuevo valor en la tabla
+		 * @param {HTMLElement} that - Este param corresponde al boton que se utiliza para guardar una fase
+		 * @returns {void} - Devuelve void.
+		 */
 		function persistDataTable(that) {
+			let valorActivo = "0";
+			let versionLabel = that.parentNode.parentNode.parentNode.parentNode.querySelector("#versionLabel").textContent;
+			const versionSplit = versionLabel.split(" ");
+			if(that.parentNode.parentNode.parentNode.parentNode.querySelector("#checkbox1").checked){
+				valorActivo = "1";
+			}
+			let cardBodyId = that.parentNode.parentNode.parentNode.getAttribute("id");
 			let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
 			sessionStorage.setItem('tbody', tBodyID);
+			sessionStorage.setItem('cardBodyId', cardBodyId);
+			sessionStorage.setItem("valorActivo", valorActivo);
+			sessionStorage.setItem("version", versionSplit[1]);
 		}
 
 		/** *
@@ -490,7 +539,6 @@
 			document.querySelectorAll("#cantidadHoras").forEach(
 					(currentInput) => {
 						let objEstimacion = JSON.parse(currentInput.nextSibling.value);
-						console.log("aca se esta cambiando el valor a cero");
 						currentInput.setAttribute("disabled", "");
 						objEstimacion.activo = "0";
 						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
@@ -501,12 +549,8 @@
 					(currentInput) => {
 						let objEstimacion = JSON.parse(currentInput.nextSibling.value);
 						if(that.checked === true ) {
-							console.log("aca se esta cambiando el valor a 1");
-							currentInput.removeAttribute("disabled");
 							objEstimacion.activo = "1";
 						} else {
-							console.log("aca se esta cambiando el valor a cero");
-							currentInput.setAttribute("disabled", "");
 							objEstimacion.activo = "0";
 						}
 						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
