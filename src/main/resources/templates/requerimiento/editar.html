@@ -251,9 +251,7 @@
 			let listFasesInTable = [];
 			let tbodyIdInsert = sessionStorage.getItem('tbody');
 			let cardBodyId = sessionStorage.getItem('cardBodyId');
-			console.log("cardBody:", cardBodyId);
 			let version = sessionStorage.getItem('version');
-			console.log("version:", version);
 			let valorActivo = sessionStorage.getItem('valorActivo');
 			let tBody = document.getElementById(tbodyIdInsert);
 			let cardBody = document.getElementById(cardBodyId);
@@ -393,7 +391,7 @@
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + index;
 			let htmlInputs =
-					'<td>' + fase + '</td>' +
+					'<td id="id="nombreFase"">' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">' +
 					'<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
@@ -415,7 +413,7 @@
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + version;
 			let htmlInputs =
-					'<td>' + fase + '</td>' +
+					'<td id="nombreFase">' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">';
 				htmlInputs += '<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>'+
@@ -506,31 +504,21 @@
 		}
 
 		/** *
-		 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo, ademas desabilita los input de cantidad de horas que no tengan este checkbox checkeado
+		 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo
 		 * @param {HTMLElement} that - Este param se corresponde al checkbox correspondiente a una card especifica
 		 * @returns {void} - Devuelve void.
 		 */
 		function verifyWhenDisabledInput(that) {
 			if(that.checked) {
+				addActiveHours();
 				document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 					checkElement.checked = false;
 				});
-				document.querySelectorAll("#cantidadHoras").forEach((input) => {
-					input.setAttribute("disabled", "disabled");
-				});
-				that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
-						(currentInput) => {
-							currentInput.removeAttribute("disabled");
-						});
 				that.checked = true;
 			} else {
 				document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 					boxesChecked.push(checkElement.checked);
 				});
-				that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
-						(currentInput) => {
-							currentInput.setAttribute("disabled","disabled");
-						});
 				if(allEqual(boxesChecked)){
 					showModalInfoAtLeastOneChecked();
 				}
@@ -539,7 +527,6 @@
 			document.querySelectorAll("#cantidadHoras").forEach(
 					(currentInput) => {
 						let objEstimacion = JSON.parse(currentInput.nextSibling.value);
-						currentInput.setAttribute("disabled", "");
 						objEstimacion.activo = "0";
 						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 					}
