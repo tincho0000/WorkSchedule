@@ -148,23 +148,26 @@
 				</div>
 				</div>
 
-			<div class="form-group row py-3">
-				<label class="col-form-label" th:utext="#{form.estimation.type}"></label>
-				<div class="col-sm-5">
-					<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
-						<option value="empty">Seleccionar...</option>
-						<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
-								th:text="${tipoRequerimiento}"
-								th:value="${tipoRequerimiento}">
-						</option>
-					</select>
-					<div class="invalid-feedback"
-						 th:if="${#fields.hasErrors('tipoRequerimiento')}"
-						 th:errors="*{tipoRequerimiento}">
+					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label" th:utext="#{form.estimation.type}"></label>
+						<div class="col-sm-2">
+							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
+								<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
+										th:text="${tipoRequerimiento.getNombreRequerimiento()}"
+										th:value="${tipoRequerimiento}">
+								</option>
+							</select>
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('tipoRequerimiento')}"
+								 th:errors="*{tipoRequerimiento}">
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<button id="addEstimationBtn" type="button" onclick="addEstimation()" disabled class="btn btn-primary">
+								<span th:utext="#{form.requirement.button.add.estimated}"></span>
+							</button>
+						</div>
 					</div>
-			</div>
-
-			</div>
 
 					<div class="form-group row py-3">
 						    <div id="tablaEstimaciones" class="row col-12">
@@ -193,6 +196,26 @@
 		</div>
 	</div>
 
+
+<div class="modal fade" tabindex="-1" id="alert-modal-info-requirement">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="inline">
+					<i class="bi bi-info-circle"></i>
+					<span class="modal-title info-modal-span">Deberás agregar al menos una estimación</span>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 	<div class="modal fade" tabindex="-1" id="alert-modal-info-at-least-one-checked">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -218,6 +241,11 @@
 		var listVersiones = [];
 		var total = 0;
 		var boxesChecked = [];
+		var req_default = [[${T(com.workschedule.app.enums.TipoRequerimiento).fromString("Seleccionar...")}]];
+
+		$(document).ready(function() {
+		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
+		});
 		const allEqual = arr => arr.every( v => v === arr[0] );
 		estimaciones = [[${requerimiento.estimacion}]];
 		estimaciones.forEach((estimacion)=> {
@@ -230,7 +258,7 @@
 			});
 			addListEstimation(listEstimacion);
 		});
-		var numEstimaciones = listVersiones[-1];
+		var numEstimaciones = listVersiones[listVersiones.length -1];
 		const calculateSum = (arr) => {
 			return arr.reduce((total, current) => {
 				return parseInt(total) + parseInt(current);
@@ -354,9 +382,6 @@
 			tablaDiv.appendChild(card);
 
 			buildHiddenInput(cardBody,listEstimaciones[0].activo);
-
-			//document.getElementById("longitudEstimaciones").value = $(".horas").length;
-
 		}
 
 		function buildHiddenInput(cardBody, valorActivo){
@@ -386,6 +411,22 @@
 
 			str += '</div>'+ '</div>' + '</div>';
 			return str;
+		}
+
+		function buildFaseBase(fase, index) {
+			const trFases = document.createElement('tr');
+			trFases.id = 'row_' + index;
+			let htmlInputs =
+					'<td id="nombreFase">' + fase + '</td>' +
+					'<td>' +
+					'<div class="col-xs-2">' +
+					'<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+					'<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden" />'+
+					'</div>' +
+					'</td>'+
+					'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
+			trFases.innerHTML = htmlInputs;
+			return trFases;
 		}
 		function buildFaseNueva(fase, version, valorActivo, index) {
 			const trFases = document.createElement('tr');
@@ -426,6 +467,72 @@
 		}
 
 		/** *
+		 Esta función carga las fases dependiendo el tipo de requerimiento que haya seleccionado el usuario y lo persiste en la sesion
+		 Ademas deshabilita el boton de agregar estimacion en el caso de que el tipo de requerimiento ingresado no coincida con los valores esperados
+		 * @returns {void} - Devuelve void.
+		 */
+		function loadFases() {
+			/* Function load fases depends at requirement type selected */
+			var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+			var fases = Object.values(enumFases);
+			var fasesFilter = [];
+			if(this.value != null && this.value != "empty") {
+				removeDisabledButtonAddEstimation();
+				switch (this.value) {
+					case 'EVOLUTIVO':
+						fasesFilter = fases;
+						break;
+					case 'CORRECTIVO':
+					case 'REWORK':
+					case 'EMERGENCIA':
+						fasesFilter = fases.filter(fase => fase !== "PI" && fase !== "PAU");
+						break;
+					case 'ANALISIS':
+						fasesFilter = fases.filter(fase => fase === "ANALISIS");
+						break;
+					default:
+						disabledButtonAddEstimation();
+						//mandar un alerta no se encontraron valores por deafult
+						break;
+				}
+			} else {
+				disabledButtonAddEstimation();
+				removeAllElementTable();
+				//mandar un alerta que el valor es null (contactar con el administrador)->
+			}
+			sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
+		}
+
+		/** *
+		 Esta función deshabilita el boton de agregar estimacion
+		 * @returns {void} - Devuelve void.
+		 */
+		function disabledButtonAddEstimation() {
+			let button = document.getElementById("addEstimationBtn");
+			button.setAttribute("disabled", "disabled");
+		}
+
+		/** *
+		 Esta función habilita el boton de agregar estimacion
+		 * @returns {void} - Devuelve void.
+		 */
+		function removeDisabledButtonAddEstimation() {
+			document.getElementById("addEstimationBtn").disabled = false;
+		}
+
+		/** *
+		 Esta función elimina todos los div que se creen dentro del elemen
+		 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+		 * @returns {void} - Devuelve void.
+		 */
+		function removeAllElementTable() {
+			let fasesRow = document.getElementById('fasesTable');
+			while (fasesRow.firstChild) {
+				fasesRow.removeChild(fasesRow.firstChild);
+			}
+		}
+
+		/** *
 		 Esta función es llamada para borrar una fase de la tabla seleccionada
 		 @param {HTMLElement} that - Este param corresponde al boton de eliminar fases(item) de la tabla
 		 * @returns {void} - Devuelve void.
@@ -461,6 +568,81 @@
 
 		}
 
+		function addEstimation() {
+			let objectoFases = sessionStorage.getItem('fases');
+			let fases = JSON.parse(objectoFases);
+			let tablaDiv = document.getElementById('tablaEstimaciones');
+			let tablaActual = document.createElement('table');
+			let nuevoNumEstimacion = parseInt(numEstimaciones) + 1;
+			$('#tipoRequerimiento option').prop('selected', function() {
+				$("#tipoRequerimiento").val(req_default);
+			});
+			tablaActual.id= "cargarFase";
+			tablaActual.tagName="cargarFase";
+			tablaActual.title = "Estimacion Tabla";
+			tablaActual.className = "table table-sm table-striped table-hover";
+			let tHead = document.createElement('thead');
+			tHead.className= "text-white";
+			let trHeadColumns = document.createElement('tr');
+
+			trHeadColumns.innerHTML = '<th scope="col">Fase</th>' +
+					'<th scope="col">Horas</th>' +
+					'<th>Eliminar</th>';
+			let tBody = document.createElement('tbody');
+			tBody.id= 'fasesTable_' + nuevoNumEstimacion;
+			for (const fase of fases) {
+				tBody.appendChild(buildFaseBase(fase, nuevoNumEstimacion));
+			}
+			tHead.appendChild(trHeadColumns);
+			tablaActual.appendChild(tHead);
+			tablaActual.appendChild(tBody);
+
+			let card = document.createElement("div");
+			card.className = "card col-6";
+			card.id = "card_" + nuevoNumEstimacion;
+			card.style.marginTop = "0.625rem";
+			card.style.border = "none";
+			card.style.paddingLeft= "0";
+			card.style.paddingRight = "0";
+			card.style.paddingBottom = "0";
+			card.style.marginLeft = "0.625rem"
+			card.style.marginRight = "0.625rem";
+			card.style.width= "30%";
+			let cardHeader = document.createElement("div");
+			cardHeader.className = "card-header text-white bg-primary mb-3";
+			cardHeader.id = "card-header_"  + nuevoNumEstimacion;
+			cardHeader.innerHTML = buildHeaderCard("0", nuevoNumEstimacion);
+
+			let cardBody = document.createElement("div");
+			cardBody.className = "card-body text-white bg-secondary mb-3";
+			cardBody.style.maxWidth = "34rem";
+			cardBody.style.marginTop = "-0.9rem";
+			cardBody.id = "card-body_" + numEstimaciones.toString();
+
+			let sectionActionAddPhase = document.createElement("div");
+			sectionActionAddPhase.className = "row";
+			sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
+					'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal" onclick="persistDataTable(this)"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
+					'</div>';
+
+			let sectionActionDelete = document.createElement("div");
+			sectionActionDelete.className = "row py-3";
+			sectionActionDelete.innerHTML =
+					'<div class="col-sm-2">'+
+					'<button type="button" class="btn btn-danger btnDelete" style="margin-top: 20px;margin-left: 15.625rem;" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Elimina toda la estimación" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
+					'</div>';
+			cardBody.appendChild(sectionActionAddPhase);
+			cardBody.appendChild(tablaActual);
+			cardBody.appendChild(sectionActionDelete);
+			card.appendChild(cardHeader);
+			card.appendChild(cardBody);
+
+			tablaDiv.appendChild(card);
+
+			createEstimationObj(nuevoNumEstimacion.toString(), cardBody);
+
+		}
+
 		function addActiveHours(){
 			var elements = $(".horas");
 			var arr = [];
@@ -479,8 +661,31 @@
 			total = calculateSum(arr);
 		}
 
+		/** *
+		 Esta función muestra el modal de advertencia de que tiene que haber al menos una estimacion cargada
+		 * @returns {void} - Devuelve void.
+		 */
+		function showModalInfoRequired() {
+			$('#alert-modal-info-requirement').modal('show');
+		}
+
 		function showModalInfoAtLeastOneChecked() {
 			$('#alert-modal-info-at-least-one-checked').modal('show');
+		}
+
+		/** *
+		 Esta función crea una estimación activa si se trata de la primera estimacion sino la crea como una estimacion inactiva.
+		 * @param {string} version - La version se corresponde al numero de estimacion
+		 * @param {HTMLElement} cardBody - Este param se corresponde al body de la card que se creo
+		 * @returns {void} - Devuelve void.
+		 */
+		function createEstimationObj(version, cardBody) {
+			let cantEstimaciones = $(".horas").length
+			if(cantEstimaciones === 1) {
+				buildHiddenInput(cardBody, "1");
+			} else {
+				buildHiddenInput(cardBody, "0");
+			}
 		}
 
 		/** *
