@@ -253,6 +253,7 @@
 		var req_default = [[${T(com.workschedule.app.enums.TipoRequerimiento).fromString("Seleccionar...")}]];
 
 		$(document).ready(function() {
+			addActiveHours();
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 		});
 		const allEqual = arr => arr.every( v => v === arr[0] );
