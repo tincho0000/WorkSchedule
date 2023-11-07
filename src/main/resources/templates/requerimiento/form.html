@@ -62,7 +62,7 @@
 
 					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
-						<div class="col-sm-6" style="margin-left: 3px;">
+						<div class="col-sm-6" style="margin-left: 3px; width: 538px;">
 							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
 							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
@@ -503,7 +503,7 @@
 		const trFases = document.createElement('tr');
 		trFases.id = 'row_' + index;
 		let htmlInputs =
-				'<td id="nombreFase">' + fase + '</td>' +
+				'<td class="text-white" id="nombreFase">' + fase + '</td>' +
 				'<td>' +
 				  '<div class="col-xs-2">' +
 				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +

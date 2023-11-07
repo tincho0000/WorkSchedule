@@ -427,7 +427,7 @@
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + index;
 			let htmlInputs =
-					'<td id="nombreFase">' + fase + '</td>' +
+					'<td id="nombreFase" class="text-white">' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">' +
 					'<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
@@ -442,7 +442,7 @@
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + index;
 			let htmlInputs =
-					'<td id="id="nombreFase"">' + fase + '</td>' +
+					'<td id="nombreFase" class="text-white">' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">' +
 					'<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
@@ -464,7 +464,7 @@
 			const trFases = document.createElement('tr');
 			trFases.id = 'row_' + version;
 			let htmlInputs =
-					'<td id="nombreFase">' + fase + '</td>' +
+					'<td id="nombreFase" class="text-white">' + fase + '</td>' +
 					'<td>' +
 					'<div class="col-xs-2">';
 				htmlInputs += '<input type="number" id="cantidadHoras" name="cantidadHoras" value="' + horas + '" min="0" max="30" class="form-control text-end horas input-size-default" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>'+
