@@ -149,6 +149,15 @@
 				</div>
 
 					<div class="form-group row py-3">
+						<label class="col-sm-2 col-form-label"
+							   th:text="'Cantidad' + ' Horas'"></label>
+						<div class="col-sm-2">
+							<input type="text"
+								   id="total_fases" class="input-totalizador" disabled />
+						</div>
+					</div>
+
+					<div class="form-group row py-3">
 						<label class="col-sm-2 col-form-label" th:utext="#{form.estimation.type}"></label>
 						<div class="col-sm-2">
 							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
@@ -550,6 +559,7 @@
 		}
 
 		function calculateTotal(that) {
+			addActiveHours();
 			var elements = $(".horas");
 			var arr = [];
 			for (var i = 0; i < elements.length; i++) {
@@ -659,6 +669,7 @@
 				}
 			}
 			total = calculateSum(arr);
+			document.getElementById("total_fases").value = total;
 		}
 
 		/** *

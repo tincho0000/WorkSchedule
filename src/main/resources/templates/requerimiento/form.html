@@ -349,8 +349,6 @@
 		let obj = JSON.parse(that.nextSibling.value);
 		obj.cantidadHoras = that.value;
 		that.nextSibling.value = JSON.stringify(obj, null, 2);
-
-		  document.getElementById("total_fases").value = total;
 	    }
 
 	/** *
@@ -373,6 +371,7 @@
 			}
 		}
 		total = calculateSum(arr);
+		document.getElementById("total_fases").value = total;
 	}
 
 	/** *
