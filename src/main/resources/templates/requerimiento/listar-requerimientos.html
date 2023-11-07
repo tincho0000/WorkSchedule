@@ -25,7 +25,7 @@
 							<select class="form-select" id="appFilter" name="appFilter">
 								<option value="" selected="selected">Seleccionar...</option>
 								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-									th:text="${aplicacion}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
+									th:text="${aplicacion.getAplicacion()}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
 								</option>
 							</select>
 						</div>
