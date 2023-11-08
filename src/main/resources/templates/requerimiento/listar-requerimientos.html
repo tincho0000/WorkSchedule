@@ -4,12 +4,24 @@
 <body style="background: #2c3e50;">
 
 	<header th:replace="layout/layout :: header"></header>
-	
+
 	<div class="card my-2 border-0">
 		<!-- 		<div class="card-header" th:text="${titulo}"></div> -->
 		<div class="card-body" style="background: #2c3e50;">
 			<div class="container py-1">
 				<form class="row g-5 align-items-center">
+					<div class="col-auto pe-1">
+						<div class="input-group">
+							<div class="input-group-text">Aplicación:</div>
+							<select class="form-select" id="appFilter" name="appFilter" onChange="appOnChange(this)">
+								<option value="" selected="selected">Seleccionar...</option>
+								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
+										th:text="${aplicacion.getAplicacion()}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
+								</option>
+							</select>
+						</div>
+					</div>
+
 					<div class="col-auto pe-1">
 						<!-- 						<label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label> -->
 						<div class="input-group">
@@ -19,17 +31,6 @@
 						</div>
 					</div>
 
-					<div class="col-auto pe-1">
-						<div class="input-group">
-							<div class="input-group-text">Aplicación:</div>
-							<select class="form-select" id="appFilter" name="appFilter">
-								<option value="" selected="selected">Seleccionar...</option>
-								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-									th:text="${aplicacion.getAplicacion()}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
-								</option>
-							</select>
-						</div>
-					</div>
 					<div class="col-auto pe-1">
 						<div class="input-group">
 							<div class="input-group-text">Estado:</div>
@@ -43,7 +44,7 @@
 					</div>
 
 					<div class="col-auto pe-1">
-							<button type="submit" class="btn btn-outline-light" onclick="validar();">Buscar ... </button>
+							<button id="searchBtn" type="submit" class="btn btn-outline-light" disabled>Buscar ... </button>
 					</div>
 					<div class="col-auto pe-1">
 							<button type="button" class="btn btn-outline-light" onclick="borrarFiltro();">Eliminar ... </button>
@@ -57,7 +58,7 @@
 			<div class="card border-light" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 				<div class="card-header border-light text-white" th:text="${titulo}"></div>
 				<div class="card-body">
-	
+
 					<h4 class="card-title">
 						<a th:href="@{/requerimientos/form}" class="btn btn-light btn-xs">Crear
 							Requerimiento</a>
@@ -75,12 +76,12 @@
 	<!-- 							<th class="text-center">Eliminar</th> -->
 							</tr>
 						</thead>
-	
+
 						<tbody th:if="${requerimientos !=null && !requerimientos.isEmpty()}">
 							<tr th:each="requerimiento: ${requerimientos}">
 	<!-- 							<td><a th:text="${requerimiento.id}"></a></td> -->
 	<!-- 								th:href="@{/app/ver/} + ${usuario.id}" th:text="${usuario.id}"></a></td> -->
-	
+
 								<td class="text-white" th:text="${requerimiento.aplicacion.aplicacion}"></td>
 								<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
 								<td class="text-white" th:text="${requerimiento.descripcion}"></td>
@@ -103,30 +104,51 @@
 	<!-- 							</a></td> -->
 							</tr>
 						</tbody>
-	
+
 					</table>
 					<div th:if="${requerimientos != null && !requerimientos.isEmpty()}">
 						<nav th:replace="paginator-nav :: paginator"></nav>
 					</div>
 				</div>
 			</div>
-			 
+
 			 <div class="alert alert-danger m-0" th:unless="${requerimientos!= null && !requerimientos.isEmpty()}" th:text="'No se encontraron requerimientos para la busqueda solicitada'"></div>
 		</div>
 	</div>
 	<footer th:replace="layout/layout :: footer"></footer>
 	<script type="text/javascript">
-// 		function validar(){
-// 			var aplicacion = document.getElementById('aplicaciones');
-// 			if(aplicacion.value == 0 || aplicacion.value == ''){
-// 				alert('Debe seleccionar una aplicacion para buscar');
-// 				aplicacion.focus();
-// 			}
-// 		}
+
+		$(document).ready(function() {
+			let app = document.getElementById("appFilter");
+			if(app.value() != null && app.value() != ''){
+				document.getElementById("searchBtn").disabled = false;
+			} else {
+				let button = document.getElementById("searchBtn");
+				button.setAttribute("disabled", "disabled");
+			}
+		});
+
+
+		function appOnChange(that) {
+			console.log("cambio el valor");
+			if(that.value != null && that.value != ''){
+				document.getElementById("searchBtn").disabled = false;
+			} else {
+				let button = document.getElementById("searchBtn");
+				button.setAttribute("disabled", "disabled");
+			}
+		}
+ 		function validar(){
+ 			var aplicacion = document.getElementById('aplicaciones');
+ 			if(aplicacion.value == 0 || aplicacion.value == ''){
+ 				alert('Debe seleccionar una aplicacion para buscar');
+ 				aplicacion.focus();
+ 			}
+		}
 		function borrarFiltro(){
 			window.location = '/requerimientos/listar-requerimientos';
 		}
- 	</script> 
+ 	</script>
 
 </body>
 </html>
