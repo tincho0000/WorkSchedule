@@ -732,7 +732,6 @@
 		 */
 		function verifyWhenDisabledInput(that) {
 			if(that.checked) {
-				addActiveHours();
 				document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 					checkElement.checked = false;
 				});
@@ -765,6 +764,7 @@
 						currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 					}
 			);
+			addActiveHours();
 
 		}
 

@@ -351,10 +351,23 @@
 	 */
 	function calculateTotal(that) {
 		addActiveHours();
+		var elements = $(".horas");
+		var arr = [];
+		for (var i = 0; i < elements.length; i++) {
+			if(isNaN(elements[i].value)) {
+				total += 0;
+			} else if(elements[i].value.trim() !== "") {
+				arr.push(elements[i].value);
+			} else {
+				total += 0;
+			}
+		}
+		total = calculateSum(arr);
 		let obj = JSON.parse(that.nextSibling.value);
 		obj.cantidadHoras = that.value;
 		that.nextSibling.value = JSON.stringify(obj, null, 2);
-	    }
+
+	}
 
 	/** *
 	 Esta función se encarga de sumar las horas activas de las estimaciones
@@ -656,7 +669,6 @@
 	 */
 	function verifyWhenDisabledInput(that) {
 		if(that.checked) {
-			addActiveHours();
 			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
 				checkElement.checked = false;
 			});
@@ -689,6 +701,7 @@
 					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
 				}
 		);
+		addActiveHours();
 
 	}
 
