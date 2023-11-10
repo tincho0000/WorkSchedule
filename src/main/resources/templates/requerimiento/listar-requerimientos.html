@@ -26,8 +26,12 @@
 						<!-- 						<label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label> -->
 						<div class="input-group">
 							<div class="input-group-text">Requerimiento:</div>
-							<input type="text" class="form-control"
-								id="reqFilter" placeholder="Ej: MOR-100" name="reqFilter" th:value="${reqFilter}">
+							<input type="text" autocomplete="off" list="nombres-list" id="reqFilter" placeholder="Ej: MOR-100" th:value="${reqFilter}"/>
+							<datalist id="nombres-list">
+							<option th:each="nombre : ${nombresRequerimientos}"
+									th:text="${nombre}"
+									th:value="${nombre}"/>
+								</datalist>
 						</div>
 					</div>
 
@@ -119,15 +123,15 @@
 	<script type="text/javascript">
 
 		$(document).ready(function() {
-			let app = document.getElementById("appFilter");
-			if(app.value() != null && app.value() != ''){
+			let appFilter = document.getElementById("appFilter");
+			let reqFilter = document.getElementById("reqFilter");
+			if(appFilter.value != null && appFilter.value != ''){
 				document.getElementById("searchBtn").disabled = false;
 			} else {
 				let button = document.getElementById("searchBtn");
 				button.setAttribute("disabled", "disabled");
 			}
 		});
-
 
 		function appOnChange(that) {
 			console.log("cambio el valor");

@@ -207,9 +207,13 @@ public class RequerimientoController {
 
 		List<String> aplicaciones = Aplicacion.obtenerAplicaciones();
 		List<Fase> fases = Fase.obtenerFases();
+		List<String> nombresRequerimientos = requerimientoService.findAll().stream().map( requerimiento1 -> {
+			return requerimiento1.getRequerimiento();}).collect(Collectors.toList());
+		System.out.println("todos req: " + nombresRequerimientos);
 
 		model.addAttribute("titulo", "Lista de Requerimientos");
 		model.addAttribute("requerimientos", requerimientos);
+		model.addAttribute("nombresRequerimientos", nombresRequerimientos);
 		model.addAttribute("aplicaciones", aplicaciones);
 		model.addAttribute("fases", fases);
 		model.addAttribute("reqFilter", requerimientoFiltro);
@@ -266,13 +270,10 @@ public class RequerimientoController {
     }
 
 
-//	@GetMapping(value = "/cargar-fases/{termino}", produces = { "application/json" })
-//	public @ResponseBody List<FaseSimple> cargarFases(@PathVariable String termino) {
-//		if (termino.equals("*")) {
-//			return faseService.findFaseAll();
-//		}
-//		return faseService.findByDescripcion(termino);
-//	}
+	/*@GetMapping(value = "/cargar-requerimiento", produces = { "application/json" })
+	public @ResponseBody List<Requerimiento> cargarRequerimiento(@RequestParam("termino") String termino, @RequestParam("aplicacion") String aplicacion) {
+		return requerimientoService.findByFiltros(0, termino, aplicacion, null).getContent();
+}*/
 
 
 	/************************************/
