@@ -1,8 +1,9 @@
-package com.workschedule.app.models.service;
+package com.workschedule.app.models.service.Impl;
 
 import java.util.List;
 import java.util.Optional;
 
+import com.workschedule.app.models.service.IRequerimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,7 @@ import com.workschedule.app.models.entity.Requerimiento;
 import com.workschedule.app.models.entity.RequerimientoSimple;
 
 @Service
-public class RequemientoServiceImpl implements IRequerimientoService {
+public class RequerimientoServiceImpl implements IRequerimientoService {
 
 	@Autowired
 	private IRequerimientoDao requerimientoDao;
@@ -49,14 +50,14 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 
 	@Transactional
 	@Override
-	public void delete(Requerimiento requerimiento) {
-		requerimientoDao.delete(requerimiento);;
+	public void deleteByRequirement(Requerimiento requerimiento) {
+		requerimientoDao.delete(requerimiento);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, Long aplicacion, String estado) {
-		return requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageable, requerimiento, aplicacion, estado);
+	public Page<Requerimiento> findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(Pageable pageable, String requerimiento, String aplicacion, String estado) {
+		return requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageable, Optional.of(requerimiento), aplicacion, Optional.of(estado));
 	}
 
 	@Transactional(readOnly = true)
@@ -78,7 +79,7 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 		} else if ((!requerimiento.equals("") || !estado.equals("")) && ("").equals(aplicacion)) {
 			requerimientos = requerimientoDao.findByRequerimientoLikeIgnoreCaseAndEstadoLikeIgnoreCase(pageRequest, requerimiento, estado);
 		} else {
-			requerimientos = requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageRequest, requerimiento, Long.parseLong(aplicacion), estado);
+			requerimientos = requerimientoDao.findByRequerimientoAndAplicacionAndEstadoLikeIgnoreCase(pageRequest, Optional.of(requerimiento), aplicacion, Optional.of(estado));
 		}
 		
 		return requerimientos;
@@ -101,11 +102,6 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 	}
 
 	@Override
-	public Requerimiento findByRequerimiento(Long id) {
-		return requerimientoDao.findById(id).orElse(null);
-	}
-
-	@Override
 	public RequerimientoSimple findByRequerimientoSimple(Long id) {
 		return requerimientoSimpleDao.findById(id).orElse(null);
 	}
@@ -114,6 +110,4 @@ public class RequemientoServiceImpl implements IRequerimientoService {
 	public Requerimiento findByRequerimiento(String requerimiento) {
 		return requerimientoDao.findByRequerimiento(requerimiento);
 	}
-
-
 }

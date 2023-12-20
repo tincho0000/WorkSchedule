@@ -1,27 +1,26 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
 <head th:replace="layout/layout :: head"></head>
-<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+<body style="background: #2c3e50;">
 
 <header th:replace="layout/layout :: header"></header>
 
 <div class="container py-4 text-white">
-	<div class="card border-white" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
+	<div class="card border-white" style="background: #2c3e50;">
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
 
-			<form class="row g-3" th:action="@{/requerimientos/form}"
+			<form name="formRequirement" id="formRequirement" class="row g-3" th:action="@{/requerimientos/form}"
 				  th:object="${requerimiento}" method="post">
 				<h4 class="card-title text-end pb-2">
 					<a class="btn btn-outline-light"
 					   th:href="@{'/requerimientos/listar-requerimientos'}"
 					   th:text="'&laquo; Volver'"></a>
-					<button class="btn btn-success" type="submit"
+					<button id="btnSaveRequirement" class="btn btn-success" type="submit"
 					   th:utext="#{form.requirement.save.button.label}"></button>
 				</h4>
 
-				<div class="form-group row py-3">
+				<div class="form-group row py-2">
 					<label class="col-sm-2 col-form-label" th:text="Requerimiento"></label>
 					<div class="col-sm-2">
 						<input type="text" th:field="*{requerimiento}"
@@ -35,8 +34,8 @@
 						<select class="form-select" th:field="*{aplicacion}" id="aplicacion" name="aplicacion" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
-									th:text="${aplicacion}"
-									th:value="${aplicacion}">
+									th:text="${aplicacion.getAplicacion()}"
+									th:value="${aplicacion.name()}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -46,12 +45,12 @@
 
 					</div>
 					<label class="col-sm-2 col-form-label text-end" th:text="Estado"></label>
-					<div class="col-sm-2">
-						<select class="form-select" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
+					<div class="col-sm-2 margin-estado">
+						<select class="form-select" style="width: 168px;" th:field="*{estado}" id="estado" name="estado" th:errorclass="'form-control is-invalid'">
 							<option value="">Seleccionar...</option>
 							<option th:each="estado : ${T(com.workschedule.app.enums.EstadoRequerimiento).values()}"
 									th:text="${estado}"
-									th:value="${estado.name()}">
+									th:value="${estado}">
 							</option>
 						</select>
 						<div class="invalid-feedback"
@@ -61,9 +60,9 @@
 
 					</div>
 
-					<div class="form-group row py-3">
+					<div class="form-group row py-2">
 						<label class="col-sm-2 col-form-label" th:text="Descripción"></label>
-						<div class="col-sm-6">
+						<div class="col-sm-6" style="margin-left: 3px; width: 538px;">
 							<input type="text" th:field="*{descripcion}" class="form-control"
 								   th:errorclass="'form-control is-invalid'" />
 							<div th:if="${#fields.hasErrors('descripcion')}" th:class="${#fields.hasErrors('descripcion')}? invalid-feedback">
@@ -73,9 +72,9 @@
 					</div>
 				</div>
 
-				<div class="form-group row py-3">
+				<div class="form-group row padding-top-1">
 					<label class="col-sm-2 col-form-label" th:text="Observaciones"></label>
-					<div class="col-sm-10">
+					<div class="col-sm-6">
 						<textarea th:field="*{observacion}" rows="" class="form-control"></textarea>
 					</div>
 				</div>
@@ -83,7 +82,7 @@
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
+						<input id="fechaPlanifTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifTesting}" class="form-control"
 							   th:errorclass="'form-control is-invalid'" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifTesting')}"
@@ -91,17 +90,16 @@
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.testing}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealTesting" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealTesting}" />
+						<input id="fechaRealTesting" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" class="form-control" th:field="*{fechaRealTesting}" />
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealTesting')}"
 							 th:errors="*{fechaRealTesting}"></div>
 					</div>
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.reason.replanning.testing}"></label>
+					<label class="col-sm-2" style="font-size:15px;" th:utext="#{form.requirement.reason.replanning.testing}"></label>
 					<div class="col-sm-2">
 						<select class="form-select" name="motivoReplanifTesting" id="motivoReplanifTesting" th:field="*{motivoReplanifTesting}" >
-							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifTesting : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-									th:text="${motivoReplanifTesting}"
+									th:text="${motivoReplanifTesting.getMotivo()}"
 									th:value="${motivoReplanifTesting}">
 							</option>
 						</select>
@@ -113,26 +111,25 @@
 				</div>
 
 				<div class="form-group row py-3">
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.planned.imple}"></label>
+					<label class="col-sm-2" th:utext="#{form.requirement.date.planned.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaPlanifImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaPlanifImplementacion}">
+						<input id="fechaPlanifImplementacion" name="fechaPlanifImplementacion" type="date" data-date="" data-date-format="dd-MM-yyyy" value="${currentDate}" th:field="*{fechaPlanifImplementacion}" class="form-control">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaPlanifImplementacion')}"
 							 th:errors="*{fechaPlanifImplementacion}"></div>
 					</div>
 					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.date.real.imple}"></label>
 					<div class="col-sm-2">
-						<input id="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}">
+						<input id="fechaRealImplementacion" name="fechaRealImplementacion" type="date" data-date="" data-date-format="yyyy-MM-dd" value="${currentDate}" th:field="*{fechaRealImplementacion}" class="form-control">
 						<div class="invalid-feedback"
 							 th:if="${#fields.hasErrors('fechaRealImplementacion')}"
 							 th:errors="*{fechaRealImplementacion}"></div>
 					</div>
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.reason.replanning.imple}"></label>
+					<label class="col-sm-2" style="font-size:15px;" th:utext="#{form.requirement.reason.replanning.imple}"></label>
 					<div class="col-sm-2">
 						<select class="form-select" name="motivoReplanifImplementacion" id="motivoReplanifImplementacion" th:field="*{motivoReplanifImplementacion}" >
-							<option value="empty">Seleccionar...</option>
 							<option th:each="motivoReplanifImplementacion : ${T(com.workschedule.app.enums.MotivoReplanificacion).values()}"
-									th:text="${motivoReplanifImplementacion}"
+									th:text="${motivoReplanifImplementacion.getMotivo()}"
 									th:value="${motivoReplanifImplementacion}">
 							</option>
 						</select>
@@ -148,96 +145,268 @@
 					<div class="col-sm-2">
 						<input id="user" type="text" th:value="${username}" class="form-control" readonly>
 					</div>
-					<label class="col-sm-2 col-form-label" th:utext="#{form.requirement.type}"></label>
-					<div class="col-sm-2">
-						<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento" th:field="*{tipoRequerimiento}" required>
-							<option value="empty">Seleccionar...</option>
-							<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
-									th:text="${tipoRequerimiento}"
-									th:value="${tipoRequerimiento}">
-							</option>
-						</select>
-						<div class="invalid-feedback"
-							 th:if="${#fields.hasErrors('tipoRequerimiento')}"
-							 th:errors="*{tipoRequerimiento}">
-						</div>
-					</div>
-
 				</div>
 
 				<div class="form-group row py-3">
 					<label class="col-sm-2 col-form-label"
 						   th:text="'Cantidad' + ' Horas'"></label>
 					<div class="col-sm-2">
-						<input type="number"
-							   id="total_fases" class="input-totalizador" oninput="calculateTotal()" disabled />
+						<input type="text"
+							   id="total_fases" class="input-totalizador" disabled />
 					</div>
 				</div>
 
 				<div class="form-group row py-3">
-					<div class="col-sm-2">
-						<button id="addFasesBtn" type="button" onclick="addFases()" disabled class="btn btn-primary">
-							<span th:utext="#{form.requirement.button.add.estimated}"></span>
-						</button>
-					</div>
-				</div>
-
-
-
-				<div class="form-group row py-5">
-
-					<div class="col-sm-6 border-0">
-						<div class="" id="tablaEstimaciones">
-							<!--<tbody th:replace="requerimiento/fases-table :: agregarTablaFase(${requerimiento.estimacion)"></tbody>!-->
+						<label class="col-sm-2 col-form-label" th:utext="#{form.estimation.type}"></label>
+						<div class="col-sm-2">
+							<select class="form-select" name="tipoRequerimiento" id="tipoRequerimiento">
+								<option th:each="tipoRequerimiento : ${T(com.workschedule.app.enums.TipoRequerimiento).values()}"
+										th:text="${tipoRequerimiento.getNombreRequerimiento()}"
+										th:value="${tipoRequerimiento}">
+								</option>
+							</select>
+							<div class="invalid-feedback"
+								 th:if="${#fields.hasErrors('tipoRequerimiento')}"
+								 th:errors="*{tipoRequerimiento}">
+							</div>
 						</div>
+						<div class="col-sm-2">
+							<button id="addEstimationBtn" type="button" onclick="addEstimation()" disabled class="btn btn-primary">
+								<span th:utext="#{form.requirement.button.add.estimated}"></span>
+							</button>
+						</div>
+				</div>
+
+
+					<div>
+						<div id="tablaEstimaciones" class="row col-12">
+						</div>
+						<input type="hidden" id="longitudEstimaciones" name="longitudEstimaciones">
 					</div>
 
-				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<input id="pepe" th:value="${fasesJson}">
+<div class="modal fade" tabindex="-1" id="new-phase-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Agrega una nueva fase</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input type="text" list="fases" id="namePhase" placeholder="Nombre de Fase"/>
+				<datalist id="fases">
+					<option th:each="fase : ${T(com.workschedule.app.enums.Fase).values()}"
+							th:text="${fase}"
+							th:value="${fase}">
+				</datalist>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="addNewPhase();">Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="alert-modal-info-requirement">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="inline">
+					<i class="bi bi-info-circle"></i>
+					<span class="modal-title info-modal-span">Deberás agregar al menos una estimación</span>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="alert-modal-info-at-least-one-checked">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="inline">
+					<i class="bi bi-info-circle"></i>
+					<span class="modal-title info-modal-span">Debes activar al menos una estimación</span>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <footer th:replace="layout/layout :: footer"></footer>
-<script th:replace="requerimiento/js/autocomplete-fases :: javascript"></script>
 <script type="text/javascript" th:inline="javascript">
-	var countEstimation=0;
-	var valorCheckBox=1;
+	var countEstimation = 0;
+	var numEstimaciones = 0;
+	var total = 0;
+	var req_default = [[${T(com.workschedule.app.enums.TipoRequerimiento).fromString("Seleccionar...")}]];
+	const allEqual = arr => arr.every( v => v === arr[0] );
+	const calculateSum = (arr) => {
+		return arr.reduce((total, current) => {
+			return parseInt(total) + parseInt(current);
+		}, 0);
+	};
+	var boxesChecked = [];
 	$(document).ready(function() {
-		/*if(document.querySelector('.activeCheckbox').checked()) {
-			valorCheckBox = 1;
-		} else {
-			valorCheckBox = 0;
-		}*/
+		document.getElementById("longitudEstimaciones").value = $(".horas").length;
+		$("#btnSaveRequirement").click((event) => {
+			let cantEstimaciones = $(".horas").length;
+			if(cantEstimaciones === 0) {
+				showModalInfoRequired();
+			} else {
+					$("#formRequirement").submit();
+			}
+	    });
+
+		document.formRequirement.fechaPlanifImplementacion.addEventListener('change', validDateRequirement);
+
+		document.formRequirement.fechaRealImplementacion.addEventListener('change', validDateRequirement);
+
 		document.getElementsByName("tipoRequerimiento")[0].addEventListener('change', loadFases);
 	});
 
-	function calculateTotal() {
-		var total=0;
+	/** *
+	 Esta función muestra el modal de advertencia de que tiene que haber al menos una estimacion cargada
+	 * @returns {void} - Devuelve void.
+	 */
+	function showModalInfoRequired() {
+		$('#alert-modal-info-requirement').modal('show');
+	}
 
-		$('input[name="cantidad[]"]').each(function(){
-			console.log("VALOR: " + $(this).val());
-			if ($(this).val() != "" && valorCheckBox == 1){
-				total += parseInt($(this).val()) || 0;
+	/** *
+	 Esta función muestra el modal de advertencia de que tiene que haber al menos una estimacion activa.
+	 * @returns {void} - Devuelve void.
+	 */
+	function showModalInfoAtLeastOneChecked() {
+		$('#alert-modal-info-at-least-one-checked').modal('show');
+	}
+
+	/** *
+	 Esta función compara dos fechas del formulario y arroja una alerta si una de las fechas es menor que la otra.
+	 * @returns {void} - Devuelve void.
+	 */
+	function validDateRequirement() {
+		let fechaPlanificadaTesting = document.formRequirement.fechaPlanifImplementacion.value;
+		let fechaRealTesting = document.formRequirement.fechaRealImplementacion.value;
+		if(fechaPlanificadaTesting > fechaRealTesting) {
+			alert("La fecha planificada debe ser menor a la fecha real de testing");
+		}
+	}
+
+	/** *
+	 Esta función crea una estimación activa si se trata de la primera estimacion sino la crea como una estimacion inactiva.
+	 * @param {string} version - La version se corresponde al numero de estimacion
+	 * @param {HTMLElement} cardBody - Este param se corresponde al body de la card que se creo
+	 * @returns {void} - Devuelve void.
+	 */
+	function createEstimationObj(version, cardBody) {
+		let cantEstimaciones = $(".horas").length
+		if(cantEstimaciones === 1) {
+			buildHiddenInput(cardBody, "1");
+		} else {
+			buildHiddenInput(cardBody, "0");
+		}
+	}
+
+	/** *
+	 Esta función crea pasa todos los datos de la estimacion a un json string; ademas deshabilita todos los input que tengan el valor activo en "0"
+	 * @param {HTMLElement} cardBody - Este param corresponde a la card donde se insertan las estimaciones
+	 * @param {string} valorActivo - Este param se corresponde si la estimacion esta activa o no
+	 * @returns {void} - Devuelve void.
+	 */
+	function buildHiddenInput(cardBody, valorActivo){
+		cardBody.querySelectorAll('#cantidadHoras')
+				.forEach((input) => {
+					numEstimaciones++;
+					let versionLabel = input.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('label').textContent;
+					const versionSplit = versionLabel.split(" ");
+					const originalObject = { fase: input.parentNode.parentNode.parentNode.firstChild.textContent, version: parseInt(versionSplit[1]), cantidadHoras: parseInt(input.value), usuarioAlta: [[${username}]], activo: parseInt(valorActivo)};
+					const copiedObject = Object.assign({}, originalObject);
+					let jsonString = JSON.stringify(copiedObject, null, 2);
+					input.nextSibling.value = jsonString;
+				});
+	}
+
+	/** *
+	 Esta función se encarga de sumar los valores de los input donde se ingresan las horas y los setea en otro input de totalizador de horas
+	 Ademas para cada input de cantidad de horas que se haya modificado le cambia el valor en el campo cantidadHoras por el nuevo valor a la estimacion que se guarda en un json string dentro de un input hidden a continuacion
+	 * @param {HTMLElement} that - Este param corresponde al input donde se esta cambiando el valor de la cantidad de horas
+	 * @returns {void} - Devuelve void.
+	 */
+	function calculateTotal(that) {
+		addActiveHours();
+		var elements = $(".horas");
+		var arr = [];
+		for (var i = 0; i < elements.length; i++) {
+			if(isNaN(elements[i].value)) {
+				total += 0;
+			} else if(elements[i].value.trim() !== "") {
+				arr.push(elements[i].value);
 			} else {
-				// Para evitar problemas de campo number vacio si se borra lo obligo a que sea cero
-				$(this).val(0);
+				total += 0;
 			}
-		});
+		}
+		total = calculateSum(arr);
+		let obj = JSON.parse(that.nextSibling.value);
+		obj.cantidadHoras = that.value;
+		that.nextSibling.value = JSON.stringify(obj, null, 2);
 
-		let cantidadHs = document.getElementById('total_fases');
-		cantidadHs.value = total;
-		return total;
-	    }
+	}
 
-	function addFases() {
+	/** *
+	 Esta función se encarga de sumar las horas activas de las estimaciones
+	 * @returns {void} - Devuelve void.
+	 */
+	function addActiveHours(){
+		var elements = $(".horas");
+		var arr = [];
+		for (var i = 0; i < elements.length; i++) {
+			if(isNaN(elements[i].value)) {
+				total += 0;
+			} else if(elements[i].value.trim() !== "") {
+				let obj = JSON.parse(elements[i].nextSibling.value)
+				if(obj.activo == 1) {
+					arr.push(elements[i].value);
+				}
+			} else {
+				total += 0;
+			}
+		}
+		total = calculateSum(arr);
+		document.getElementById("total_fases").value = total;
+	}
+
+	/** *
+	 Esta función se encarga de agregar una nueva estimacion(una nueva card donde se agregan todos los valores correspondientes a 1 o varias estimaciones por tipo de requerimiento)
+	 * @returns {void} - Devuelve void.
+	 */
+	function addEstimation() {
 		let objectoFases = sessionStorage.getItem('fases');
 		let fases = JSON.parse(objectoFases);
 		let tablaDiv = document.getElementById('tablaEstimaciones');
 		let tablaActual = document.createElement('table');
+		$('#tipoRequerimiento option').prop('selected', function() {
+			$("#tipoRequerimiento").val(req_default);
+		});
 		countEstimation++;
 		tablaActual.id= "cargarFase";
+		tablaActual.tagName="cargarFase";
 		tablaActual.title = "Estimacion Tabla";
 		tablaActual.className = "table table-sm table-striped table-hover";
 		let tHead = document.createElement('thead');
@@ -248,72 +417,134 @@
 				'<th scope="col">Horas</th>' +
 				'<th>Eliminar</th>';
 		let tBody = document.createElement('tbody');
-		tBody.id= "fasesTable";
+		tBody.id= 'fasesTable_' + countEstimation;
 		for (const fase of fases) {
 			tBody.appendChild(buildFase(fase, countEstimation));
 		}
-
 		tHead.appendChild(trHeadColumns);
 		tablaActual.appendChild(tHead);
 		tablaActual.appendChild(tBody);
 
 		let card = document.createElement("div");
-		card.className = "card";
+		card.className = "card col-6";
+		card.id = "card_" + countEstimation;
 		card.style.marginTop = "0.625rem";
+		card.style.border = "none";
+		card.style.paddingLeft= "0";
+		card.style.paddingRight = "0";
+		card.style.paddingBottom = "0";
+		card.style.marginLeft = "0.625rem"
+		card.style.marginRight = "0.625rem";
+		card.style.width= "30%";
 		let cardHeader = document.createElement("div")
 		cardHeader.className = "card-header text-white bg-primary mb-3";
-		cardHeader.innerHTML = '<div>' +
-				'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
-				'<label>Version: '+countEstimation+'</label>'+
-				'</div>'+
-				'<div style="float: right;margin-right: 20px;">' +
-				'<label for="activeEstimation[]"> Activo</label>' +
-				'<input type="checkbox" id="activeEstimation[]" class="activeCheckbox" name="activeEstimation[]" class="onoffswitch-checkbox"  checked>'+
-				'</div>';
+		cardHeader.id = "card-header_"  + numEstimaciones;
+		cardHeader.innerHTML = buildHeaderCard();
+
 		let cardBody = document.createElement("div");
 		cardBody.className = "card-body text-white bg-secondary mb-3";
 		cardBody.style.maxWidth = "34rem";
 		cardBody.style.marginTop = "-0.9rem";
+		cardBody.id = "card-body_" + numEstimaciones.toString();
 
-		let sectionGeneralAction = document.createElement("div");
-		sectionGeneralAction.className = "row py-3";
-		sectionGeneralAction.innerHTML =
+		let sectionActionAddPhase = document.createElement("div");
+		sectionActionAddPhase.className = "row";
+		sectionActionAddPhase.innerHTML = '<div class="col-sm-2">'+
+				'<button type="button" class="btn btn-primary" style="margin-top: -15px;margin-left:15.625rem;" data-bs-toggle="modal" data-bs-target="#new-phase-modal" onclick="persistDataTable(this)"><i data-bs-toggle="tooltip" data-bs-placement="right" title="Agrega una fase" class="bi bi-file-plus"></i></button>'+
+				'</div>';
+
+		let sectionActionDelete = document.createElement("div");
+		sectionActionDelete.className = "row py-3";
+		sectionActionDelete.innerHTML =
 		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-danger btnDelete"  style="margin-top: 20px;" href="#" onclick="deleteAllEstimation(this);">Eliminar la estimacíon</button>'+
-		'</div>'+
-		'<div class="col-sm-2">'+
-		'<button type="button" class="btn btn-primary" style="margin-top: 20px;margin-left:120px;">Agregar fase</button>'+
+		'<button type="button" class="btn btn-danger btnDelete" style="margin-top: 20px;margin-left: 15.625rem;" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Elimina toda la estimación" onclick="deleteAllEstimation(this);"><i class="bi bi-trash3-fill"></i></button>'+
 		'</div>';
+		cardBody.appendChild(sectionActionAddPhase);
 		cardBody.appendChild(tablaActual);
-		cardBody.appendChild(sectionGeneralAction);
+		cardBody.appendChild(sectionActionDelete);
 		card.appendChild(cardHeader);
 		card.appendChild(cardBody);
 
 		tablaDiv.appendChild(card);
 
+		createEstimationObj(countEstimation, cardBody);
+
+		document.getElementById("longitudEstimaciones").value = $(".horas").length;
 
 	}
+
+	/** *
+	 Esta función se encarga de persistir el valor del tbody, el id del cardBody y si esta activo o no la estimación para luego poder insertar un nuevo valor en la tabla
+	 * @param {HTMLElement} that - Este param corresponde al boton que se utiliza para guardar una fase
+	 * @returns {void} - Devuelve void.
+	 */
+	function persistDataTable(that) {
+		let valorActivo = "0";
+		if(that.parentNode.parentNode.parentNode.parentNode.querySelector("#checkbox1").checked){
+			valorActivo = "1";
+		}
+		let cardBodyId = that.parentNode.parentNode.parentNode.getAttribute("id");
+		let tBodyID = that.parentNode.parentNode.parentNode.querySelector('tbody').getAttribute("id");
+		sessionStorage.setItem('tbody', tBodyID);
+		sessionStorage.setItem('cardBodyId', cardBodyId);
+		sessionStorage.setItem("valorActivo", valorActivo)
+	}
+
+	/** *
+	 Esta función crea el header de la card de la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
+	function buildHeaderCard() {
+		let cantEstimaciones = $(".horas").length;
+		let str = '<div>' +
+		'<input type="text" value="" placeholder="Nombre estimación" name="namesEstimation[]" class="form-control" />' +
+		'<div class="inline">'+ '<label>Version: '+countEstimation+'</label>'+
+				'<div style="float: right;margin-right: 20px; display:inline-block;">' +
+				'<span>Activo  </span>';
+		if(cantEstimaciones === 0) {
+			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" checked>';
+		} else {
+			str += '<input type="checkbox" id="checkbox1" name="checkbox1" class="onoffswitch-checkbox" onchange="verifyWhenDisabledInput(this);" >'
+		}
+
+		str += '</div>'+ '</div>' + '</div>';
+		return str;
+	}
+
+	/** *
+	 Esta función construye una nueva fase con el input de cantidad de horas y el input de tipo hidden donde guarda va a guardar todos los datos de la estimacion
+	 * @param {string} fase - Este param corresponde al nombre de la fase
+	 * @param {number} index - Este param al numero de estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function buildFase(fase, index) {
 		const trFases = document.createElement('tr');
-		trFases.id = "row_' + index + '";
+		trFases.id = 'row_' + index;
 		let htmlInputs =
-				'<td>' + fase + '</td>' +
+				'<td class="text-white" id="nombreFase">' + fase + '</td>' +
 				'<td>' +
-				  '<div class="col-sm-6">' +
-				  '<input type="number" id="cantidad[]" name="cantidad[]" value="0" min="0" class="form-control text-end" onchange="calculateTotal()"/>' +
+				  '<div class="col-xs-2">' +
+				  '<input type="number" id="cantidadHoras" name="cantidadHoras" class="form-control text-end horas input-size-default" value="0" min="0" onchange="calculateTotal(this);" onkeydown="if (event.keyCode == 13) { return false;}"/>' +
+				  '<input type="hidden" id="estimacionHidden" name="estimacionHidden" class="estimacionHidden" />'+
 				  '</div>' +
 				'</td>'+
-				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deleteFase(this)">X</button></td>';
+				'<td><button type="button" class="btn btn-danger btnDelete" href="#" onclick="deletePhase(this)">X</button></td>';
 			trFases.innerHTML = htmlInputs;
 		return trFases;
 	}
+
+	/** *
+	 Esta función carga las fases dependiendo el tipo de requerimiento que haya seleccionado el usuario y lo persiste en la sesion
+	 Ademas deshabilita el boton de agregar estimacion en el caso de que el tipo de requerimiento ingresado no coincida con los valores esperados
+	 * @returns {void} - Devuelve void.
+	 */
 	function loadFases() {
 		/* Function load fases depends at requirement type selected */
 		var enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
 		var fases = Object.values(enumFases);
 		var fasesFilter = [];
 		if(this.value != null && this.value != "empty") {
-			removeDisabledButtonAddFases();
+			removeDisabledButtonAddEstimation();
 			switch (this.value) {
 				case 'EVOLUTIVO':
 					fasesFilter = fases;
@@ -321,49 +552,157 @@
 				case 'CORRECTIVO':
 				case 'REWORK':
 				case 'EMERGENCIA':
-					fasesFilter = fases.filter(fase => fase !== "SOPORTE_PRUEBAS_PI" && fase !== "SOPORTE_PRUEBAS_PAU");
+					fasesFilter = fases.filter(fase => fase !== "PI" && fase !== "PAU");
 					break;
 				case 'ANALISIS':
 					fasesFilter = fases.filter(fase => fase === "ANALISIS");
 					break;
 				default:
-					disabledButtonAddFases();
+					disabledButtonAddEstimation();
 					//mandar un alerta no se encontraron valores por deafult
 					break;
 			}
 		} else {
-			disabledButtonAddFases();
+			disabledButtonAddEstimation();
 			removeAllElementTable();
 			//mandar un alerta que el valor es null (contactar con el administrador)->
 		}
 		sessionStorage.setItem('fases', JSON.stringify(fasesFilter));
 	}
 
-	function disabledButtonAddFases() {
-		let button = document.getElementById("addFasesBtn");
+	/** *
+	 Esta función deshabilita el boton de agregar estimacion
+	 * @returns {void} - Devuelve void.
+	 */
+	function disabledButtonAddEstimation() {
+		let button = document.getElementById("addEstimationBtn");
 		button.setAttribute("disabled", "disabled");
 	}
 
-	function removeDisabledButtonAddFases() {
-		document.getElementById("addFasesBtn").disabled = false;
+	/** *
+	 Esta función habilita el boton de agregar estimacion
+	 * @returns {void} - Devuelve void.
+	 */
+	function removeDisabledButtonAddEstimation() {
+		document.getElementById("addEstimationBtn").disabled = false;
 	}
 
-	function deleteFase(that) {
-		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
-			  that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+	/** *
+	 Esta función es llamada cuando se quiere agregar una nueva fase que se agregara dentro de un modal
+	 Ademas se valida si la fase es valida o ya fue cargada en la tabla
+	 * @returns {void} - Devuelve void.
+	 */
+	function addNewPhase() {
+		let listFasesInTable = [];
+		let tbodyIdInsert = sessionStorage.getItem('tbody');
+		let cardBodyId = sessionStorage.getItem('cardBodyId');
+		let valorActivo = sessionStorage.getItem('valorActivo');
+		let tBody = document.getElementById(tbodyIdInsert);
+		let cardBody = document.getElementById(cardBodyId);
+		let valNewPhase = document.getElementById('namePhase');
+		let rows = document.getElementById(tbodyIdInsert).rows.length;
+		let enumFases = [[${T(com.workschedule.app.enums.Fase).values()}]];
+		tBody.querySelectorAll("#nombreFase").forEach((fase)=> {
+			listFasesInTable.push(fase.textContent);
+		});
+		let foundSamePhase = listFasesInTable.find(item => { return item === valNewPhase.value.toUpperCase() } );
+		let foundPhaseValid = enumFases.find(item => { return item == valNewPhase.value.toUpperCase() });
+		if(!foundPhaseValid){
+			alert("Ingrese una fase válida");
 		}
-		that.parentNode.parentNode.remove();
+		if(foundSamePhase){
+			alert("La fase ingresada ya esta cargada en la tabla");
+		} else if(!foundSamePhase && foundPhaseValid){
+			tBody.appendChild(buildFase(valNewPhase.value.toUpperCase(), rows + 1));
+			buildHiddenInput(cardBody, valorActivo);
+		}
+		let modalEl1 = document.getElementById("new-phase-modal");
+		let modal = bootstrap.Modal.getInstance(modalEl1);
+		modal.hide();
 	}
 
+	/** *
+	 Esta función es llamada para borrar una fase de la tabla seleccionada
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar fases(item) de la tabla
+	 * @returns {void} - Devuelve void.
+	 */
+	function deletePhase(that) {
+		if(that.parentNode.parentNode.nextSibling == null && that.parentNode.parentNode.previousSibling == null) {
+			let valueConfirm = confirm("Estas por eliminar una estimación");
+			if(valueConfirm){
+				that.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+			}
+		} else {
+			that.parentNode.parentNode.remove();
+		}
+		addActiveHours();
+	}
+
+	/** *
+	 Esta función es llamada para borrar toda la tabla de estimacion
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function deleteAllEstimation(that) {
-		that.parentNode.parentNode.parentNode.parentNode.remove();
+		let valueConfirm = confirm("Estas seguro de eliminar la estimación");
+		if(valueConfirm) {
+			that.parentNode.parentNode.parentNode.parentNode.remove();
+		}
 	}
 
+	/** *
+	 Esta función elimina todos los div que se creen dentro del elemen
+	 @param {HTMLElement} that - Este param corresponde al boton de eliminar toda la estimacion
+	 * @returns {void} - Devuelve void.
+	 */
 	function removeAllElementTable() {
 		let fasesRow = document.getElementById('fasesTable');
 		while (fasesRow.firstChild) {
 			fasesRow.removeChild(fasesRow.firstChild);
 		}
+	}
+
+	/** *
+	 Esta función verifica que haya solo un checkbox activo y de estar activo descheckea los otros checkbox para que se el unico activo
+	 * @param {HTMLElement} that - Este param se corresponde al checkbox correspondiente a una card especifica
+	 * @returns {void} - Devuelve void.
+	 */
+	function verifyWhenDisabledInput(that) {
+		if(that.checked) {
+			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+				checkElement.checked = false;
+			});
+			that.checked = true;
+		} else {
+			document.querySelectorAll('input[type=checkbox]').forEach(function (checkElement) {
+				boxesChecked.push(checkElement.checked);
+			});
+			if(allEqual(boxesChecked)){
+				showModalInfoAtLeastOneChecked();
+			}
+		}
+
+		document.querySelectorAll("#cantidadHoras").forEach(
+				(currentInput) => {
+					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+					objEstimacion.activo = "0";
+					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
+				}
+		);
+
+		that.parentNode.parentNode.parentNode.parentNode.parentNode.querySelectorAll("#cantidadHoras").forEach(
+				(currentInput) => {
+					let objEstimacion = JSON.parse(currentInput.nextSibling.value);
+					if(that.checked === true ) {
+						objEstimacion.activo = "1";
+					} else {
+						objEstimacion.activo = "0";
+					}
+					currentInput.nextSibling.value = JSON.stringify(objEstimacion, null, 2);
+				}
+		);
+		addActiveHours();
+
 	}
 
 </script>

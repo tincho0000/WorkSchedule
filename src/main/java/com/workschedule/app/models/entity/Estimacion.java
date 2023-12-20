@@ -1,6 +1,9 @@
 package com.workschedule.app.models.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import com.workschedule.app.enums.Fase;
 import com.workschedule.app.enums.TipoRequerimiento;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Estimacion", uniqueConstraints={ 
@@ -42,9 +46,11 @@ public class Estimacion implements Serializable{
 	private int cantidadHoras; // TODO: Verificar si tiene sentido tenerlo ya que se puede calcular
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date fechaAlta;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date fechaUpdate;
 	
 	private String usuarioAlta;
@@ -57,6 +63,20 @@ public class Estimacion implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "requerimiento_id")
 	private Requerimiento requerimiento;
+
+	public Estimacion (String fase, int version, int cantHs, Requerimiento req, String userCreate, int activo) {
+		System.out.println("se esta por crear la fase:" + fase);
+	 this.setFase(Fase.fromString(fase.trim()));
+	 this.setVersion(version);
+	 this.setCantidadHoras(cantHs);
+	 this.setRequerimiento(req);
+	 this.setUsuarioAlta(userCreate);
+	 this.setFechaAlta(new Date());
+	 this.setActivo(activo);
+	}
+	public Estimacion() {
+
+	}
 
 	public Fase getFase() {
 		return fase;

@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
 <head th:replace="layout/layout :: head"></head>
-<body style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+<body style="background: #2c3e50;">
 
 	<header th:replace="layout/layout :: header"></header>
-	
+
 	<div class="card my-2 border-0">
 		<!-- 		<div class="card-header" th:text="${titulo}"></div> -->
-		<div class="card-body" style="background-image: linear-gradient(to right, #5c5f62, #53565a, #494e52, #40454a, #373d42);">
+		<div class="card-body" style="background: #2c3e50;">
 			<div class="container py-1">
 				<form class="row g-5 align-items-center">
 					<div class="col-auto pe-1">
-						<!-- 						<label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label> -->
-						<div class="input-group">
-							<div class="input-group-text">Requerimiento:</div>
-							<input type="text" class="form-control"
-								id="reqFilter" placeholder="Ej: MOR-100" name="reqFilter" th:value="${reqFilter}">
-						</div>
-					</div>
-
-					<div class="col-auto pe-1">
 						<div class="input-group">
 							<div class="input-group-text">Aplicación:</div>
-							<select class="form-select" id="appFilter" name="appFilter">
+							<select class="form-select" id="appFilter" name="appFilter" onChange="appOnChange(this)">
 								<option value="" selected="selected">Seleccionar...</option>
-								<option th:each="aplicacion: ${aplicaciones}"
-									th:text="${aplicacion.aplicacion}" th:value="${aplicacion.id}" th:selected="${aplicacion.id} == ${appFilter}">
+								<option th:each="aplicacion : ${T(com.workschedule.app.enums.Aplicacion).values()}"
+										th:text="${aplicacion.getAplicacion()}" th:value="${aplicacion}" th:selected="${aplicacion} == ${appFilter}">
 								</option>
 							</select>
 						</div>
 					</div>
+
+					<div class="col-auto pe-1">
+						<!-- 						<label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label> -->
+						<div class="input-group">
+							<div class="input-group-text">Requerimiento:</div>
+							<input type="text" autocomplete="off" list="nombres-list" id="reqFilter" placeholder="Ej: MOR-100" th:value="${reqFilter}"/>
+							<datalist id="nombres-list">
+							<option th:each="nombre : ${nombresRequerimientos}"
+									th:text="${nombre}"
+									th:value="${nombre}"/>
+								</datalist>
+						</div>
+					</div>
+
 					<div class="col-auto pe-1">
 						<div class="input-group">
 							<div class="input-group-text">Estado:</div>
@@ -43,7 +48,7 @@
 					</div>
 
 					<div class="col-auto pe-1">
-							<button type="submit" class="btn btn-outline-light" onclick="validar();">Buscar ... </button>
+							<button id="searchBtn" type="submit" class="btn btn-outline-light" disabled>Buscar ... </button>
 					</div>
 					<div class="col-auto pe-1">
 							<button type="button" class="btn btn-outline-light" onclick="borrarFiltro();">Eliminar ... </button>
@@ -57,7 +62,7 @@
 			<div class="card border-light" style="background: linear-gradient(to right, #2980b9, #2c3e50);">
 				<div class="card-header border-light text-white" th:text="${titulo}"></div>
 				<div class="card-body">
-	
+
 					<h4 class="card-title">
 						<a th:href="@{/requerimientos/form}" class="btn btn-light btn-xs">Crear
 							Requerimiento</a>
@@ -69,31 +74,29 @@
 								<th class="text-white">APLICACIÓN</th>
 								<th class="text-white">REQUERIMIENTO</th>
 								<th class="text-white">DESCRIPCIÓN</th>
-								<th class="text-white">CANTIDAD HORAS</th>
 								<th class="text-white">ESTADO</th>
 								<th class="text-center text-white">ACCIÓN</th>
 	<!-- 							<th class="text-center">Ver/Editar</th> -->
 	<!-- 							<th class="text-center">Eliminar</th> -->
 							</tr>
 						</thead>
-	
-						<tbody th:if="${not requerimientos.isEmpty()}">
+
+						<tbody th:if="${requerimientos !=null && !requerimientos.isEmpty()}">
 							<tr th:each="requerimiento: ${requerimientos}">
 	<!-- 							<td><a th:text="${requerimiento.id}"></a></td> -->
 	<!-- 								th:href="@{/app/ver/} + ${usuario.id}" th:text="${usuario.id}"></a></td> -->
-	
+
 								<td class="text-white" th:text="${requerimiento.aplicacion.aplicacion}"></td>
 								<td class="text-white" th:text="${requerimiento.requerimiento}"></td>
 								<td class="text-white" th:text="${requerimiento.descripcion}"></td>
-								<td class="text-white" th:text="${requerimiento.getEstimacionRequerimientoFases().get(0).getEstimacion().getCantidadHoras()}"></td>
 								<td class="text-white" th:text="${requerimiento.estado}"></td>
 								<td class="text-center">
-									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.id}" 
+									<a class="btn btn-outline-light btn-sm" th:href="@{/requerimientos/editar/} + ${requerimiento.requerimiento}"
 										style="border-radius: 50%;" data-toggle="tooltip" title="Editar">
 										<i class="bi bi-pencil-square"></i>
 									</a>
 									<a class="btn btn-outline-light btn-sm" style="border-radius: 50%;" data-toggle="tooltip" title="Eliminar"
-										th:href="@{/requerimientos/eliminar/} + ${requerimiento.id}"
+										th:href="@{/requerimientos/eliminar/} + ${requerimiento.requerimiento}"
 										onclick="return confirm('Estas seguro que quieres eliminar?')">
 										<i class="bi bi-trash3"></i>
 									</a>
@@ -105,30 +108,51 @@
 	<!-- 							</a></td> -->
 							</tr>
 						</tbody>
-	
+
 					</table>
-					<div th:if="${not requerimientos.isEmpty()}">
+					<div th:if="${requerimientos != null && !requerimientos.isEmpty()}">
 						<nav th:replace="paginator-nav :: paginator"></nav>
 					</div>
 				</div>
 			</div>
-			 
-			 <div class="alert alert-danger m-0" th:unless="${not requerimientos.isEmpty()}" th:text="'No se encontraron requerimientos para la busqueda solicitada'"></div>
+
+			 <div class="alert alert-danger m-0" th:unless="${requerimientos!= null && !requerimientos.isEmpty()}" th:text="'No se encontraron requerimientos para la busqueda solicitada'"></div>
 		</div>
 	</div>
 	<footer th:replace="layout/layout :: footer"></footer>
 	<script type="text/javascript">
-// 		function validar(){
-// 			var aplicacion = document.getElementById('aplicaciones');
-// 			if(aplicacion.value == 0 || aplicacion.value == ''){
-// 				alert('Debe seleccionar una aplicacion para buscar');
-// 				aplicacion.focus();
-// 			}
-// 		}
+
+		$(document).ready(function() {
+			let appFilter = document.getElementById("appFilter");
+			let reqFilter = document.getElementById("reqFilter");
+			if(appFilter.value != null && appFilter.value != ''){
+				document.getElementById("searchBtn").disabled = false;
+			} else {
+				let button = document.getElementById("searchBtn");
+				button.setAttribute("disabled", "disabled");
+			}
+		});
+
+		function appOnChange(that) {
+			console.log("cambio el valor");
+			if(that.value != null && that.value != ''){
+				document.getElementById("searchBtn").disabled = false;
+			} else {
+				let button = document.getElementById("searchBtn");
+				button.setAttribute("disabled", "disabled");
+			}
+		}
+ 		function validar(){
+ 			var aplicacion = document.getElementById('aplicaciones');
+ 			if(aplicacion.value == 0 || aplicacion.value == ''){
+ 				alert('Debe seleccionar una aplicacion para buscar');
+ 				aplicacion.focus();
+ 			}
+		}
 		function borrarFiltro(){
 			window.location = '/requerimientos/listar-requerimientos';
 		}
- 	</script> 
+ 	</script>
 
 </body>
 </html>

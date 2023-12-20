@@ -8346,9 +8346,11 @@ textarea.form-control {
         border: 1px solid transparent;
         background: #fbceb5;
         color: #fff; }
+
       .input-totalizador {
 
       }
+
       .input-totalizador:disabled {
         display: block;
         width: 100%;
@@ -8367,3 +8369,30 @@ textarea.form-control {
         color:#dcd3d3 !important;
         background:#F5F5F5 !important;
       }
+
+      .padding-top-1 {
+      padding-top: 1rem !important;
+      }
+
+      .input-size-default {
+      width: 4.0625rem!important;
+      }
+
+      .info-modal-span {
+        display: flex;
+        justify-content: center;
+      }
+
+      #checkbox1 {
+      margin :2px !important;
+      }
+
+      .margin-estado {
+        width: 195px !important;
+        margin-left: -18px !important;
+      }
+      .margin_left_2 {
+        margin-left: 2px !important;
+      }
+.container-estimation {width: 100%;}
+.container-estimation * {display: inline-block; vertical-align: top; padding: 0px; margin: 0px;}

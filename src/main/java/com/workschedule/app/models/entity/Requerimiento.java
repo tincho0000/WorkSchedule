@@ -20,11 +20,14 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.workschedule.app.enums.Aplicacion;
 import com.workschedule.app.enums.EstadoRequerimiento;
 import com.workschedule.app.enums.MotivoReplanificacion;
 import com.workschedule.app.enums.TipoRequerimiento;
+import net.bytebuddy.implementation.bind.annotation.Empty;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "Requerimiento")
@@ -54,7 +57,6 @@ public class Requerimiento implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_testing")
 	private Date fechaRealTesting;
-	
 	@Column(name="motivo_replanif_testing")
 	@Enumerated(EnumType.STRING)
 	private MotivoReplanificacion motivoReplanifTesting;
@@ -68,12 +70,12 @@ public class Requerimiento implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="fecha_real_implementacion")
 	private Date fechaRealImplementacion;
-	
+
+	@Nullable
 	@Column(name="motivo_replanif_implementacion")
 	@Enumerated(EnumType.STRING)
 	private MotivoReplanificacion motivoReplanifImplementacion;
-	
-	@NotNull
+
 	@Column(name="tipo_requerimiento")
 	@Enumerated(EnumType.STRING)
 	private TipoRequerimiento tipoRequerimiento;
@@ -83,6 +85,7 @@ public class Requerimiento implements Serializable {
 	private Aplicacion aplicacion;
 
 	@OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonBackReference
 	private List<Estimacion> estimacion;
 	
 	
@@ -232,19 +235,6 @@ public class Requerimiento implements Serializable {
 				&& Objects.equals(observacion, other.observacion) && Objects.equals(requerimiento, other.requerimiento)
 				&& Objects.equals(tipoRequerimiento, other.tipoRequerimiento);
 	}
-
-	@Override
-	public String toString() {
-		return "Requerimiento [requerimiento=" + requerimiento + ", descripcion=" + descripcion + ", observacion="
-				+ observacion + ", estado=" + estado + ", fechaPlanifTesting=" + fechaPlanifTesting
-				+ ", fechaRealTesting=" + fechaRealTesting + ", motivoReplanifTesting=" + motivoReplanifTesting
-				+ ", fechaPlanifImplementacion=" + fechaPlanifImplementacion + ", fechaRealImplementacion="
-				+ fechaRealImplementacion + ", motivoReplanifImplementacion=" + motivoReplanifImplementacion
-				+ ", tipoRequerimiento=" + tipoRequerimiento + ", estimacion=" + estimacion + ", aplicacion="
-				+ aplicacion + "]";
-	}
-	
-	
 	
 
 	/******************* Metodos *******************/
